@@ -50,6 +50,9 @@
     <Compile Include="..\src\Common\Config.cs">
       <Link>Common\Config.cs</Link>
     </Compile>
+    <Compile Include="..\src\Common\ConsoleCommands.cs">
+      <Link>Common\ConsoleCommands.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\Globals.cs">
       <Link>Common\Globals.cs</Link>
     </Compile>
