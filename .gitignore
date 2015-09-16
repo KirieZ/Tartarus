@@ -1,0 +1,19 @@
+# Auth Project Folders
+/Auth/common
+/Auth/obj
+/Auth/auth
+/Auth/bin
+
+# Game Project Folders
+/Game/bin
+/Game/common
+/Game/game
+/Game/obj
+
+# Temporary
+*.suo
+*.tmp
+/Game.exe
+/Game.exe.config
+/Auth.exe
+/Auth.exe.config
