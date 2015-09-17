@@ -56,7 +56,7 @@ namespace Common
 		/// Called to set the commands list
 		/// </summary>
 		/// <param name="cmds"></param>
-		public static void LoadCommands(Dictionary<string, Command> cmds)
+		public static void Load(Dictionary<string, Command> cmds)
 		{
 			Commands = cmds;
 		}

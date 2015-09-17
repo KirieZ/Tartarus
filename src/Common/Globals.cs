@@ -10,6 +10,11 @@ namespace Common
 {
 	public static class Globals
 	{
+        /// <summary>
+        /// Maximum amount of threads that can be running at one time
+        /// </summary>
+        public const int MaxThreads = 6;
+
 		//===== Internal
 		// Packet Header Length (Size + Id + 1 byte)
 		public const int HeaderLength = 7;
@@ -20,9 +25,9 @@ namespace Common
 
 		//===== Game
 		// The Epic version, used for source formulas
-		public const int ServerEpic = 81;
+		public const int ServerEpic = 62;
 		// The Client Epic version, used to send correct packets
-		public const int ClientEpic = 81;
+		public const int ClientEpic = 62;
 		
 		//===== Keys
 		// The key used to decrypt passwords sent by the client
@@ -38,7 +43,7 @@ namespace Common
 			// Define the DESKey and RC4Key based on client version
 			switch (ClientEpic)
 			{
-				case 81:
+				case 62:
 					DESKey = "MERONG";
 					RC4Key = "}h79q~B%al;k'y $E";
 					break;
