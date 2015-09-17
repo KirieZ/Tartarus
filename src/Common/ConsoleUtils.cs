@@ -54,17 +54,17 @@ namespace Common
 			//Console.BackgroundColor = ConsoleColor.Red;
 			//Console.ForegroundColor = ConsoleColor.White;
 
-			consoleGUI.Instance.Print(" ==============================================================================\r\n");
-			consoleGUI.Instance.Print(" =                              Tartarus Emulator                             =\r\n");
-			consoleGUI.Instance.Print(" =                   _____          _                                         =\r\n");
-			consoleGUI.Instance.Print(" =                  |_   _|        | |                                        =\r\n");
-			consoleGUI.Instance.Print(" =                    | | __ _ _ __| |_ __ _ _ __ _   _ ___                   =\r\n");
-			consoleGUI.Instance.Print(" =                    | |/ _` | '__| __/ _` | '__| | | / __|                  =\r\n");
-			consoleGUI.Instance.Print(" =                    | | (_| | |  | || (_| | |  | |_| \\__ \\                  =\r\n");
-			consoleGUI.Instance.Print(" =                    \\_/\\__,_|_|   \\__\\__,_|_|   \\__,_|___/                  =\r\n");
-			consoleGUI.Instance.Print(" =                                                                            =\r\n");
-			consoleGUI.Instance.Print(" =                                                                            =\r\n");
-			consoleGUI.Instance.Print(" ==============================================================================\r\n");
+			consoleGUI.Instance.Print("===============================================================================\r\n");
+			consoleGUI.Instance.Print("=                              Tartarus Emulator                              =\r\n");
+			consoleGUI.Instance.Print("=                   _____          _                                          =\r\n");
+			consoleGUI.Instance.Print("=                  |_   _|        | |                                         =\r\n");
+			consoleGUI.Instance.Print("=                    | | __ _ _ __| |_ __ _ _ __ _   _ ___                    =\r\n");
+			consoleGUI.Instance.Print("=                    | |/ _` | '__| __/ _` | '__| | | / __|                   =\r\n");
+			consoleGUI.Instance.Print("=                    | | (_| | |  | || (_| | |  | |_| \\__ \\                   =\r\n");
+			consoleGUI.Instance.Print("=                    \\_/\\__,_|_|   \\__\\__,_|_|   \\__,_|___/                   =\r\n");
+			consoleGUI.Instance.Print("=                                                                             =\r\n");
+			consoleGUI.Instance.Print("=                                                                             =\r\n");
+			consoleGUI.Instance.Print("===============================================================================\r\n");
 
 			//Console.ResetColor();
 		}
@@ -87,51 +87,52 @@ namespace Common
 				switch (type)
 				{
 					case MsgType.Status:
-						Console.ForegroundColor = ConsoleColor.Green;
+						//Console.ForegroundColor = ConsoleColor.Green;
 						consoleGUI.Instance.Print("[Status] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.SQL:
-						Console.ForegroundColor = ConsoleColor.Magenta;
+						//Console.ForegroundColor = ConsoleColor.Magenta;
 						consoleGUI.Instance.Print("[SQL] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.Info:
-						Console.ForegroundColor = ConsoleColor.White;
+						//Console.ForegroundColor = ConsoleColor.White;
 						consoleGUI.Instance.Print("[Info] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.Notice:
-						Console.ForegroundColor = ConsoleColor.White;
+						//Console.ForegroundColor = ConsoleColor.White;
 						consoleGUI.Instance.Print("[Notice] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.Warning:
-						Console.ForegroundColor = ConsoleColor.Yellow;
+						//Console.ForegroundColor = ConsoleColor.Yellow;
 						consoleGUI.Instance.Print("[Warning] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.Debug:
-						Console.ForegroundColor = ConsoleColor.Cyan;
-						consoleGUI.Instance.Print("[Debug] ");
-						Console.ResetColor();
+						//Console.ForegroundColor = ConsoleColor.Cyan;
+						debugGUI.Instance.MessagePrint("[Debug] ");
+						debugGUI.Instance.MessagePrint(string.Format(text, replacers));
+						//Console.ResetColor();
 						break;
 
 					case MsgType.Error:
-						Console.ForegroundColor = ConsoleColor.Red;
+						//Console.ForegroundColor = ConsoleColor.Red;
 						consoleGUI.Instance.Print("[Error] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.FatalError:
-						Console.ForegroundColor = ConsoleColor.Red;
+						//Console.ForegroundColor = ConsoleColor.Red;
 						consoleGUI.Instance.Print("[Fatal Error] ");
-						Console.ResetColor();
+						//Console.ResetColor();
 						break;
 
 					case MsgType.PacketDebug:

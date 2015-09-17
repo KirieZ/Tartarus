@@ -45,8 +45,8 @@ namespace Game
 			Dictionary<string, ConsoleCommands.Command> cmdList = new Dictionary<string, ConsoleCommands.Command>();
 
 			// TODO : Command Calls
-			cmdList.Add("Debug.log", new ConsoleCommands.Command("i", null));
-			cmdList.Add("Debug.log_section", new ConsoleCommands.Command("i", null));
+			cmdList.Add("Debug.log", new ConsoleCommands.Command("i", null));//ConsoleHelper.Debug_LogToggle));
+			cmdList.Add("Debug.log_section", new ConsoleCommands.Command("i", null));// ConsoleHelper.Debug_LogSetFilter));
 
 			cmdList.Add("Debug.level", new ConsoleCommands.Command("i", null));
 			cmdList.Add("Debug.trace", new ConsoleCommands.Command("i", null));
@@ -62,6 +62,8 @@ namespace Game
 			cmdList.Add("Debug.packets", new ConsoleCommands.Command("i", null));
 			//cmdList.Add("Debug.trace_packets", new ConsoleCommands.Command("
 			cmdList.Add("Debug.trace_priority", new ConsoleCommands.Command("i", null));
+
+			cmdList.Add("Windows.ShowDebug", new ConsoleCommands.Command("", ConsoleHelper.Windows_ShowDebug));
 
 			return cmdList;
 		}

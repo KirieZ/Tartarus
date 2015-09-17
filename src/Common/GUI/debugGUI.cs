@@ -12,9 +12,15 @@ namespace Common.GUI
 {
     public partial class debugGUI : Form
     {
+		/// <summary>
+		/// Provides a handle to report gui changes.
+		/// </summary>
+		public static debugGUI Instance;
+
         public debugGUI()
         {
             InitializeComponent();
+			Instance = this;
         }
 
         /// <summary>
@@ -38,5 +44,15 @@ namespace Common.GUI
         /// Clears all messages in the packetConsole
         /// </summary>
         public void PacketsClear() { packetConsole.Clear(); }
+
+		/// <summary>
+		/// When form closes, clean up instance.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void debugGUI_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Instance = null;
+		}
     }
 }

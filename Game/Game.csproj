@@ -78,6 +78,9 @@
     <Compile Include="..\src\Common\Threads.cs">
       <Link>Common\Threads.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\ConsoleHelper.cs">
+      <Link>Game\ConsoleHelper.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>
     </Compile>

@@ -43,7 +43,7 @@ namespace Common.GUI
 
 			await Task.WhenAll(Threads.Tasks.ToArray());
 			cts.Dispose();
-			Print("\n\nServer Loaded.", 0);
+			Print("\n\nServer Loaded.\n", 0);
         }
 
         /// <summary>
