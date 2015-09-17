@@ -53,9 +53,10 @@ namespace Common.GUI
         /// <param name="type">type of message being printed</param>
         /// <param name="color">color of message being printed</param>
         /// <TODO>implement styling with 'type'</TODO> 
-        internal void Print(string text, int type)
+        internal void Print(string text, int type=0)
         {
-            this.Invoke(new MethodInvoker(delegate { console.AppendText(string.Concat(text, Environment.NewLine)); }));
+            //this.Invoke(new MethodInvoker(delegate { console.AppendText(string.Concat(text, Environment.NewLine)); }));
+			this.Invoke(new MethodInvoker(delegate { console.AppendText(text); }));
         }
 
         /// <summary>

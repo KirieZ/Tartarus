@@ -21,9 +21,11 @@ namespace Game
 		/// </summary>
 		public override void Load()
 		{
-			Common.GUI.consoleGUI.Instance.Print("Loading Console Commands...\n", 0);
+			ConsoleUtils.ShowHeader();
+
+			ConsoleUtils.ShowStatus("Loading Console Commands... \n");
 			ConsoleCommands.Load(GetConsoleCommands());
-			Common.GUI.consoleGUI.Instance.Print("Console Commands Loaded\n", 0);
+			ConsoleUtils.ShowStatus("Console Commands Loaded\n");
 		}
 
 		/// <summary>
