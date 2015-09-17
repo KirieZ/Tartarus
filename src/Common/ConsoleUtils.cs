@@ -118,6 +118,8 @@ namespace Common
 
 					case MsgType.Debug:
 						//Console.ForegroundColor = ConsoleColor.Cyan;
+						if (debugGUI.Instance == null) return;
+
 						debugGUI.Instance.MessagePrint("[Debug] ");
 						debugGUI.Instance.MessagePrint(string.Format(text, replacers));
 						//Console.ResetColor();

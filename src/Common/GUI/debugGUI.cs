@@ -27,23 +27,23 @@ namespace Common.GUI
         /// Prints text to the messageConsole
         /// </summary>
         /// <param name="text">string to be printed</param>
-        public void MessagePrint(string text) { messageConsole.AppendText(string.Concat(text, Environment.NewLine)); }
+		public void MessagePrint(string text) { this.Invoke(new MethodInvoker(delegate { messageConsole.AppendText(string.Concat(text, Environment.NewLine)); })); }
 
         /// <summary>
         /// Clears all messages in the messageConsole
         /// </summary>
-        public void MessagesClear() { messageConsole.Clear(); }
+		public void MessagesClear() { this.Invoke(new MethodInvoker(delegate { messageConsole.Clear(); })); }
 
         /// <summary>
         /// Prints text to the packetConsole
         /// </summary>
         /// <param name="text">string to be printed</param>
-        public void PacketPrint(string text) { packetConsole.AppendText(string.Concat(text, Environment.NewLine)); }
+		public void PacketPrint(string text) { this.Invoke(new MethodInvoker(delegate { packetConsole.AppendText(string.Concat(text, Environment.NewLine)); })); }
 
         /// <summary>
         /// Clears all messages in the packetConsole
         /// </summary>
-        public void PacketsClear() { packetConsole.Clear(); }
+		public void PacketsClear() { this.Invoke(new MethodInvoker(delegate { packetConsole.Clear(); })); }
 
 		/// <summary>
 		/// When form closes, clean up instance.

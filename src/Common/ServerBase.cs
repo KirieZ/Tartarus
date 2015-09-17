@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace Common
 {
+	/// <summary>
+	/// Basic server class, extended by every server
+	/// to allow GUI access to them.
+	/// </summary>
 	public abstract class ServerBase
 	{
 		public abstract void Load();

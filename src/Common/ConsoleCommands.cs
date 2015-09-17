@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Common
 {
+	/// <summary>
+	/// Class to process commands sent through the console
+	/// </summary>
 	public static class ConsoleCommands
 	{
 		public delegate void CommandAction(object[] args);
@@ -50,12 +53,15 @@ namespace Common
 			}
 		}
 
+		/// <summary>
+		/// Stores the list of available commands
+		/// </summary>
 		private static Dictionary<string, Command> Commands = new Dictionary<string, Command>();
 
 		/// <summary>
 		/// Called to set the commands list
 		/// </summary>
-		/// <param name="cmds"></param>
+		/// <param name="cmds">the command list</param>
 		public static void Load(Dictionary<string, Command> cmds)
 		{
 			Commands = cmds;
@@ -72,8 +78,7 @@ namespace Common
 			// Ensure that the command exists
 			if (!Commands.ContainsKey(cmdData[0]))
 			{
-				// TODO : Message
-				//ConsoleUtils.Write(ConsoleMsgType.Error, "Command {0} not found.\n", cmdData[0]);
+				ConsoleUtils.ShowError("Command {0} not found.\n", cmdData[0]);
 				return;
 			}
 

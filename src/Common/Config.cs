@@ -29,8 +29,7 @@ namespace Common
 		public bool Read(string filename)
 		{
 			if (!File.Exists(filename)) {
-				// TODO : Message
-				//ConsoleUtils.Write(ConsoleMsgType.Error, "Config file note found '{0}'... Skipping...\n", filename);
+				ConsoleUtils.ShowError("Config file note found '{0}'... Skipping...\n", filename);
 				return false;
 			}
 
@@ -57,9 +56,8 @@ namespace Common
 			}
 			catch (Exception e)
 			{
-				// TODO : Message
-				//ConsoleUtils.Write(ConsoleMsgType.Error, "Failed to read config file at '{0}'", filename);
-				//ConsoleUtils.Write(ConsoleMsgType.Error, "Error: {0}", e.Message);
+				ConsoleUtils.ShowError("Failed to read config file at '{0}'", filename);
+				ConsoleUtils.ShowError("Error: {0}", e.Message);
 				return false;
 			}
 			return true;
