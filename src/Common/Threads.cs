@@ -17,28 +17,12 @@ namespace Common
         /// Tasks to be processed
         /// </summary>
         public static List<Task> Tasks = new List<Task>();
+
+        public static ThreadScheduler Scheduler = new ThreadScheduler();
         /// <summary>
         /// Factory used to create new Tasks which will be stored in Tasks
         /// </summary>
-        public static TaskFactory Factory = new TaskFactory(new ThreadScheduler());
-
-        /// <summary>
-        /// Add new Task to the Tasks queue
-        /// </summary>
-        /// <param name="_task">Task to be added to the queue</param>
-        public static void AddTask(Task _task)
-        {
-            Tasks.Add(_task);
-        }
-
-        /// <summary>
-        /// Execute all tasks inside Tasks and clear Tasks
-        /// </summary>
-        public async static void RunTasks()
-        {
-            await Task.WhenAll(Tasks);
-            Tasks.Clear();
-        }
+        public static TaskFactory Factory = new TaskFactory(Scheduler);
     }
 
     public class ThreadScheduler : TaskScheduler
@@ -55,7 +39,7 @@ namespace Common
         public ThreadScheduler()
         {
             _maxThreads = Globals.MaxThreads;
-            Game.consoleGUI.Instance.Print(string.Format("ThreadScheduler initialized with {0} threads", _maxThreads) , 0);
+            GUI.consoleGUI.Instance.Print(string.Format("ThreadScheduler initialized with {0} threads\n", _maxThreads) , 0);
         }
 
         protected sealed override void QueueTask(Task _task)

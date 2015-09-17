@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace Common.GUI
 {
 	partial class consoleGUI
 	{

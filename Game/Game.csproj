@@ -53,26 +53,41 @@
     <Compile Include="..\src\Common\Globals.cs">
       <Link>Common\Globals.cs</Link>
     </Compile>
+    <Compile Include="..\src\Common\GUI\consoleGUI.cs">
+      <Link>Common\GUI\consoleGUI.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\Common\GUI\consoleGUI.designer.cs">
+      <Link>Common\GUI\consoleGUI.designer.cs</Link>
+      <DependentUpon>consoleGUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\Common\GUI\debugGUI.cs">
+      <Link>Common\GUI\debugGUI.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\Common\GUI\debugGUI.designer.cs">
+      <Link>Common\GUI\debugGUI.designer.cs</Link>
+      <DependentUpon>debugGUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\Common\ServerBase.cs">
+      <Link>Common\ServerBase.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\Threads.cs">
       <Link>Common\Threads.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>
     </Compile>
-    <Compile Include="debugGUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="debugGUI.Designer.cs">
-      <DependentUpon>debugGUI.cs</DependentUpon>
+    <Compile Include="..\src\Game\Server.cs">
+      <Link>Game\Server.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="consoleGUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="consoleGUI.Designer.cs">
+    <EmbeddedResource Include="..\src\Common\GUI\consoleGUI.resx">
+      <Link>Common\GUI\consoleGUI.resx</Link>
       <DependentUpon>consoleGUI.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="debugGUI.resx">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\Common\GUI\debugGUI.resx">
+      <Link>Common\GUI\debugGUI.resx</Link>
       <DependentUpon>debugGUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -84,9 +99,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="consoleGUI.resx">
-      <DependentUpon>consoleGUI.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -98,7 +110,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

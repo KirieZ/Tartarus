@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common;
 
 namespace Game
 {
@@ -18,7 +19,8 @@ namespace Game
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new consoleGUI());
+
+			Application.Run(new Common.GUI.consoleGUI(Server.Instance));
 		}
 	}
 }

@@ -5,11 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Threading;
 using System.Threading.Tasks;
-using Common;
+using System.Windows.Forms;
 
-namespace Game
+namespace Common.GUI
 {
 	public partial class consoleGUI : Form
 	{
@@ -18,23 +18,32 @@ namespace Game
         /// </summary>
         public static consoleGUI Instance;
 
-		public consoleGUI()
+		/// <summary>
+		/// Reference to the server which this gui is related to
+		/// </summary>
+		private static ServerBase Server;
+
+		public consoleGUI(ServerBase serverBase)
 		{
 			InitializeComponent();
             Instance = this;
+			Server = serverBase;
 		}
 
-        private void consoleGUI_Load(object sender, EventArgs e)
-        {
-            // Example of adding a task to the thread-pool
-            Threads.AddTask(Threads.Factory.StartNew(() => 
-            {
-                Print(string.Format("Loading commands from {0}", "<place-holder>"), 0);
-                //ConsoleCommands.Load();
-            }));
+		private async void consoleGUI_Load(object sender, EventArgs e)
+		{
+			CancellationTokenSource cts = new CancellationTokenSource();
 
-            // Run all tasks previously added to the Queue
-            Threads.RunTasks();
+			// Use our factory to run a set of tasks. 
+			Task t = Threads.Factory.StartNew(() =>
+			{
+				Server.Load();
+			});
+			Threads.Tasks.Add(t);
+
+			await Task.WhenAll(Threads.Tasks.ToArray());
+			cts.Dispose();
+			Print("\n\nServer Loaded.", 0);
         }
 
         /// <summary>
@@ -64,10 +73,14 @@ namespace Game
             {
                 if (commandInput.Text.Length > 0)
                 {
-                    if (e.KeyCode == Keys.Enter)
-                    {
-                        /*ConsoleCommands.OnInputReceived(commandInput.Text);*/
-                    }
+					if (e.KeyCode == Keys.Enter)
+					{
+						Task t = Threads.Factory.StartNew(() =>
+						{
+							ConsoleCommands.OnInputReceived(commandInput.Text);
+						});
+						Threads.Tasks.Add(t);
+					}
                 }
             }
         }
