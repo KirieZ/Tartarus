@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
 using System;
+using System.Drawing;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,29 +56,39 @@ namespace Common
 			//Console.BackgroundColor = ConsoleColor.Red;
 			//Console.ForegroundColor = ConsoleColor.White;
 
-			consoleGUI.Instance.Print("===============================================================================\r\n");
-			consoleGUI.Instance.Print("=                              Tartarus Emulator                              =\r\n");
-			consoleGUI.Instance.Print("=                   _____          _                                          =\r\n");
-			consoleGUI.Instance.Print("=                  |_   _|        | |                                         =\r\n");
-			consoleGUI.Instance.Print("=                    | | __ _ _ __| |_ __ _ _ __ _   _ ___                    =\r\n");
-			consoleGUI.Instance.Print("=                    | |/ _` | '__| __/ _` | '__| | | / __|                   =\r\n");
-			consoleGUI.Instance.Print("=                    | | (_| | |  | || (_| | |  | |_| \\__ \\                   =\r\n");
-			consoleGUI.Instance.Print("=                    \\_/\\__,_|_|   \\__\\__,_|_|   \\__,_|___/                   =\r\n");
-			consoleGUI.Instance.Print("=                                                                             =\r\n");
-			consoleGUI.Instance.Print("=                                                                             =\r\n");
-			consoleGUI.Instance.Print("===============================================================================\r\n");
+            ConsoleMessage newMessage = new ConsoleMessage();
+
+            newMessage.TextBlocks = new string[]
+            {
+                "===============================================================================\n",
+                "=                              Tartarus Emulator                              =\n",
+                "=                   _____          _                                          =\n",
+                "=                  |_   _|        | |                                         =\n",
+                "=                    | | __ _ _ __| |_ __ _ _ __ _   _ ___                    =\n",
+                "=                    | |/ _` | '__| __/ _` | '__| | | / __|                   =\n",
+                "=                    | | (_| | |  | || (_| | |  | |_| \\__ \\                 =\n",
+                "=                    \\_/\\__,_|_|   \\__\\__,_|_|   \\__,_|___/              =\n",
+                "=                                                                             =\n",
+                "=                                                                             =\n",
+                "===============================================================================\n"
+            };
+
+            newMessage.BackColor = Color.Green;
+            newMessage.ForeColor = Color.White;
+
+            consoleGUI.Instance.Print(newMessage);
 
 			//Console.ResetColor();
 		}
 
-		/// <summary>
-		/// Writes a message to the console, using prefixes.
-		/// Other writing methods use this one as base.
-		/// </summary>
-		/// <param name="type">the type of output</param>
-		/// <param name="text">the message</param>
-		/// <param name="replacers">text replacers</param>
-		public static void Write(MsgType type, string text, params object[] replacers)
+        /// <summary>
+        /// Writes a message to the console, using prefixes.
+        /// Other writing methods use this one as base.
+        /// </summary>
+        /// <param name="type">the type of output</param>
+        /// <param name="text">the message</param>
+        /// <param name="replacers">text replacers</param>
+        public static void Write(MsgType type, string text, params object[] replacers)
 		{
 			// If this type of message must be silenced
 			if (noDisplay.HasFlag(type))
@@ -87,51 +99,49 @@ namespace Common
 				switch (type)
 				{
 					case MsgType.Status:
-						//Console.ForegroundColor = ConsoleColor.Green;
-						consoleGUI.Instance.Print("[Status] ");
-						//Console.ResetColor();
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Status] "}, ForeColor = Color.Green, Bold = true});
 						break;
 
 					case MsgType.SQL:
 						//Console.ForegroundColor = ConsoleColor.Magenta;
-						consoleGUI.Instance.Print("[SQL] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[SQL] "}, ForeColor = Color.Magenta, Bold = true});
 						//Console.ResetColor();
 						break;
 
 					case MsgType.Info:
 						//Console.ForegroundColor = ConsoleColor.White;
-						consoleGUI.Instance.Print("[Info] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Info] "}, Bold = true});
 						//Console.ResetColor();
 						break;
 
 					case MsgType.Notice:
 						//Console.ForegroundColor = ConsoleColor.White;
-						consoleGUI.Instance.Print("[Notice] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Notice] "}, Bold = true});
 						//Console.ResetColor();
 						break;
 
 					case MsgType.Warning:
 						//Console.ForegroundColor = ConsoleColor.Yellow;
-						consoleGUI.Instance.Print("[Warning] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Warning] "}, ForeColor = Color.Yellow, Bold = true});
 						//Console.ResetColor();
 						break;
 
 					case MsgType.Debug:
 						//Console.ForegroundColor = ConsoleColor.Cyan;
-						debugGUI.Instance.MessagePrint("[Debug] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Debug] "}, ForeColor = Color.Yellow, Bold = true});
 						debugGUI.Instance.MessagePrint(string.Format(text, replacers));
 						//Console.ResetColor();
 						break;
 
 					case MsgType.Error:
 						//Console.ForegroundColor = ConsoleColor.Red;
-						consoleGUI.Instance.Print("[Error] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Error] "}, ForeColor = Color.Red, Bold = true});
 						//Console.ResetColor();
 						break;
 
 					case MsgType.FatalError:
 						//Console.ForegroundColor = ConsoleColor.Red;
-						consoleGUI.Instance.Print("[Fatal Error] ");
+						consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] {"[Fatal Error] "}, ForeColor = Color.Red, Bold = true});
 						//Console.ResetColor();
 						break;
 
@@ -139,31 +149,15 @@ namespace Common
 						// When doing a packet debug, it must not have replacers
 						// because packet data might have '{' which will crash
 						// the server
-						consoleGUI.Instance.Print(text);
+                        consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] { text } });
 						return;
 
 					default:
-						consoleGUI.Instance.Print("In ConsoleUtils -> Write(): Invalid type flag received\n");
+                        consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] { "In ConsoleUtils -> Write(): Invalid type flag received" } });
 						break;
 				}
-				consoleGUI.Instance.Print(string.Format(text, replacers));
+                consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] { string.Format(text, replacers) } });
 			}
-		}
-
-		/// <summary>
-		/// Rewrites the content of a line with a new one.
-		/// </summary>
-		/// <param name="type">the type of the new message</param>
-		/// <param name="text">the message</param>
-		/// <param name="replacers">text replacers</param>
-		public static void ReWriteLine(MsgType type, string text, params object[] replacers)
-		{
-			int currentLineCursor = Console.CursorTop;
-			Console.SetCursorPosition(0, Console.CursorTop);
-			for (int i = 0; i < Console.WindowWidth; i++)
-				consoleGUI.Instance.Print(" ");
-			Console.SetCursorPosition(0, currentLineCursor);
-			Write(type, text);
 		}
 
 		/// <summary>
@@ -343,4 +337,70 @@ namespace Common
 
 		#endregion
 	}
+
+    /// <summary>
+    /// Container class for console messages
+    /// </summary>
+    public class ConsoleMessage
+    {
+        private Color _backColor { get; set; }
+        private Color _foreColor { get; set; }
+        private bool _bold { get; set; }
+        private bool _italic { get; set; }
+        private bool _insertNewLine { get; set; }
+        private int _newLineCount { get; set; }
+
+        /// <summary>
+        /// Text to be displayed
+        /// </summary>
+        public string[] TextBlocks { get; set; }
+        /// <summary>
+        /// Color of the background of the text to be displayed
+        /// </summary>
+        public Color BackColor 
+        { 
+            get { if (_backColor == null) { return Color.Black; } else { return _backColor; } }
+            set { _backColor = value; }
+        }
+        /// <summary>
+        /// Color of the text to be displayed
+        /// </summary>
+        public Color ForeColor
+        { 
+            get { if (_foreColor == null) { return Color.White; } else { return _foreColor; } }
+            set { _foreColor = value; }
+        }
+        /// <summary>
+        /// Determines if displayed text is bold
+        /// </summary>
+        public bool Bold
+        {
+            get { return _bold; }
+            set { _bold = value; }
+        }
+        /// <summary>
+        /// Determines if the displayed text is italic
+        /// </summary>
+        public bool Italic
+        {
+            get { return _italic; }
+            set { _italic = value; }
+        }
+        /// <summary>
+        /// Determines if new lines should be appended to the final message
+        /// </summary>
+        public bool InsertNewLine
+        {
+            get { return _insertNewLine; }
+            set { _insertNewLine = value; }
+        }
+        /// <summary>
+        /// Determines how many new lines should be appended to the final message
+        /// </summary>
+        public int NewLineCount
+        {
+            get { return _newLineCount; }
+            set { _newLineCount = value; }
+        }
+    }
 }

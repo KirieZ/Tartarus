@@ -36,10 +36,10 @@ namespace Common
 
         int _delegatesRunning = 0;
 
+        // TODO : Determine the MaxThreads by cpu cores * 2
         public ThreadScheduler()
         {
             _maxThreads = Globals.MaxThreads;
-            GUI.consoleGUI.Instance.Print(string.Format("ThreadScheduler initialized with {0} threads\n", _maxThreads) , 0);
         }
 
         protected sealed override void QueueTask(Task _task)
