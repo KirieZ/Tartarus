@@ -65,7 +65,9 @@
 			// 
 			// messageConsole
 			// 
+			this.messageConsole.BackColor = System.Drawing.Color.Black;
 			this.messageConsole.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.messageConsole.ForeColor = System.Drawing.Color.White;
 			this.messageConsole.Location = new System.Drawing.Point(3, 3);
 			this.messageConsole.Name = "messageConsole";
 			this.messageConsole.ReadOnly = true;

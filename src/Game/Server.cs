@@ -23,9 +23,9 @@ namespace Game
 		{
 			ConsoleUtils.ShowHeader();
 
-			ConsoleUtils.ShowStatus("Loading Console Commands... \n");
+			ConsoleUtils.ShowStatus("Loading Console Commands...");
 			ConsoleCommands.Load(GetConsoleCommands());
-			ConsoleUtils.ShowStatus("Console Commands Loaded\n");
+			ConsoleUtils.ShowStatus("Console Commands Loaded");
 		}
 
 		/// <summary>
@@ -65,7 +65,21 @@ namespace Game
 
 			cmdList.Add("Windows.ShowDebug", new ConsoleCommands.Command("", ConsoleHelper.Windows_ShowDebug));
 
+			cmdList.Add("Test", new ConsoleCommands.Command("s", Test));
+
 			return cmdList;
+		}
+
+		private static void Test(object[] args)
+		{
+			ConsoleUtils.ShowDebug("Test");
+			ConsoleUtils.ShowError("Test");
+			ConsoleUtils.ShowFatalError("Test");
+			ConsoleUtils.ShowInfo("Test");
+			ConsoleUtils.ShowNotice("Test");
+			ConsoleUtils.ShowSQL("Test");
+			ConsoleUtils.ShowStatus("Test");
+			ConsoleUtils.ShowWarning("Test");
 		}
 	}
 }

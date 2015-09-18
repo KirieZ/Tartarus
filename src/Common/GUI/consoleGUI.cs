@@ -43,20 +43,81 @@ namespace Common.GUI
 
 			await Task.WhenAll(Threads.Tasks.ToArray());
 			cts.Dispose();
-			Print("\n\nServer Loaded.\n", 0);
+            Print(new ConsoleMessage { TextBlocks = new string[1] { "Server Loaded!" }, ForeColor = Color.Green, BackColor = Color.Black, InsertNewLine = true });
         }
 
         /// <summary>
-        /// Prints text to the console
+        /// Print a single message to the console
         /// </summary>
-        /// <param name="text">string to be printed</param>
-        /// <param name="type">type of message being printed</param>
-        /// <param name="color">color of message being printed</param>
-        /// <TODO>implement styling with 'type'</TODO> 
-        internal void Print(string text, int type=0)
+        /// <param name="message">Message class containing message info</param>
+        internal void Print(ConsoleMessage message)
         {
-            //this.Invoke(new MethodInvoker(delegate { console.AppendText(string.Concat(text, Environment.NewLine)); }));
-			this.Invoke(new MethodInvoker(delegate { console.AppendText(text); }));
+            string assembledText = string.Empty;
+
+            this.Invoke(new MethodInvoker(delegate
+            {
+                if (message.TextBlocks.Length > 0)
+                {
+                    for (int i = 0; i < message.TextBlocks.Length; i++)
+                    {
+                        assembledText += message.TextBlocks[i];
+                    }
+
+                    console.Select(console.Text.Length, 0);
+                    console.SelectionBackColor = message.BackColor;
+                    console.SelectionColor = message.ForeColor;
+                    if (message.Bold) { console.SelectionFont = new Font(console.Font, FontStyle.Bold); }
+                    else if (message.Italic) { console.SelectionFont = new Font(console.Font, FontStyle.Italic); }
+					else { console.SelectionFont = new Font(console.Font, FontStyle.Regular); }
+                    if (message.InsertNewLine)
+                    {
+                        for (int i = 0; i < message.NewLineCount; i++)
+                        {
+                            assembledText += Environment.NewLine;
+                        }
+                    }
+                    console.AppendText(assembledText);
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Prints a collection of messages to the console
+        /// </summary>
+        /// <param name="messages">Messages to be printed</param>
+        internal void Print(List<ConsoleMessage> messages)
+        {
+            foreach (ConsoleMessage message in messages)
+            {
+                this.Invoke(new MethodInvoker(delegate
+                {
+                    string assembledText = string.Empty;
+
+                    if (message.TextBlocks.Length > 0)
+                    {
+                        for (int i = 0; i < message.TextBlocks.Length; i++)
+                        {
+                            assembledText += message.TextBlocks[i];
+                        }
+
+                        console.Select(console.Text.Length, 0);
+                        console.SelectionBackColor = message.BackColor;
+                        console.SelectionColor = message.ForeColor;
+                        if (message.Bold) { console.SelectionFont = new Font(console.Font, FontStyle.Bold); }
+						else if (message.Italic) { console.SelectionFont = new Font(console.Font, FontStyle.Italic); }
+						else { console.SelectionFont = new Font(console.Font, FontStyle.Regular); }
+                        if (message.InsertNewLine)
+                        {
+                            for (int i = 0; i < message.NewLineCount; i++)
+                            {
+                                assembledText += Environment.NewLine;
+                            }
+                        }
+                        console.AppendText(assembledText);
+                    }
+                }));
+ 
+            }
         }
 
         /// <summary>

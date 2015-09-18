@@ -24,10 +24,78 @@ namespace Common.GUI
         }
 
         /// <summary>
-        /// Prints text to the messageConsole
-        /// </summary>
-        /// <param name="text">string to be printed</param>
-		public void MessagePrint(string text) { this.Invoke(new MethodInvoker(delegate { messageConsole.AppendText(string.Concat(text, Environment.NewLine)); })); }
+		/// Print a single message to the console
+		/// </summary>
+		/// <param name="message">Message class containing message info</param>
+		internal void MessagePrint(ConsoleMessage message)
+		{
+			string assembledText = string.Empty;
+
+			this.Invoke(new MethodInvoker(delegate
+			{
+				if (message.TextBlocks.Length > 0)
+				{
+					for (int i = 0; i < message.TextBlocks.Length; i++)
+					{
+						assembledText += message.TextBlocks[i];
+					}
+
+					messageConsole.Select(messageConsole.Text.Length, 0);
+					messageConsole.SelectionBackColor = message.BackColor;
+					messageConsole.SelectionColor = message.ForeColor;
+					if (message.Bold) { messageConsole.SelectionFont = new Font(messageConsole.Font, FontStyle.Bold); }
+					else if (message.Italic) { messageConsole.SelectionFont = new Font(messageConsole.Font, FontStyle.Italic); }
+					else { messageConsole.SelectionFont = new Font(messageConsole.Font, FontStyle.Regular); }
+					if (message.InsertNewLine)
+					{
+						for (int i = 0; i < message.NewLineCount; i++)
+						{
+							assembledText += Environment.NewLine;
+						}
+					}
+					messageConsole.AppendText(assembledText);
+				}
+			}));
+		}
+
+		/// <summary>
+		/// Prints a collection of messages to the console
+		/// </summary>
+		/// <param name="messages">Messages to be printed</param>
+		internal void MessagePrint(List<ConsoleMessage> messages)
+		{
+			foreach (ConsoleMessage message in messages)
+			{
+				this.Invoke(new MethodInvoker(delegate
+				{
+					string assembledText = string.Empty;
+
+					if (message.TextBlocks.Length > 0)
+					{
+						for (int i = 0; i < message.TextBlocks.Length; i++)
+						{
+							assembledText += message.TextBlocks[i];
+						}
+
+						messageConsole.Select(messageConsole.Text.Length, 0);
+						messageConsole.SelectionBackColor = message.BackColor;
+						messageConsole.SelectionColor = message.ForeColor;
+						if (message.Bold) { messageConsole.SelectionFont = new Font(messageConsole.Font, FontStyle.Bold); }
+						else if (message.Italic) { messageConsole.SelectionFont = new Font(messageConsole.Font, FontStyle.Italic); }
+						else { messageConsole.SelectionFont = new Font(messageConsole.Font, FontStyle.Regular); }
+						if (message.InsertNewLine)
+						{
+							for (int i = 0; i < message.NewLineCount; i++)
+							{
+								assembledText += Environment.NewLine;
+							}
+						}
+						messageConsole.AppendText(assembledText);
+					}
+				}));
+
+			}
+		}
 
         /// <summary>
         /// Clears all messages in the messageConsole
