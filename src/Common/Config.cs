@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Common
 {
@@ -29,28 +30,50 @@ namespace Common
 		public bool Read(string filename)
 		{
 			if (!File.Exists(filename)) {
-				ConsoleUtils.ShowError("Config file note found '{0}'... Skipping...\n", filename);
+				ConsoleUtils.ShowError("Config file not found at '{0}'. Skipping...\n", filename);
 				return false;
 			}
-
+			
 			try
 			{
-				string[] confs = File.ReadAllLines(filename);
+				string file = File.ReadAllText(filename);
 
-				for (int i = 0; i < confs.Length; i++)
-				{
-					confs[i] = confs[i].TrimStart(' ');
-					if (confs[i].StartsWith("//")) continue;
-					else if (confs[i].Trim(' ') == "") continue;
+				string blockComments = @"/\*(.*?)\*/";
+				string lineComments = @"//(.*?)\r?\n";
+				string strings = @"""((\\[^\n]|[^""\n])*)""";
+				string verbatimStrings = @"@(""[^""]*"")+";
 
-					string[] confInfo = confs[i].Split(new char[] {':'}, 2);
-					if (Data.ContainsKey(confInfo[0]))
+				// Remove comments
+				file = Regex.Replace(file,
+					blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
+					me =>
 					{
-						Data[confInfo[0]] = confInfo[1].TrimEnd(' ').TrimStart(' ');
+						if (me.Value.StartsWith("/*") || me.Value.StartsWith("//"))
+							return me.Value.StartsWith("//") ? Environment.NewLine : "";
+						// Keep the literal strings
+						return me.Value;
+					},
+					RegexOptions.Singleline
+				);
+
+				// Get configs
+				MatchCollection confs = Regex.Matches(file, "(.*?):(.*)", RegexOptions.Multiline);
+
+				for (int i = 0; i < confs.Count; i++)
+				{
+					string confName = confs[i].Groups[1].Value.Trim(' ');
+					string confValue = confs[i].Groups[2].Value.Trim(' ').Trim('"');
+
+					if (confName.Equals("import"))
+					{ // import keyword - imports another config file
+						Read(confValue);
 					}
 					else
 					{
-						Data.Add(confInfo[0], confInfo[1].TrimEnd(' ').TrimStart(' '));
+						if (Data.ContainsKey(confName)) // Repeated key, overwrite
+							Data[confName] = confValue;
+						else // New key, add
+							Data.Add(confName, confValue);
 					}
 				}
 			}
