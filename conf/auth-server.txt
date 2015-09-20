@@ -1,0 +1,27 @@
+// The address where server is listening for connections
+server_ip: 127.0.0.1
+
+// The port where server is listening for client connections
+server_port: 8841
+
+// Show login debug?
+login_debug: 1
+
+// Reduce console output by omitting some types
+// of messages. You can sum values to disable more
+// than one. (Default: 0 - Show everything)
+//1: Info
+//2: Status
+//4: Notice
+//8: Warning
+//16: Error
+//32: Debug
+//64: SQL
+//128: FatalError
+console_silent: 0
+
+// The port where server listens for Game Servers
+gameserver_port: 4444
+
+// The key for a game server to connect to the auth-server
+acceptor_key: "secret"

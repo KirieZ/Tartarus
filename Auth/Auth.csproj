@@ -50,6 +50,9 @@
     <Compile Include="..\src\Auth\Server.cs">
       <Link>Auth\Server.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\Settings.cs">
+      <Link>Auth\Settings.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\Config.cs">
       <Link>Common\Config.cs</Link>
     </Compile>
