@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common;
 
 namespace Auth
 {
@@ -18,7 +19,7 @@ namespace Auth
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new UI());
+			Application.Run(new Common.GUI.consoleGUI(new Server()));
 		}
 	}
 }
