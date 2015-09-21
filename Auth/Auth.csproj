@@ -44,6 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\src\Auth\ClientManager.cs">
+      <Link>Auth\ClientManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\GameManager.cs">
+      <Link>Auth\GameManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\GameServer.cs">
+      <Link>Auth\GameServer.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\Program.cs">
       <Link>Auth\Program.cs</Link>
     </Compile>
@@ -81,11 +90,17 @@
       <Link>Common\GUI\debugGUI.designer.cs</Link>
       <DependentUpon>debugGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\Common\PacketStream.cs">
+      <Link>Common\PacketStream.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\ServerBase.cs">
       <Link>Common\ServerBase.cs</Link>
     </Compile>
     <Compile Include="..\src\Common\Threads.cs">
       <Link>Common\Threads.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\Utilities\ByteUtils.cs">
+      <Link>Common\Utilities\ByteUtils.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="..\src\Common\GUI\consoleGUI.resx">
