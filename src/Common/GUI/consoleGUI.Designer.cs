@@ -40,7 +40,7 @@
             this.console.Location = new System.Drawing.Point(12, 12);
             this.console.Name = "console";
             this.console.ReadOnly = true;
-            this.console.Size = new System.Drawing.Size(707, 412);
+            this.console.Size = new System.Drawing.Size(560, 412);
             this.console.TabIndex = 0;
             this.console.Text = "";
             // 
@@ -48,14 +48,14 @@
             // 
             this.commandInput.Location = new System.Drawing.Point(12, 430);
             this.commandInput.Name = "commandInput";
-            this.commandInput.Size = new System.Drawing.Size(707, 20);
+            this.commandInput.Size = new System.Drawing.Size(560, 20);
             this.commandInput.TabIndex = 1;
             // 
             // consoleGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(731, 464);
+            this.ClientSize = new System.Drawing.Size(584, 464);
             this.Controls.Add(this.commandInput);
             this.Controls.Add(this.console);
             this.KeyPreview = true;

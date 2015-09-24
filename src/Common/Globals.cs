@@ -10,11 +10,6 @@ namespace Common
 {
 	public static class Globals
 	{
-        /// <summary>
-        /// Maximum amount of threads that can be running at one time
-        /// </summary>
-        public const int MaxThreads = 6;
-
 		//===== Internal
 		// Packet Header Length (Size + Id + 1 byte)
 		public const int HeaderLength = 7;

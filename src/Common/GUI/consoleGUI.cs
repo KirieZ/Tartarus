@@ -32,18 +32,9 @@ namespace Common.GUI
 
 		private async void consoleGUI_Load(object sender, EventArgs e)
 		{
-			CancellationTokenSource cts = new CancellationTokenSource();
-
-			// Use our factory to run a set of tasks. 
-			Task t = Threads.Factory.StartNew(() =>
-			{
-				Server.Load();
-			});
-			Threads.Tasks.Add(t);
-
-			await Task.WhenAll(Threads.Tasks.ToArray());
-			cts.Dispose();
-            Print(new ConsoleMessage { TextBlocks = new string[1] { "Server Loaded!" }, ForeColor = Color.Green, BackColor = Color.Black, InsertNewLine = true });
+            await Task.Run(() => { Server.Load(); });
+            ConsoleUtils.ShowStatus("Server load complete.");
+            commandInput.Focus();
         }
 
         /// <summary>
@@ -126,6 +117,8 @@ namespace Common.GUI
         /// <TODO>Call this method from ConsoleCommands</TODO>
         internal void ConsoleClear() { this.Invoke(new MethodInvoker(delegate { console.Clear(); })); }
 
+        internal void InputClear() { this.Invoke(new MethodInvoker(delegate { commandInput.Clear(); })); }
+
         /// <summary>
         /// Occurs when a key is pressed on the consoleGUI
         /// </summary>
@@ -137,11 +130,7 @@ namespace Common.GUI
                 {
 					if (e.KeyCode == Keys.Enter)
 					{
-						Task t = Threads.Factory.StartNew(() =>
-						{
-							ConsoleCommands.OnInputReceived(commandInput.Text);
-						});
-						Threads.Tasks.Add(t);
+                        Task.Factory.StartNew(() => { ConsoleCommands.OnInputReceived(commandInput.Text); InputClear(); });
 					}
                 }
             }

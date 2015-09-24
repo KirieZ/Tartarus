@@ -77,8 +77,6 @@ namespace Common
             newMessage.ForeColor = Color.White;
 
             consoleGUI.Instance.Print(newMessage);
-
-			//Console.ResetColor();
 		}
 
         /// <summary>

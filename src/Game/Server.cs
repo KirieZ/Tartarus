@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Common.Database;
 
 namespace Game
 {
@@ -22,10 +23,8 @@ namespace Game
 		public override void Load()
 		{
 			ConsoleUtils.ShowHeader();
-
-			ConsoleUtils.ShowStatus("Loading Console Commands...");
-			ConsoleCommands.Load(GetConsoleCommands());
-			ConsoleUtils.ShowStatus("Console Commands Loaded");
+            ConsoleUtils.ShowStatus("Console Commands Loaded: {0}", ConsoleCommands.Load(GetConsoleCommands()).ToString());
+            Player.Start();
 		}
 
 		/// <summary>
