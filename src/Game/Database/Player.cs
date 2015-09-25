@@ -1,8 +1,9 @@
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 
-namespace Common.Database
+namespace Game.Database
 {
     [Flags]
     public enum JobDepth

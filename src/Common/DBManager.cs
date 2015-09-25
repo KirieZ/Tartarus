@@ -21,7 +21,8 @@ namespace Common
         internal DbProviderFactory dbFactory;
         internal DbCommandBuilder dbBuilder;
         internal string dbParameterMarkerFormat;
-        protected static DBManager instance;
+		
+		void dbProcess() { }
 
         public DBManager(int type, string conString)
         {
@@ -67,21 +68,11 @@ namespace Common
             }
         }
 
-        public void CreateInstance(int type, string conString)
-        {
-            if (instance == null) { instance = new DBManager(type, conString); }
-        }
-
         public DbConnection CreateConnection()
         {
             DbConnection _dbCon = dbFactory.CreateConnection();
             _dbCon.ConnectionString = dbConString;
             return _dbCon;
-        }
-
-        public static DbCommand CreateCommand()
-        {
-            return DBManager.instance.dbFactory.CreateCommand();
         }
 
         #region Garbage Collection (GC)
