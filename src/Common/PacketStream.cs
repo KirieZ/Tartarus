@@ -467,13 +467,30 @@ namespace Common
 		}
 
 		/// <summary>
+		/// Sets the packet length and checksum
+		/// </summary>
+		public void SetHeader()
+		{
+			this.inner.Seek(0, SeekOrigin.Begin);
+			this.inner.Write(BitConverter.GetBytes(inner.ToArray().Length), 0, 4);
+			// Calculates checksum
+			byte[] head = this.ReadBytes(6, 0, true);
+			byte count = 0;
+			for (int i = 0; i < 6; i++)
+			{
+				unchecked { count += head[i]; }
+			}
+			this.inner.Seek(6, SeekOrigin.Begin);
+			this.inner.Write(new byte[] { count }, 0, 1);
+		}
+
+		/// <summary>
 		/// Gets the entire packet data
 		/// </summary>
 		/// <returns></returns>
 		public MemoryStream GetPacket()
 		{
-			this.inner.Seek(0, SeekOrigin.Begin);
-			this.inner.Write(BitConverter.GetBytes(inner.ToArray().Length), 0, 4);
+			this.SetHeader();
 			return this.inner;
 		}
 	}
