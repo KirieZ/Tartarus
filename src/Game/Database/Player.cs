@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
 
 namespace Common.Database
 {
@@ -31,7 +30,7 @@ namespace Common.Database
 	public partial class Player
 	{
         static int sqlConType = 0;  //TODO : Load from configuration file
-        static string sqlConString = "Server=127.0.0.1;Database=62_arcadia;Trusted_Connection=True;Connection Timeout=5;"; //TODO : Load from configuration file
+        static string sqlConString = "Server=127.0.0.1;Database=62_arcadia;UID=sa;PWD=shadows2501;Connection Timeout=5;"; //TODO : Load from configuration file
 
         /// <summary>
         /// Table storing EXP-TNL (To-Next-Level) values
@@ -64,65 +63,46 @@ namespace Common.Database
             List<int> jp2t = new List<int>();
             List<int> jp3t = new List<int>();
 
-
             using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
             {
-                object returnObj = dbManager.ExecuteReader("SELECT * FROM dbo.LevelResource");
-                switch (sqlConType)
+                using (DbConnection dbCon = dbManager.CreateConnection())
                 {
-                    case 0:
-                        using (SqlDataReader reader = (SqlDataReader)returnObj)
+                    using (DbCommand dbCmd = dbCon.CreateCommand())
+                    {
+                        dbCmd.CommandText = "SELECT * FROM dbo.LevelResource";
+
+                        try
                         {
-                            while (reader.Read())
+                            dbCon.Open();
+
+                            using (DbDataReader reader = dbCmd.ExecuteReader())
                             {
-                                int level = (int)reader[0];
+                                while (reader.Read())
+                                {
+                                    int level = (int)reader[0];
 
-                                long exp = (long)reader[1];
-                                int jp0 = (int)reader[2];
-                                int jp1 = (int)reader[3];
-                                int jp2 = (int)reader[4];
-                                int jp3 = (int)reader[5];
+                                    long exp = (long)reader[1];
+                                    int jp0 = (int)reader[2];
+                                    int jp1 = (int)reader[3];
+                                    int jp2 = (int)reader[4];
+                                    int jp3 = (int)reader[5];
 
-                                if (exp > 0)
-                                    expt.Add(exp);
-                                if (jp0 > 0)
-                                    jp0t.Add(jp0);
-                                if (jp1 > 0)
-                                    jp1t.Add(jp1);
-                                if (jp2 > 0)
-                                    jp2t.Add(jp2);
-                                if (jp3 > 0)
-                                    jp3t.Add(jp3);
+                                    if (exp > 0)
+                                        expt.Add(exp);
+                                    if (jp0 > 0)
+                                        jp0t.Add(jp0);
+                                    if (jp1 > 0)
+                                        jp1t.Add(jp1);
+                                    if (jp2 > 0)
+                                        jp2t.Add(jp2);
+                                    if (jp3 > 0)
+                                        jp3t.Add(jp3);
+                                }
                             }
                         }
-                        break;
-
-                    case 1:
-                        using (MySqlDataReader reader = (MySqlDataReader)returnObj)
-                        {
-                            while (reader.Read())
-                            {
-                                int level = (int)reader[0];
-
-                                long exp = (long)reader[1];
-                                int jp0 = (int)reader[2];
-                                int jp1 = (int)reader[3];
-                                int jp2 = (int)reader[4];
-                                int jp3 = (int)reader[5];
-
-                                if (exp > 0)
-                                    expt.Add(exp);
-                                if (jp0 > 0)
-                                    jp0t.Add(jp0);
-                                if (jp1 > 0)
-                                    jp1t.Add(jp1);
-                                if (jp2 > 0)
-                                    jp2t.Add(jp2);
-                                if (jp3 > 0)
-                                    jp3t.Add(jp3);
-                            }
-                        }
-                        break;
+                        catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); return; }
+                        finally { dbCon.Close(); }
+                    }
                 }
 
                 expt.Add(0);
@@ -149,67 +129,28 @@ namespace Common.Database
 
             using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
             {
-                object returnObj = dbManager.ExecuteReader("SELECT * FROM dbo.JobResource");
-                switch (sqlConType)
-                {
-                    case 0:
-                        using (SqlDataReader reader = (SqlDataReader)returnObj)
-                        {
-                            while (reader.Read())
-                            {
-                                JobDBEntry job = new JobDBEntry();
-                                int jobId = (int)reader[0];
-                                job.JobDepth = (JobDepth)(byte)reader[1];
-                                job.StrMult = (float)reader[2];
-                                job.VitMult = (float)reader[3];
-                                job.DexMult = (float)reader[4];
-                                job.AgiMult = (float)reader[5];
-                                job.IntMult = (float)reader[6];
-                                job.WisMult = (float)reader[7];
-                                job.LuckMult = (float)reader[8];
+                //while (reader.Read())
+                //{
+                //    JobDBEntry job = new JobDBEntry();
+                //    int jobId = (int)reader[0];
+                //    job.JobDepth = (JobDepth)(byte)reader[1];
+                //    job.StrMult = (float)reader[2];
+                //    job.VitMult = (float)reader[3];
+                //    job.DexMult = (float)reader[4];
+                //    job.AgiMult = (float)reader[5];
+                //    job.IntMult = (float)reader[6];
+                //    job.WisMult = (float)reader[7];
+                //    job.LuckMult = (float)reader[8];
 
-                                if (JobDB.ContainsKey(jobId))
-                                {
-                                    ConsoleUtils.ShowWarning("Duplicated job ID {0} at dbo.JobResource", jobId);
-                                }
-                                else
-                                {
-                                    JobDB.Add(jobId, job);
-                                }
-                            }
-                        }
-                        break;
-
-                    case 1:
-                        using (MySqlDataReader reader = (MySqlDataReader)returnObj)
-                        {
-                            while (reader.Read())
-                            {
-                                JobDBEntry job = new JobDBEntry();
-                                int jobId = (int)reader[0];
-                                job.JobDepth = (JobDepth)(byte)reader[1];
-                                job.StrMult = (float)reader[2];
-                                job.VitMult = (float)reader[3];
-                                job.DexMult = (float)reader[4];
-                                job.AgiMult = (float)reader[5];
-                                job.IntMult = (float)reader[6];
-                                job.WisMult = (float)reader[7];
-                                job.LuckMult = (float)reader[8];
-
-                                if (JobDB.ContainsKey(jobId))
-                                {
-                                    ConsoleUtils.ShowWarning("Duplicated job ID {0} at dbo.JobResource", jobId);
-                                }
-                                else
-                                {
-                                    JobDB.Add(jobId, job);
-                                }
-                            }
-                        }
-                        break;
-                }
-
-                ConsoleUtils.ShowStatus("Job Table Loaded!");
+                //    if (JobDB.ContainsKey(jobId))
+                //    {
+                //        ConsoleUtils.ShowWarning("Duplicated job ID {0} at dbo.JobResource", jobId);
+                //    }
+                //    else
+                //    {
+                //        JobDB.Add(jobId, job);
+                //    }
+                //}
             }
         }
 
