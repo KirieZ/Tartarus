@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Common;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace Common
 {
@@ -18,160 +17,72 @@ namespace Common
         /// 0 = MSSQL
         /// 1 = MySQL
         /// </summary>
-        readonly int conType = 0;
-        internal SqlConnection mssqlConnection;
-        internal MySqlConnection mysqlConnection;
+        readonly string dbConString;
+        internal DbProviderFactory dbFactory;
+        internal DbCommandBuilder dbBuilder;
+        internal string dbParameterMarkerFormat;
+        protected static DBManager instance;
 
         public DBManager(int type, string conString)
         {
-            conType = type;
-            string consoleMsg = "Initializing Database Instance for";
+            dbConString = conString;
 
             switch (type)
             {
-                case 0: //MSSQL
-                    mssqlConnection = new SqlConnection(conString);
-                    consoleMsg += " MSSQL";
+                case 0:
+                    dbFactory = DbProviderFactories.GetFactory("System.Data.SqlClient");
                     break;
 
-                case 1: //MySQL
-                    mysqlConnection = new MySqlConnection(conString);
-                    consoleMsg += " MySQL";
+                case 1:
+                    dbFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
                     break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("Database type isn't within range.");
             }
 
-            ConsoleUtils.ShowDebug(consoleMsg);
-        }
-
-        /// <summary>
-        /// Opens an SQL Connection of the appropriate type and returns it' status
-        /// </summary>
-        public bool Open
-        {
-            get
+            if (dbFactory != null)
             {
-                try
+                using (DbConnection dbCon = dbFactory.CreateConnection())
                 {
-                    bool conOpen = false;
+                    dbCon.ConnectionString = dbConString;
 
-                    switch (conType)
+                    dbBuilder = dbFactory.CreateCommandBuilder();
+
+                    try
                     {
-                        case 0:
-                            mssqlConnection.Open();
-                            conOpen = mssqlConnection.State == ConnectionState.Open;
-                            break;
+                        dbCon.Open();
+                        using (DataTable tbl = dbCon.GetSchema(DbMetaDataCollectionNames.DataSourceInformation))
+                        {
+                            dbParameterMarkerFormat = tbl.Rows[0][DbMetaDataColumnNames.ParameterMarkerFormat] as string;
+                        }
+                        dbCon.Close();
 
-                        case 1:
-                            mysqlConnection.Open();
-                            conOpen = mysqlConnection.State == ConnectionState.Open;
-                            break;
+                        if (!string.IsNullOrEmpty(dbParameterMarkerFormat)) { dbParameterMarkerFormat = "{0}"; }
+
+                        ConsoleUtils.ShowDebug("DBManager Instance Initialized.");
                     }
-
-                    return conOpen;
+                    catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
                 }
-                catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); return false; }
             }
         }
 
-        #region Execution Methods
-
-        /// <summary>
-        /// Executes a database read operation
-        /// </summary>
-        /// <param name="cmdText">SQL Command Text to be executed</param>
-        /// <returns>First column of first returned row as object</returns>
-        public object ExecuteRead(string cmdText)
+        public void CreateInstance(int type, string conString)
         {
-            if (Open)
-            {
-                try
-                {
-                    switch (conType)
-                    {
-                        case 0:
-                            using (SqlCommand sqlCmd = new SqlCommand(cmdText, mssqlConnection))
-                            {
-                                return sqlCmd.ExecuteScalar();
-                            }
-
-                        case 1:
-                            using (MySqlCommand sqlCmd = new MySqlCommand(cmdText, mysqlConnection))
-                            {
-                                return sqlCmd.ExecuteScalar();
-                            }
-                    }
-                }
-                catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
-            }
-
-            return null;
+            if (instance == null) { instance = new DBManager(type, conString); }
         }
 
-        /// <summary>
-        /// Executes a database reader operation
-        /// </summary>
-        /// <param name="cmdText">SQL Command Text to be executed</param>
-        /// <returns>Populated My/MS SQLDataReader object</returns>
-        public object ExecuteReader(string cmdText)
+        public DbConnection CreateConnection()
         {
-            if (Open)
-            {
-                try
-                {
-                    switch (conType)
-                    {
-                        case 0:
-                            using (SqlCommand sqlCmd = new SqlCommand(cmdText, mssqlConnection))
-                            {
-                                return sqlCmd.ExecuteReader();
-                            }
-
-                        case 1:
-                            using (MySqlCommand sqlCmd = new MySqlCommand(cmdText, mysqlConnection))
-                            {
-                                return sqlCmd.ExecuteReader();
-                            }
-                    }
-                }
-                catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
-            }
-
-            return null;
+            DbConnection _dbCon = dbFactory.CreateConnection();
+            _dbCon.ConnectionString = dbConString;
+            return _dbCon;
         }
 
-        /// <summary>
-        /// Executes a database write operation
-        /// </summary>
-        /// <param name="cmdText">SQL Command Text to be executed</param>
-        /// <returns>Rows written</returns>
-        public int ExecuteWrite(string cmdText)
+        public static DbCommand CreateCommand()
         {
-            if (Open)
-            {
-                try
-                {
-                    switch (conType)
-                    {
-                        case 0:
-                            using (SqlCommand sqlCmd = new SqlCommand(cmdText, mssqlConnection))
-                            {
-                                return sqlCmd.ExecuteNonQuery();
-                            }
-
-                        case 1:
-                            using (MySqlCommand sqlCmd = new MySqlCommand(cmdText, mysqlConnection))
-                            {
-                                return sqlCmd.ExecuteNonQuery();
-                            }
-                    }
-                }
-                catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
-            }
-
-            return 0;
+            return DBManager.instance.dbFactory.CreateCommand();
         }
-
-        #endregion
 
         #region Garbage Collection (GC)
 
@@ -194,8 +105,9 @@ namespace Common
 
 		protected void Dispose(bool disposing)
 		{
-            if (mssqlConnection != null) { mssqlConnection.Dispose(); }
-            if (mysqlConnection != null) { mysqlConnection.Dispose(); }
+            dbFactory = null;
+            dbBuilder = null;
+            dbParameterMarkerFormat = null;
         }
 
         #endregion
