@@ -15,7 +15,7 @@ namespace Common
 		/// <summary>
 		/// Packet ID
 		/// </summary>
-		public short Id { get; private set; }
+		public ushort Id { get; private set; }
 
 		private MemoryStream inner;
 
@@ -32,7 +32,7 @@ namespace Common
 		/// Creates a packet and set its ID
 		/// </summary>
 		/// <param name="PacketId"></param>
-		public PacketStream(short PacketId)
+		public PacketStream(ushort PacketId)
 		{
 			this.inner = new MemoryStream();
 			this.inner.Write(new byte[4], 0, 4);
@@ -151,6 +151,15 @@ namespace Common
 		public override void WriteByte(byte value)
 		{
 			this.inner.WriteByte(value);
+		}
+
+		/// <summary>
+		/// Writes an array of bytes to the packet
+		/// </summary>
+		/// <param name="value"></param>
+		public void WriteBytes(byte[] value)
+		{
+			this.inner.Write(value, 0, value.Length);
 		}
 
 		/// <summary>
@@ -432,14 +441,14 @@ namespace Common
 		/// Gets the packet ID
 		/// </summary>
 		/// <returns></returns>
-		public Int16 GetId()
+		public UInt16 GetId()
 		{
 			if (this.Id > 0) return this.Id;
 
 			inner.Seek(4, SeekOrigin.Begin);
 			byte[] res = new byte[2];
 			inner.Read(res, 0, 2);
-			this.Id = BitConverter.ToInt16(res, 0);
+			this.Id = BitConverter.ToUInt16(res, 0);
 			return this.Id;
 		}
 
@@ -460,7 +469,7 @@ namespace Common
 		/// Sets Packet ID
 		/// </summary>
 		/// <param name="pPacketId"></param>
-		public void SetId(Int16 pPacketId)
+		public void SetId(UInt16 pPacketId)
 		{
 			inner.Seek(4, SeekOrigin.Begin);
 			inner.Write(BitConverter.GetBytes(pPacketId), 0, 2);

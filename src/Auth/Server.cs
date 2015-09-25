@@ -17,6 +17,11 @@ namespace Auth
 		public static readonly Server Instance = new Server();
 
 		/// <summary>
+		/// Stores GameServers connected to this AuthServer
+		/// </summary>
+		public Dictionary<ushort, GameServer> GameServers;
+
+		/// <summary>
 		/// Loads Configs and ConsoleCommands
 		/// </summary>
 		public override void Load()
@@ -63,11 +68,26 @@ namespace Auth
 		{
 			#region Internal StartUp
 			// TODO : DB Test
+			this.GameServers = new Dictionary<ushort, GameServer>();
 			#endregion
 
 			#region Listener StartUp
 
 			#endregion
+		}
+
+		/// <summary>
+		/// Called to register a new GameServer to servers list
+		/// </summary>
+		/// <param name="gs"></param>
+		public void OnRegisterGameServer(ushort index, GameServer gs)
+		{
+			if (this.GameServers.ContainsKey(index))
+			{
+
+				return;
+			}
+
 		}
 	}
 }

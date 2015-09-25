@@ -69,7 +69,7 @@ namespace Auth
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="packet"></param>
-		private void Send(GameServer server, PacketStream packet)
+		public void Send(GameServer server, PacketStream packet)
 		{
 			byte[] data = packet.GetPacket().ToArray();
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using Common.Database;
+using Game.Database;
 
 namespace Game
 {

@@ -47,6 +47,12 @@
     <Compile Include="..\src\Auth\ClientManager.cs">
       <Link>Auth\ClientManager.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\ClientPackets.cs">
+      <Link>Auth\ClientPackets.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\GameClient.cs">
+      <Link>Auth\GameClient.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\GameManager.cs">
       <Link>Auth\GameManager.cs</Link>
     </Compile>
@@ -95,9 +101,6 @@
     </Compile>
     <Compile Include="..\src\Common\ServerBase.cs">
       <Link>Common\ServerBase.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Common\Threads.cs">
-      <Link>Common\Threads.cs</Link>
     </Compile>
     <Compile Include="..\src\Common\Utilities\ByteUtils.cs">
       <Link>Common\Utilities\ByteUtils.cs</Link>
