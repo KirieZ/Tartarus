@@ -33,9 +33,9 @@ namespace Auth
 			Config conf = new Config();
 			bool error = false;
 
-			if (!conf.Read("conf/auth-server.txt"))
+			if (!conf.Read("conf/auth-server.opt"))
 				error = true;
-			if (!conf.Read("conf/inter-server.txt"))
+			if (!conf.Read("conf/inter-server.opt"))
 				error = true;
 
 			if (error)
@@ -80,14 +80,17 @@ namespace Auth
 		/// Called to register a new GameServer to servers list
 		/// </summary>
 		/// <param name="gs"></param>
-		public void OnRegisterGameServer(ushort index, GameServer gs)
+		public void OnRegisterGameServer(ushort index, GameServer gs, string key)
 		{
 			if (this.GameServers.ContainsKey(index))
 			{
-
+				GamePackets.Instance.RegisterResult(gs, 1);
 				return;
 			}
-
+			GameServers.Add(index, gs);
+			GamePackets.Instance.RegisterResult(gs, 0);
+			
+			return;
 		}
 	}
 }

@@ -1,0 +1,46 @@
+// The address where server is listening for connections
+server_ip: 127.0.0.1
+
+// The port where server is listening for connections
+server_port: 6900
+
+// Reduce console output by omitting some types
+// of messages. You can sum values to disable more
+// than one. (Default: 0 - Show Everything)
+//1: Info
+//2: Status
+//4: Notice
+//8: Warning
+//16: Error
+//32: Debug
+//64: SQL
+//128: FatalError
+console_silent: 0
+
+// Maximum concurrent connections
+max_connections: 1000
+
+// Auth-server ip
+auth_ip: 127.0.0.1
+
+// Auth Server Game-server listener port
+auth_port: 4444
+
+// The key to connect to auth-server
+// must have a maximum length of 10 characters
+acceptor_key: "secret"
+
+// Server Index, Name and notice URL
+server_index: 1
+server_name: Tartarus
+notice_url: "http://127.0.0.1/notice.htm"
+
+// Map Size
+map_length_x: 14
+map_length_y: 16
+
+// Do collision checks?
+// This causes extra overload on the server
+// but avoids players cheating with their
+// modified clients
+check_collision: 1

@@ -7,28 +7,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auth
+namespace Game
 {
 	/// <summary>
-	/// Contains Auth-Server settings loaded from config files
+	/// Contains Game-Server settings loaded from config files
 	/// </summary>
 	public static class Settings
 	{
-		// Auth Server Settings
+		// Game Server Settings
 		public static String ServerIP;
-		public static Int16 Port;
+		public static UInt16 Port;
 		public static String AcceptorKey;
-		public static Int16 GameServerPort;
+		public static UInt16 AuthServerPort;
+		private static int MaxConnections;
+		
+		// Server Info
+		private static ushort Index;
+		private static string Name;
+		private static string Notice;
 
 		// Database Settings
 		public static String SqlIp;
-		public static Int16 SqlPort;
+		public static UInt16 SqlPort;
 		public static String SqlDatabase;
 		public static String SqlUsername;
 		public static String SqlPassword;
-
-		// Other Settings
-		public static Boolean LoginDebug;
 
 		/// <summary>
 		/// Types of Settings
@@ -39,6 +42,7 @@ namespace Auth
 			Bool,
 			Byte,
 			Int16,
+			UInt16,
 			Int32
 		}
 
@@ -51,26 +55,29 @@ namespace Auth
 		{
 			// Server Settings
 			ServerIP = (String) ParseSetting(ref settings, DType.String, "server_ip", "127.0.0.1");
-			Port = (Int16)ParseSetting(ref settings, DType.Int16, "server_port", (Int16) 8841);
+			Port = (UInt16)ParseSetting(ref settings, DType.UInt16, "server_port", (UInt16) 6900);
 			AcceptorKey = (String)ParseSetting(ref settings, DType.String, "acceptor_key", "secret");
-			GameServerPort = (Int16)ParseSetting(ref settings, DType.Int16, "gameserver_port", (Int16)4444);
+			AuthServerPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "auth_port", (UInt16)4444);
+			MaxConnections = (Int32)ParseSetting(ref settings, DType.Int32, "max_connections", (Int32)10000);
+
+			// Server Info
+			Index = (UInt16)ParseSetting(ref settings, DType.UInt16, "server_index", (UInt16)1);
+			Name = (String)ParseSetting(ref settings, DType.String, "server_name", "Tartarus");
+			Notice = (String)ParseSetting(ref settings, DType.String, "notice_url", "http://127.0.0.1/notice.htm");
 
 			// Loads default SQL Settings
 			String defaultSqlHost = (String) ParseSetting(ref settings, DType.String, "sql.hostname", "127.0.0.1");
-			Int16 defaultSqlPort = (Int16)ParseSetting(ref settings, DType.Int16, "sql.port", (Int16)3306);
+			UInt16 defaultSqlPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "sql.port", (UInt16)3306);
 			String defaultSqlUser = (String) ParseSetting(ref settings, DType.String, "sql.username", "rappelz");
 			String defaultSqlPass = (String) ParseSetting(ref settings, DType.String, "sql.password", "rappelz");
 			String defaultSqlDb = (String) ParseSetting(ref settings, DType.String, "sql.database", "rappelz");
 
-			// Auth Database Settings
-			SqlIp = (String) ParseSetting(ref settings, DType.String, "sql.auth_hostname", defaultSqlHost, true);
-			SqlPort = (Int16)ParseSetting(ref settings, DType.Int16, "sql.auth_port", defaultSqlPort, true);
-			SqlUsername = (String) ParseSetting(ref settings, DType.String, "sql.auth_username", defaultSqlUser, true);
-			SqlPassword = (String) ParseSetting(ref settings, DType.String, "sql.auth_password", defaultSqlPass, true);
-			SqlDatabase = (String) ParseSetting(ref settings, DType.String, "sql.auth_database", defaultSqlDb, true);
-
-			// Other Settings
-			LoginDebug = (Boolean)ParseSetting(ref settings, DType.Bool, "login_debug", false);
+			// Game Database Settings
+			SqlIp = (String) ParseSetting(ref settings, DType.String, "sql.game_hostname", defaultSqlHost, true);
+			SqlPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "sql.game_port", defaultSqlPort, true);
+			SqlUsername = (String) ParseSetting(ref settings, DType.String, "sql.game_username", defaultSqlUser, true);
+			SqlPassword = (String) ParseSetting(ref settings, DType.String, "sql.game_password", defaultSqlPass, true);
+			SqlDatabase = (String) ParseSetting(ref settings, DType.String, "sql.game_database", defaultSqlDb, true);
 		}
 
 		/// <summary>
@@ -103,6 +110,9 @@ namespace Auth
 
 				case DType.Int16:
 					return GetInt16(settings[name], (short)defaultValue);
+
+				case DType.UInt16:
+					return GetUInt16(settings[name], (ushort)defaultValue);
 
 				case DType.Int32:
 					return GetInt32(settings[name], (int)defaultValue);
@@ -139,6 +149,20 @@ namespace Auth
 		{
 			short val;
 			if (Int16.TryParse(value, out val))
+			{
+				return val;
+			}
+			else
+			{
+				ConsoleUtils.ShowWarning("Couldn't parse value {0}, defaulting to {1}\n", value, defaultVal);
+				return defaultVal;
+			}
+		}
+
+		private static UInt16 GetUInt16(string value, UInt16 defaultVal)
+		{
+			ushort val;
+			if (UInt16.TryParse(value, out val))
 			{
 				return val;
 			}

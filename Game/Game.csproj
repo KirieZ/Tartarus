@@ -91,6 +91,9 @@
     <Compile Include="..\src\Game\Server.cs">
       <Link>Game\Server.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Settings.cs">
+      <Link>Game\Settings.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="..\src\Common\GUI\consoleGUI.resx">
       <Link>Common\GUI\consoleGUI.resx</Link>
