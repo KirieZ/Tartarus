@@ -37,15 +37,14 @@ namespace Common
 			try
 			{
 				string file = File.ReadAllText(filename);
+				file = file.Replace("\r", "");
 
 				string blockComments = @"/\*(.*?)\*/";
 				string lineComments = @"//(.*?)\r?\n";
-				string strings = @"""((\\[^\n]|[^""\n])*)""";
-				string verbatimStrings = @"@(""[^""]*"")+";
 
 				// Remove comments
 				file = Regex.Replace(file,
-					blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
+					blockComments + "|" + lineComments,
 					me =>
 					{
 						if (me.Value.StartsWith("/*") || me.Value.StartsWith("//"))

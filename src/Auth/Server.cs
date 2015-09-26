@@ -58,9 +58,6 @@ namespace Auth
 				else
 					ConsoleUtils.ShowError("Invalid 'console_silent' value. Defaulting to 0...");
 			}
-
-			this.GameServers = new Dictionary<ushort, GameServer>();
-			this.GameServers.Add(1, new GameServer(null) { AdultServer = false, IP = "127.0.0.1", Name = "Tartarus", NoticeUrl = "http://127.0.0.1", Port = 80, UserRatio = 100 });
 			#endregion
 		}
 
@@ -71,10 +68,11 @@ namespace Auth
 		{
 			#region Internal StartUp
 			// TODO : DB Test
-			
+			this.GameServers = new Dictionary<ushort, GameServer>();
 			#endregion
 
 			#region Listener StartUp
+			GameManager.Instance.Start();
 			ClientManager.Instance.Start();
 			#endregion
 		}
@@ -85,12 +83,23 @@ namespace Auth
 		/// <param name="gs"></param>
 		public void OnRegisterGameServer(ushort index, GameServer gs, string key)
 		{
+			ConsoleUtils.ShowInfo("Game Server '{0}' ({1}:{2}; index:{3}) is trying to connect...", gs.Name, gs.IP, gs.Port, index);
+
 			if (this.GameServers.ContainsKey(index))
-			{
+			{ // Is index available?
+				ConsoleUtils.ShowWarning("Failed to add server to server list, duplicated index '{0}'.", index);
 				GamePackets.Instance.RegisterResult(gs, 1);
 				return;
 			}
+			else if (!key.Equals(Settings.AcceptorKey))
+			{ // Is acceptor key valid?
+				ConsoleUtils.ShowWarning("Connection refused, invalid Acceptor Key. (Received: {0}; Expected: {1})", key, Settings.AcceptorKey);
+				GamePackets.Instance.RegisterResult(gs, 2);
+				return;
+			}
+
 			GameServers.Add(index, gs);
+			ConsoleUtils.ShowInfo("Connection with Game Server '{0}' stabilished.", gs.Name);
 			GamePackets.Instance.RegisterResult(gs, 0);
 			
 			return;

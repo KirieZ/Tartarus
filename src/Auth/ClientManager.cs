@@ -192,18 +192,18 @@ namespace Auth
 		/// <param name="ar"></param>
 		private void SendCallback(IAsyncResult ar)
 		{
-			//try
-			//{
+			try
+			{
 				// Retrieve the socket from the state object.
 				GameClient gc = (GameClient)ar.AsyncState;
 
 				// Complete sending the data to the remote device.
 				int bytesSent = gc.ClSocket.EndSend(ar);
-			//}
-			//catch (Exception)
-			//{
-			//	ConsoleUtils.ShowNotice("Failed to send packet to client.");
-			//}
+			}
+			catch (Exception)
+			{
+				ConsoleUtils.ShowNotice("Failed to send packet to client.");
+			}
 		}
 		#endregion
 	}

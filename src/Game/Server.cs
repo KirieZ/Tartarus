@@ -65,7 +65,7 @@ namespace Game
 		/// </summary>
 		public override void Start()
 		{
-			// TODO : 
+			AuthManager.Instance.Start();
 		}
 
 		/// <summary>
@@ -112,6 +112,28 @@ namespace Game
 			ConsoleUtils.ShowSQL("Test");
 			ConsoleUtils.ShowStatus("Test");
 			ConsoleUtils.ShowWarning("Test");
+		}
+
+		/// <summary>
+		/// Called when auth answers to server register
+		/// </summary>
+		/// <param name="result"></param>
+		internal void RegisterResult(ushort result)
+		{
+			switch (result)
+			{
+				case 0: // Success
+					ConsoleUtils.ShowInfo("Connection with Auth-Server stabilished.");
+					break;
+
+				case 1: // Duplicated Index
+					ConsoleUtils.ShowWarning("Could not stabilish connection to Auth-Server, server index is already in use.");
+					break;
+
+				case 2: // Invalid Key
+					ConsoleUtils.ShowWarning("Could not stabilish connection to Auth-Server, invalid acceptor key.");
+					break;
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@ using Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using Game;
 
 namespace Game.Database
 {
@@ -30,8 +31,8 @@ namespace Game.Database
 
 	public partial class Player
 	{
-        static int sqlConType = 0;  //TODO : Load from configuration file
-        static string sqlConString = "Server=127.0.0.1;Database=62_arcadia;UID=sa;PWD=shadows2501;Connection Timeout=5;"; //TODO : Load from configuration file
+		static int sqlConType = Settings.SqlEngine;
+        static string sqlConString = "Server="+Settings.SqlGameIp+";Database="+Settings.SqlGameDatabase+";UID="+Settings.SqlGameUsername+";PWD="+Settings.SqlGamePassword+";Connection Timeout=5;";
 
         /// <summary>
         /// Table storing EXP-TNL (To-Next-Level) values
@@ -70,7 +71,7 @@ namespace Game.Database
                 {
                     using (DbCommand dbCmd = dbCon.CreateCommand())
                     {
-                        dbCmd.CommandText = "SELECT * FROM dbo.LevelResource";
+                        dbCmd.CommandText = "SELECT * FROM LevelResource";
 
                         try
                         {

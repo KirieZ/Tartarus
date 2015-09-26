@@ -10,43 +10,41 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Auth
+namespace Game
 {
 	/// <summary>
 	/// Handles the connection between Auth and Game Servers
 	/// </summary>
-	public class GameManager
+	public class AuthManager
 	{
-		public static readonly GameManager Instance = new GameManager();
+		public static readonly AuthManager Instance = new AuthManager();
 
-		private CancellationToken _CancelToken;
+		private AuthServer Auth;
 
 		/// <summary>
-		/// Starts the game-server listener
+		/// Starts the auth-server listener
 		/// </summary>
 		/// <returns>true on success, false otherwise</returns>
 		public bool Start()
 		{
-			Socket listener = new Socket(SocketType.Stream, ProtocolType.Tcp);
+			Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
 			try
 			{
 				IPAddress ip;
-				if (!IPAddress.TryParse(Settings.ServerIP, out ip))
+				if (!IPAddress.TryParse(Settings.AuthServerIP, out ip))
 				{
 					ConsoleUtils.ShowFatalError("Failed to parse Server IP ({0})", Settings.ServerIP);
 					return false;
 				}
-				listener.Bind(new IPEndPoint(ip, Settings.GameServerPort));
-				listener.Listen(100);
-				listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+				socket.BeginConnect(new IPEndPoint(ip, Settings.AuthServerPort), new AsyncCallback(ConnectCallback), socket);
 			}
 			catch (Exception e)
 			{
 				ConsoleUtils.ShowError(e.Message);
-				ConsoleUtils.ShowError("At GameManager.Start()");
+				ConsoleUtils.ShowError("At AuthManager.Start()");
 
-				listener.Close();
+				socket.Close();
 				return false;
 			}
 
@@ -58,45 +56,41 @@ namespace Auth
 		/// </summary>
 		/// <param name="gs"></param>
 		/// <param name="packetStream"></param>
-		private void PacketReceived(GameServer gameServer, PacketStream packetStream)
+		private void PacketReceived(AuthServer server, PacketStream packetStream)
 		{
-			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from GameServer");
-			GamePackets.Instance.PacketReceived(gameServer, packetStream);
+			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from AuthServer");
+			AuthPackets.Instance.PacketReceived(server, packetStream);
 		}
 
 		/// <summary>
-		/// Sends a packet to a game server
+		/// Sends a packet to an Auth Server
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="packet"></param>
-		public void Send(GameServer server, PacketStream packet)
+		public void Send(PacketStream packet)
 		{
 			byte[] data = packet.GetPacket().ToArray();
 
-			ConsoleUtils.HexDump(data, "Sent to GameServer");
+			ConsoleUtils.HexDump(data, "Sent to AuthServer");
 
-			server.ClSocket.BeginSend(data, 0, data.Length,  SocketFlags.None, new AsyncCallback(SendCallback), server);
+			Auth.ClSocket.BeginSend(data, 0, data.Length,  SocketFlags.None, new AsyncCallback(SendCallback), null);
 		}
 
 		#region Internal
+
 		/// <summary>
-		/// Triggered when a client tries to connect
+		/// Triggered when it connects to Auth
 		/// </summary>
 		/// <param name="ar"></param>
-		private void AcceptCallback(IAsyncResult ar)
+		private void ConnectCallback(IAsyncResult ar)
 		{
-			Socket listener = (Socket)ar.AsyncState;
-			Socket client = listener.EndAccept(ar);
+			Socket socket = (Socket)ar.AsyncState;
+			socket.EndConnect(ar);
 
-			// Starts to accept another connection
-			listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+			Auth = new AuthServer(socket);
+			AuthPackets.Instance.Register();
 
-			GameServer gs = new GameServer(client);
-
-			client.BeginReceive(
-				gs.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
-				new AsyncCallback(ReadCallback), gs
-			);
+			socket.BeginReceive(Auth.Buffer, 0, Globals.MaxBuffer, SocketFlags.None, new AsyncCallback(ReadCallback), null);
 		}
 
 		/// <summary>
@@ -105,11 +99,9 @@ namespace Auth
 		/// <param name="ar"></param>
 		private void ReadCallback(IAsyncResult ar)
 		{
-			GameServer gs = (GameServer)ar.AsyncState;
-
 			try
 			{
-				int bytesRead = gs.ClSocket.EndReceive(ar);
+				int bytesRead = Auth.ClSocket.EndReceive(ar);
 				if (bytesRead > 0)
 				{
 					int curOffset = 0;
@@ -117,45 +109,45 @@ namespace Auth
 
 					do
 					{
-						if (gs.PacketSize == 0)
+						if (Auth.PacketSize == 0)
 						{
-							if (gs.Offset + bytesRead > 3)
+							if (Auth.Offset + bytesRead > 3)
 							{
-								bytesToRead = (4 - gs.Offset);
-								gs.Data.Write(gs.Buffer, curOffset, bytesToRead);
+								bytesToRead = (4 - Auth.Offset);
+								Auth.Data.Write(Auth.Buffer, curOffset, bytesToRead);
 								curOffset += bytesToRead;
-								gs.Offset = bytesToRead;
-								gs.PacketSize = BitConverter.ToInt32(gs.Data.ReadBytes(4, 0, true), 0);
+								Auth.Offset = bytesToRead;
+								Auth.PacketSize = BitConverter.ToInt32(Auth.Data.ReadBytes(4, 0, true), 0);
 							}
 							else
 							{
-								gs.Data.Write(gs.Buffer, 0, bytesRead);
-								gs.Offset += bytesRead;
+								Auth.Data.Write(Auth.Buffer, 0, bytesRead);
+								Auth.Offset += bytesRead;
 								curOffset += bytesRead;
 							}
 						}
 						else
 						{
-							int needBytes = gs.PacketSize - gs.Offset;
+							int needBytes = Auth.PacketSize - Auth.Offset;
 
 							// If there's enough bytes to complete this packet
 							if (needBytes <= (bytesRead - curOffset))
 							{
-								gs.Data.Write(gs.Buffer, curOffset, needBytes);
+								Auth.Data.Write(Auth.Buffer, curOffset, needBytes);
 								curOffset += needBytes;
 								// Packet is done, send to server to be parsed
 								// and continue.
-								PacketReceived(gs, gs.Data);
+								PacketReceived(Auth, Auth.Data);
 								// Do needed clean up to start a new packet
-								gs.Data = new PacketStream();
-								gs.PacketSize = 0;
-								gs.Offset = 0;
+								Auth.Data = new PacketStream();
+								Auth.PacketSize = 0;
+								Auth.Offset = 0;
 							}
 							else
 							{
 								bytesToRead = (bytesRead - curOffset);
-								gs.Data.Write(gs.Buffer, curOffset, bytesToRead);
-								gs.Offset += bytesToRead;
+								Auth.Data.Write(Auth.Buffer, curOffset, bytesToRead);
+								Auth.Offset += bytesToRead;
 								curOffset += bytesToRead;
 							}
 						}
@@ -182,15 +174,12 @@ namespace Auth
 		{
 			try
 			{
-				// Retrieve the socket from the state object.
-				GameServer gs = (GameServer)ar.AsyncState;
-
 				// Complete sending the data to the remote device.
-				int bytesSent = gs.ClSocket.EndSend(ar);
+				int bytesSent = Auth.ClSocket.EndSend(ar);
 			}
 			catch (Exception)
 			{
-				ConsoleUtils.ShowNotice("Failed to send packet to game-server.");
+				ConsoleUtils.ShowNotice("Failed to send packet to auth-server.");
 			}
 		}
 		#endregion

@@ -72,7 +72,7 @@ namespace Auth
 		private void CA_Account(GameClient client, PacketStream stream)
 		{
 			string userId = stream.ReadString(61);
-			byte[] cryptedPass = stream.ReadBytes(8);
+			byte[] cryptedPass = stream.ReadBytes(56);
 
 			GameClient.UserLogin(client, userId, cryptedPass);
 		}

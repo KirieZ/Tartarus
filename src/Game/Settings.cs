@@ -19,19 +19,28 @@ namespace Game
 		public static UInt16 Port;
 		public static String AcceptorKey;
 		public static UInt16 AuthServerPort;
-		private static int MaxConnections;
+		public static String AuthServerIP;
+		public static Int32 MaxConnections;
 		
 		// Server Info
-		private static ushort Index;
-		private static string Name;
-		private static string Notice;
+		public static UInt16 Index;
+		public static String Name;
+		public static String Notice;
 
 		// Database Settings
-		public static String SqlIp;
-		public static UInt16 SqlPort;
-		public static String SqlDatabase;
-		public static String SqlUsername;
-		public static String SqlPassword;
+		public static Int32 SqlEngine;
+
+		public static String SqlGameIp;
+		public static UInt16 SqlGamePort;
+		public static String SqlGameDatabase;
+		public static String SqlGameUsername;
+		public static String SqlGamePassword;
+		
+		public static String SqlUserIp;
+		public static UInt16 SqlUserPort;
+		public static String SqlUserDatabase;
+		public static String SqlUserUsername;
+		public static String SqlUserPassword;
 
 		/// <summary>
 		/// Types of Settings
@@ -54,9 +63,10 @@ namespace Game
 		public static void Set(Dictionary<string, string> settings)
 		{
 			// Server Settings
-			ServerIP = (String) ParseSetting(ref settings, DType.String, "server_ip", "127.0.0.1");
-			Port = (UInt16)ParseSetting(ref settings, DType.UInt16, "server_port", (UInt16) 6900);
+			ServerIP = (String)ParseSetting(ref settings, DType.String, "server_ip", "127.0.0.1");
+			Port = (UInt16)ParseSetting(ref settings, DType.UInt16, "server_port", (UInt16)6900);
 			AcceptorKey = (String)ParseSetting(ref settings, DType.String, "acceptor_key", "secret");
+			AuthServerIP = (String)ParseSetting(ref settings, DType.String, "auth_ip", "127.0.0.1");
 			AuthServerPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "auth_port", (UInt16)4444);
 			MaxConnections = (Int32)ParseSetting(ref settings, DType.Int32, "max_connections", (Int32)10000);
 
@@ -66,18 +76,28 @@ namespace Game
 			Notice = (String)ParseSetting(ref settings, DType.String, "notice_url", "http://127.0.0.1/notice.htm");
 
 			// Loads default SQL Settings
-			String defaultSqlHost = (String) ParseSetting(ref settings, DType.String, "sql.hostname", "127.0.0.1");
+			String defaultSqlHost = (String)ParseSetting(ref settings, DType.String, "sql.hostname", "127.0.0.1");
 			UInt16 defaultSqlPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "sql.port", (UInt16)3306);
-			String defaultSqlUser = (String) ParseSetting(ref settings, DType.String, "sql.username", "rappelz");
-			String defaultSqlPass = (String) ParseSetting(ref settings, DType.String, "sql.password", "rappelz");
-			String defaultSqlDb = (String) ParseSetting(ref settings, DType.String, "sql.database", "rappelz");
+			String defaultSqlUser = (String)ParseSetting(ref settings, DType.String, "sql.username", "rappelz");
+			String defaultSqlPass = (String)ParseSetting(ref settings, DType.String, "sql.password", "rappelz");
+			String defaultSqlDb = (String)ParseSetting(ref settings, DType.String, "sql.database", "rappelz");
+
+			// Database Engine
+			SqlEngine = (Int32)ParseSetting(ref settings, DType.Int32, "sql.engine", 1);
 
 			// Game Database Settings
-			SqlIp = (String) ParseSetting(ref settings, DType.String, "sql.game_hostname", defaultSqlHost, true);
-			SqlPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "sql.game_port", defaultSqlPort, true);
-			SqlUsername = (String) ParseSetting(ref settings, DType.String, "sql.game_username", defaultSqlUser, true);
-			SqlPassword = (String) ParseSetting(ref settings, DType.String, "sql.game_password", defaultSqlPass, true);
-			SqlDatabase = (String) ParseSetting(ref settings, DType.String, "sql.game_database", defaultSqlDb, true);
+			SqlGameIp = (String)ParseSetting(ref settings, DType.String, "sql.game_hostname", defaultSqlHost, true);
+			SqlGamePort = (UInt16)ParseSetting(ref settings, DType.UInt16, "sql.game_port", defaultSqlPort, true);
+			SqlGameUsername = (String)ParseSetting(ref settings, DType.String, "sql.game_username", defaultSqlUser, true);
+			SqlGamePassword = (String)ParseSetting(ref settings, DType.String, "sql.game_password", defaultSqlPass, true);
+			SqlGameDatabase = (String)ParseSetting(ref settings, DType.String, "sql.game_database", defaultSqlDb, true);
+
+			// User Database Settings
+			SqlUserIp = (String)ParseSetting(ref settings, DType.String, "sql.user_hostname", defaultSqlHost, true);
+			SqlUserPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "sql.user_port", defaultSqlPort, true);
+			SqlUserUsername = (String)ParseSetting(ref settings, DType.String, "sql.user_username", defaultSqlUser, true);
+			SqlUserPassword = (String)ParseSetting(ref settings, DType.String, "sql.user_password", defaultSqlPass, true);
+			SqlUserDatabase = (String)ParseSetting(ref settings, DType.String, "sql.user_database", defaultSqlDb, true);
 		}
 
 		/// <summary>
