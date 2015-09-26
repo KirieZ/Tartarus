@@ -68,6 +68,11 @@ namespace Game
 			AuthManager.Instance.Send(stream);
 		}
 
+		/// <summary>
+		/// Register result
+		/// </summary>
+		/// <param name="server"></param>
+		/// <param name="stream"></param>
 		private void AG_Result(AuthServer server, PacketStream stream)
 		{
 			ushort result = stream.ReadUInt16();

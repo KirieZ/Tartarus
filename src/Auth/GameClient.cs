@@ -17,7 +17,7 @@ namespace Auth
 	/// </summary>
 	public class GameClient
 	{
-		static int sqlConType = 1;  //TODO : Load from configuration file
+		static int sqlConType = Settings.SqlEngine;
 		static string sqlConString = "Server="+Settings.SqlIp+";Database="+Settings.SqlDatabase+";UID="+Settings.SqlUsername+";PWD="+Settings.SqlPassword+";Connection Timeout=5;";
 		static XDes Des = new XDes(Globals.DESKey);
 
