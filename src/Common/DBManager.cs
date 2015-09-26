@@ -44,7 +44,7 @@ namespace Common
 
             if (dbFactory != null)
             {
-                using (DbConnection dbCon = dbFactory.CreateConnection())
+                using (DbConnection dbCon = CreateConnection())
                 {
                     dbCon.ConnectionString = dbConString;
 
@@ -75,20 +75,19 @@ namespace Common
             return _dbCon;
         }
 
-		public DbParameter CreateInParameter(DbCommand cmd, string name, DbType type, object value)
-		{
-			DbParameter dbParam = dbFactory.CreateParameter();
-			dbParam.ParameterName = (string)typeof(DbCommandBuilder).InvokeMember("GetParameterName",
-				System.Reflection.BindingFlags.Instance |
-				System.Reflection.BindingFlags.InvokeMethod |
-				System.Reflection.BindingFlags.NonPublic, null, dbBuilder, new object[] {
+        public DbParameter CreateInParameter(DbCommand cmd, string name, DbType type, object value)
+        {
+            DbParameter dbParam = dbFactory.CreateParameter();
+            dbParam.ParameterName = (string)typeof(DbCommandBuilder).InvokeMember("GetParameterName",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.InvokeMethod |
+                System.Reflection.BindingFlags.NonPublic, null, dbBuilder, new object[] {
                 name });
-			dbParam.DbType = type;
-			dbParam.Direction = ParameterDirection.Input;
-			dbParam.Value = value;
-			cmd.Parameters.Add(dbParam);
-			return dbParam;
-		}
+            dbParam.DbType = type;
+            dbParam.Direction = ParameterDirection.Input;
+            cmd.Parameters.Add(dbParam);
+            return dbParam;
+        }
 
         #region Garbage Collection (GC)
 
