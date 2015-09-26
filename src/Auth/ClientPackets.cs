@@ -73,6 +73,8 @@ namespace Auth
 		{
 			string userId = stream.ReadString(61);
 			byte[] cryptedPass = stream.ReadBytes(8);
+
+			GameClient.UserLogin(client, userId, cryptedPass);
 		}
 
 		/// <summary>
@@ -82,7 +84,7 @@ namespace Auth
 		/// <param name="stream"></param>
 		private void CA_ServerList(GameClient client, PacketStream stream)
 		{
-
+			ServerList(client);
 		}
 
 		/// <summary>
@@ -108,9 +110,9 @@ namespace Auth
 
 			stream.WriteUInt16(0x271A); // msg Id
 			stream.WriteUInt16(result); // result
-			if (result == 0) // value
-				stream.WriteInt32(1);
-			else
+			//if (result == 0) // value
+			//	stream.WriteInt32(1);
+			//else
 				stream.WriteInt32(0);
 
 			ClientManager.Instance.Send(client, stream);
@@ -139,12 +141,12 @@ namespace Auth
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="servers"></param>
-		public void ServerList(GameClient client, GameServer[] servers)
+		public void ServerList(GameClient client)
 		{
 			PacketStream stream = new PacketStream(0x2726);
 
 			stream.WriteUInt16(client.LastServerId);
-			stream.WriteUInt16((ushort)servers.Length);
+			stream.WriteUInt16((ushort)Server.Instance.GameServers.Count);
 			foreach(ushort index in Server.Instance.GameServers.Keys)
 			{
 				GameServer gs = Server.Instance.GameServers[index];

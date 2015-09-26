@@ -19,8 +19,6 @@ namespace Auth
 	{
 		public static readonly ClientManager Instance = new ClientManager();
 
-		private CancellationToken _CancelToken;
-
 		/// <summary>
 		/// Starts the game-server listener
 		/// </summary>
@@ -75,7 +73,14 @@ namespace Auth
 
 			ConsoleUtils.HexDump(data, "Sent to Client");
 
-			client.ClSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), client);
+			client.ClSocket.BeginSend(
+				client.OutCipher.DoCipher(ref data),
+				0,
+				data.Length,
+				0,
+				new AsyncCallback(SendCallback),
+				client
+			);
 		}
 
 		#region Internal
@@ -91,11 +96,11 @@ namespace Auth
 			// Starts to accept another connection
 			listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
 
-			GameClient gs = new GameClient(client);
+			GameClient gc = new GameClient(client);
 
 			client.BeginReceive(
-				gs.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
-				new AsyncCallback(ReadCallback), gs
+				gc.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
+				new AsyncCallback(ReadCallback), gc
 			);
 		}
 
@@ -105,61 +110,68 @@ namespace Auth
 		/// <param name="ar"></param>
 		private void ReadCallback(IAsyncResult ar)
 		{
-			GameClient gs = (GameClient)ar.AsyncState;
+			GameClient gc = (GameClient)ar.AsyncState;
 
 			try
 			{
-				int bytesRead = gs.ClSocket.EndReceive(ar);
+				int bytesRead = gc.ClSocket.EndReceive(ar);
 				if (bytesRead > 0)
 				{
 					int curOffset = 0;
 					int bytesToRead = 0;
+					byte[] decode = gc.InCipher.DoCipher(ref gc.Buffer, bytesRead);
 
 					do
 					{
-						if (gs.PacketSize == 0)
+						
+						if (gc.PacketSize == 0)
 						{
-							if (gs.Offset + bytesRead > 3)
+							if (gc.Offset + bytesRead > 3)
 							{
-								bytesToRead = (4 - gs.Offset);
-								gs.Data.Write(gs.Buffer, curOffset, bytesToRead);
+								bytesToRead = (4 - gc.Offset);
+								gc.Data.Write(decode, curOffset, bytesToRead);
 								curOffset += bytesToRead;
-								gs.Offset = bytesToRead;
-								gs.PacketSize = BitConverter.ToInt32(gs.Data.ReadBytes(4, 0, true), 0);
+								gc.Offset = bytesToRead;
+								gc.PacketSize = BitConverter.ToInt32(gc.Data.ReadBytes(4, 0, true), 0);
 							}
 							else
 							{
-								gs.Data.Write(gs.Buffer, 0, bytesRead);
-								gs.Offset += bytesRead;
+								gc.Data.Write(decode, 0, bytesRead);
+								gc.Offset += bytesRead;
 								curOffset += bytesRead;
 							}
 						}
 						else
 						{
-							int needBytes = gs.PacketSize - gs.Offset;
+							int needBytes = gc.PacketSize - gc.Offset;
 
 							// If there's enough bytes to complete this packet
 							if (needBytes <= (bytesRead - curOffset))
 							{
-								gs.Data.Write(gs.Buffer, curOffset, needBytes);
+								gc.Data.Write(decode, curOffset, needBytes);
 								curOffset += needBytes;
 								// Packet is done, send to server to be parsed
 								// and continue.
-								PacketReceived(gs, gs.Data);
+								PacketReceived(gc, gc.Data);
 								// Do needed clean up to start a new packet
-								gs.Data = new PacketStream();
-								gs.PacketSize = 0;
-								gs.Offset = 0;
+								gc.Data = new PacketStream();
+								gc.PacketSize = 0;
+								gc.Offset = 0;
 							}
 							else
 							{
 								bytesToRead = (bytesRead - curOffset);
-								gs.Data.Write(gs.Buffer, curOffset, bytesToRead);
-								gs.Offset += bytesToRead;
+								gc.Data.Write(decode, curOffset, bytesToRead);
+								gc.Offset += bytesToRead;
 								curOffset += bytesToRead;
 							}
 						}
 					} while (bytesRead - 1 > curOffset);
+
+					gc.ClSocket.BeginReceive(
+						gc.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
+						new AsyncCallback(ReadCallback), gc
+					);
 
 				}
 				else
@@ -180,18 +192,18 @@ namespace Auth
 		/// <param name="ar"></param>
 		private void SendCallback(IAsyncResult ar)
 		{
-			try
-			{
+			//try
+			//{
 				// Retrieve the socket from the state object.
-				Socket handler = (Socket)ar.AsyncState;
+				GameClient gc = (GameClient)ar.AsyncState;
 
 				// Complete sending the data to the remote device.
-				int bytesSent = handler.EndSend(ar);
-			}
-			catch (Exception)
-			{
-				ConsoleUtils.ShowNotice("Failed to send packet to client.");
-			}
+				int bytesSent = gc.ClSocket.EndSend(ar);
+			//}
+			//catch (Exception)
+			//{
+			//	ConsoleUtils.ShowNotice("Failed to send packet to client.");
+			//}
 		}
 		#endregion
 	}

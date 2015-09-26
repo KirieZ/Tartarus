@@ -65,7 +65,7 @@ namespace Game
 		/// </summary>
 		public override void Start()
 		{
-			throw new NotImplementedException();
+			// TODO : 
 		}
 
 		/// <summary>

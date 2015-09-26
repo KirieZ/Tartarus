@@ -34,6 +34,8 @@ namespace Common.GUI
 		{
             await Task.Run(() => { Server.Load(); });
             ConsoleUtils.ShowStatus("Server load complete.");
+			await Task.Run(() => { Server.Start(); });
+			ConsoleUtils.ShowStatus("Server started.");
             commandInput.Focus();
         }
 

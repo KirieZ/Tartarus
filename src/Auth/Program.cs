@@ -19,7 +19,7 @@ namespace Auth
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Common.GUI.consoleGUI(new Server()));
+			Application.Run(new Common.GUI.consoleGUI(Server.Instance));
 		}
 	}
 }

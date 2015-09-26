@@ -58,6 +58,9 @@ namespace Auth
 				else
 					ConsoleUtils.ShowError("Invalid 'console_silent' value. Defaulting to 0...");
 			}
+
+			this.GameServers = new Dictionary<ushort, GameServer>();
+			this.GameServers.Add(1, new GameServer(null) { AdultServer = false, IP = "127.0.0.1", Name = "Tartarus", NoticeUrl = "http://127.0.0.1", Port = 80, UserRatio = 100 });
 			#endregion
 		}
 
@@ -68,11 +71,11 @@ namespace Auth
 		{
 			#region Internal StartUp
 			// TODO : DB Test
-			this.GameServers = new Dictionary<ushort, GameServer>();
+			
 			#endregion
 
 			#region Listener StartUp
-
+			ClientManager.Instance.Start();
 			#endregion
 		}
 
