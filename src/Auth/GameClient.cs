@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Common;
 using Common.RC4;
 using System.Data.Common;
-
+using Common.Utilities;
 namespace Auth
 {
 	/// <summary>
@@ -17,8 +17,9 @@ namespace Auth
 	/// </summary>
 	public class GameClient
 	{
-		static int sqlConType = 0;  //TODO : Load from configuration file
+		static int sqlConType = 1;  //TODO : Load from configuration file
 		static string sqlConString = "Server="+Settings.SqlIp+";Database="+Settings.SqlDatabase+";UID="+Settings.SqlUsername+";PWD="+Settings.SqlPassword+";Connection Timeout=5;";
+		static XDes Des = new XDes(Globals.DESKey);
 
 		// Network Data
 		public Socket ClSocket;
@@ -30,6 +31,7 @@ namespace Auth
 		public XRC4Cipher OutCipher;
 
 		// User Info
+		public int AccountId;
 		public byte Permission;
 		public ushort LastServerId;
 
@@ -44,9 +46,46 @@ namespace Auth
 
 		internal static void UserLogin(GameClient client, string userId, byte[] cryptedPass)
 		{
-			// TODO : Login check
+			string userPass = Des.Decrypt(cryptedPass).Trim('\0');
 
-			ClientPackets.Instance.Result(client, 0); // Success
+			client.AccountId = -1;
+
+			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			{
+				using (DbConnection dbCon = dbManager.CreateConnection())
+				{
+					using (DbCommand dbCmd = dbCon.CreateCommand())
+					{
+						dbCmd.CommandText = "SELECT * FROM login WHERE userid = @id AND password = @pass";
+						dbManager.CreateInParameter(dbCmd, "id", System.Data.DbType.String, userId);
+						dbManager.CreateInParameter(dbCmd, "pass", System.Data.DbType.String, userPass);
+						try
+						{
+							dbCon.Open();
+
+							using (DbDataReader reader = dbCmd.ExecuteReader())
+							{
+								while (reader.Read())
+								{
+									client.AccountId = (int)reader[0];
+									client.Permission = (byte)reader[3];
+								}
+							}
+						}
+						catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+						finally { dbCon.Close(); }
+					}
+				}
+			}
+
+			if (client.AccountId >= 0)
+			{
+				ClientPackets.Instance.Result(client, 0); // Success
+			}
+			else
+			{
+				ClientPackets.Instance.Result(client, 1);  // Fail
+			}
 		}
 	}
 }

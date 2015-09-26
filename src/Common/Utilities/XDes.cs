@@ -16,7 +16,7 @@ namespace Common.Utilities
 	{
 		private byte[] Key;
 		
-		public void Init(string pKey)
+		public XDes(string pKey)
 		{
 			Key = new byte[8];
 			byte[] temp = Encoding.ASCII.GetBytes(pKey);
@@ -37,12 +37,12 @@ namespace Common.Utilities
 			DESCryptoServiceProvider desProvider = new DESCryptoServiceProvider();
 			desProvider.Mode = CipherMode.ECB;
 			desProvider.Padding = PaddingMode.Zeros;
-			desProvider.Key = Key;//new byte[8] { 0x4D, 0x45, 0x52, 0x4F, 0x4E, 0x47, 0x0, 0x0 };
+			desProvider.Key = Key;
 			using (MemoryStream stream = new MemoryStream(encryptedData))
 			{
 				using (CryptoStream cs = new CryptoStream(stream, desProvider.CreateDecryptor(), CryptoStreamMode.Read))
 				{
-					using (StreamReader sr = new StreamReader(cs, Encoding.ASCII))
+					using (StreamReader sr = new StreamReader(cs))
 					{
 						return sr.ReadToEnd();
 					}
