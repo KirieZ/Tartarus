@@ -76,8 +76,32 @@
       <Link>Common\GUI\debugGUI.designer.cs</Link>
       <DependentUpon>debugGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\Common\PacketStream.cs">
+      <Link>Common\PacketStream.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\RC4\RC4Cipher.cs">
+      <Link>Common\RC4\RC4Cipher.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\RC4\XRC4Cipher.cs">
+      <Link>Common\RC4\XRC4Cipher.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\ServerBase.cs">
       <Link>Common\ServerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\Utilities\ByteUtils.cs">
+      <Link>Common\Utilities\ByteUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\Utilities\XDes.cs">
+      <Link>Common\Utilities\XDes.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\AuthManager.cs">
+      <Link>Game\AuthManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\AuthPackets.cs">
+      <Link>Game\AuthPackets.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\AuthServer.cs">
+      <Link>Game\AuthServer.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\ConsoleHelper.cs">
       <Link>Game\ConsoleHelper.cs</Link>

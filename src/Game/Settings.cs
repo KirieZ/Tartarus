@@ -19,12 +19,13 @@ namespace Game
 		public static UInt16 Port;
 		public static String AcceptorKey;
 		public static UInt16 AuthServerPort;
+		public static string AuthServerIP;
 		private static int MaxConnections;
 		
 		// Server Info
-		private static ushort Index;
-		private static string Name;
-		private static string Notice;
+		public static ushort Index;
+		public static string Name;
+		public static string Notice;
 
 		// Database Settings
 		public static String SqlIp;
@@ -57,6 +58,7 @@ namespace Game
 			ServerIP = (String) ParseSetting(ref settings, DType.String, "server_ip", "127.0.0.1");
 			Port = (UInt16)ParseSetting(ref settings, DType.UInt16, "server_port", (UInt16) 6900);
 			AcceptorKey = (String)ParseSetting(ref settings, DType.String, "acceptor_key", "secret");
+			AuthServerIP = (String)ParseSetting(ref settings, DType.String, "auth_ip", "127.0.0.1");
 			AuthServerPort = (UInt16)ParseSetting(ref settings, DType.UInt16, "auth_port", (UInt16)4444);
 			MaxConnections = (Int32)ParseSetting(ref settings, DType.Int32, "max_connections", (Int32)10000);
 
