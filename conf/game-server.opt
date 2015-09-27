@@ -44,3 +44,5 @@ map_length_y: 16
 // but avoids players cheating with their
 // modified clients
 check_collision: 1
+
+import: conf/import/game-server.txt

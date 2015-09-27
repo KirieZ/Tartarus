@@ -173,7 +173,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)$(TargetFileName)"
-copy "$(TargetDir)$(TargetFileName).config" "$(SolutionDir)$(TargetFileName).config"</PostBuildEvent>
+copy "$(TargetDir)$(TargetFileName).config" "$(SolutionDir)$(TargetFileName).config"
+
+IF not exist "$(SolutionDir)conf\import\" (
+  mkdir  "$(SolutionDir)conf\import\"
+  xcopy  "$(SolutionDir)conf\import-tmpl" "$(SolutionDir)conf\import" /E
+ )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

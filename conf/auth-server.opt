@@ -26,3 +26,5 @@ gameserver_port: 4444
 // The key for a game server to connect to the auth-server
 // must have a maximum length of 10 characters
 acceptor_key: "secret"
+
+import: conf/import/auth-server.txt

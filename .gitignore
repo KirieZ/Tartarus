@@ -17,3 +17,6 @@
 /Game.exe.config
 /Auth.exe
 /Auth.exe.config
+
+# User Settings
+/conf/import
