@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using System.Security.Cryptography;
 
 namespace Auth
 {
@@ -15,6 +16,8 @@ namespace Auth
 	/// </summary>
 	public class GameServer
 	{
+		private Dictionary<string, GameClient> PendingClients;
+
 		// Network Data
 		public Socket ClSocket { get; set; }
 		public byte[] Buffer { get; set; }
@@ -36,6 +39,50 @@ namespace Auth
 			this.ClSocket = socket;
 			this.Buffer = new byte[Globals.MaxBuffer];
 			this.Data = new PacketStream();
+			this.PendingClients = new Dictionary<string, GameClient>();
+		}
+
+		/// <summary>
+		/// Generates join key and informs the game-server
+		/// </summary>
+		/// <param name="gameClient"></param>
+		internal void UserJoin(GameClient gameClient)
+		{
+			// Generates a join key
+			byte[] key = new byte[8];
+			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+			rng.GetBytes(key);
+
+			gameClient.Key = key;
+			
+			// Stores the client
+			if (this.PendingClients.ContainsKey(gameClient.UserId))
+				this.PendingClients.Add(gameClient.UserId, gameClient);
+			else
+				this.PendingClients[gameClient.UserId] = gameClient;
+
+			// Sends the request to Game-server
+			GamePackets.Instance.UserJoin(this, gameClient.UserId, key);
+		}
+
+		/// <summary>
+		/// Handles the result from game server for the join request
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="result"></param>
+		internal void JoinResult(string userId, ushort result)
+		{
+			GameClient gc = this.PendingClients[userId];
+			this.PendingClients.Remove(userId);
+
+			if (result == 1)
+			{ // Already logged in
+				// TODO : find the result code
+				ClientPackets.Instance.SelectServer(gc, 1, gc.Key, 10);
+				return;
+			}
+
+			ClientPackets.Instance.SelectServer(gc, result, gc.Key, 10);
 		}
 	}
 }

@@ -26,12 +26,12 @@ namespace Auth
 			PacketsDb = new Dictionary<ushort, PacketAction>();
 
 			#region Packets
-			//PacketsDb.Add(0x270F, parse_Unknown);
 			PacketsDb.Add(0x2711, CA_Version);
 			PacketsDb.Add(0x271A, CA_Account);
 			PacketsDb.Add(0x271C, CA_IMBC_Account);
 			PacketsDb.Add(0x2725, CA_ServerList);
 			PacketsDb.Add(0x2727, CA_SelectServer);
+			PacketsDb.Add(0x270F, CA_Unknown);
 			#endregion
 
 		}
@@ -55,6 +55,8 @@ namespace Auth
 		}
 
 		#region Client Packets
+		private void CA_Unknown(GameClient client, PacketStream stream) { }
+
 		/// <summary>
 		/// Client Version
 		/// </summary>
@@ -104,6 +106,7 @@ namespace Auth
 		private void CA_SelectServer(GameClient client, PacketStream stream)
 		{
 			ushort serverId = stream.ReadUInt16();
+			client.JoinServer(serverId);
 		}
 		#endregion
 
@@ -119,10 +122,7 @@ namespace Auth
 
 			stream.WriteUInt16(0x271A); // msg Id
 			stream.WriteUInt16(result); // result
-			//if (result == 0) // value
-			//	stream.WriteInt32(1);
-			//else
-				stream.WriteInt32(0);
+			stream.WriteInt32(0);
 
 			ClientManager.Instance.Send(client, stream);
 		}

@@ -27,7 +27,7 @@ namespace Game
 
 			#region Packets
 			PacketsDb.Add(0x1001, AG_Result);
-
+			PacketsDb.Add(0x1010, AG_UserJoin);
 			#endregion
 
 		}
@@ -78,6 +78,34 @@ namespace Game
 			ushort result = stream.ReadUInt16();
 
 			Server.Instance.RegisterResult(result);
+		}
+
+		/// <summary>
+		/// Informs data to validate an user connection
+		/// </summary>
+		/// <param name="server"></param>
+		/// <param name="stream"></param>
+		private void AG_UserJoin(AuthServer server, PacketStream stream)
+		{
+			string userId = stream.ReadString(61);
+			byte[] key = stream.ReadBytes(8);
+
+			Server.Instance.PendingUser(userId, key);
+		}
+
+		/// <summary>
+		/// Result of join request
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="result"></param>
+		internal void JoinResult(string userId, ushort result)
+		{
+			PacketStream stream = new PacketStream(0x1011);
+
+			stream.WriteString(userId, 61);
+			stream.WriteUInt16(result);
+
+			AuthManager.Instance.Send(stream);
 		}
 	}
 }

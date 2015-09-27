@@ -27,9 +27,22 @@ namespace Auth
 
 			#region Packets
 			PacketsDb.Add(0x1000, GA_Register);
-
+			PacketsDb.Add(0x1011, GA_JoinResult);
 			#endregion
 
+		}
+
+		/// <summary>
+		/// The result of a join inform
+		/// </summary>
+		/// <param name="server"></param>
+		/// <param name="stream"></param>
+		private void GA_JoinResult(GameServer server, PacketStream stream)
+		{
+			string userId = stream.ReadString(61);
+			ushort result = stream.ReadUInt16();
+
+			server.JoinResult(userId, result);
 		}
 
 		/// <summary>
@@ -80,6 +93,22 @@ namespace Auth
 			stream.WriteUInt16(result);
 
 			GameManager.Instance.Send(server, stream);
+		}
+
+		/// <summary>
+		/// Informs that a user wants to join the server
+		/// </summary>
+		/// <param name="gameServer"></param>
+		/// <param name="userId"></param>
+		/// <param name="key"></param>
+		internal void UserJoin(GameServer gameServer, string userId, byte[] key)
+		{
+			PacketStream stream = new PacketStream(0x1010);
+
+			stream.WriteString(userId, 61);
+			stream.WriteBytes(key);
+
+			GameManager.Instance.Send(gameServer, stream);
 		}
 	}
 }

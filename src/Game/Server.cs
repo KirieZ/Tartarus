@@ -21,6 +21,8 @@ namespace Game
 
 		public static readonly Server Instance = new Server();
 
+		private static Dictionary<string, byte[]> PendingUsers;
+
 		/// <summary>
 		/// Loads Configs and ConsoleCommands
 		/// </summary>
@@ -77,6 +79,8 @@ namespace Game
 		/// </summary>
 		public override void Start()
 		{
+			PendingUsers = new Dictionary<string, byte[]>();
+
 			AuthManager.Instance.Start();
 		}
 
@@ -146,6 +150,21 @@ namespace Game
 					ConsoleUtils.ShowWarning("Could not stabilish connection to Auth-Server, invalid acceptor key.");
 					break;
 			}
+		}
+
+		/// <summary>
+		/// Adds a new pending user
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="key"></param>
+		internal void PendingUser(string userId, byte[] key)
+		{
+			if (PendingUsers.ContainsKey(userId))
+				PendingUsers[userId] = key;
+			else
+				PendingUsers.Add(userId, key);
+
+			AuthPackets.Instance.JoinResult(userId, 0);
 		}
 	}
 }

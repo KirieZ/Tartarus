@@ -32,8 +32,11 @@ namespace Auth
 
 		// User Info
 		public int AccountId;
+		public string UserId;
 		public byte Permission;
 		public ushort LastServerId;
+
+		public byte[] Key;
 
 		public GameClient(Socket socket)
 		{
@@ -44,6 +47,12 @@ namespace Auth
 			this.OutCipher = new XRC4Cipher(Globals.RC4Key);
 		}
 
+		#region Login
+		/// <summary>
+		/// Normal Login
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="cryptedPass"></param>
 		internal void Login(string userId, byte[] cryptedPass)
 		{
 			string userPass = Des.Decrypt(cryptedPass).Trim('\0');
@@ -65,6 +74,7 @@ namespace Auth
                             while (reader.Read())
                             {
                                 this.AccountId = (int)reader[0];
+								this.UserId = (string)reader[1];
                                 this.Permission = (byte)reader[3];
                             }
                         }
@@ -84,10 +94,16 @@ namespace Auth
 			}
 		}
 
+		/// <summary>
+		/// IMBC Login
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="otp"></param>
 		internal void IMBCLogin(string userId, string otp)
 		{
 			int accId = 0;
 			byte perm = 0;
+
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
 				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM login WHERE userid = @id"))
@@ -155,6 +171,7 @@ namespace Auth
 					}
 
 					this.AccountId = accId;
+					this.UserId = userId;
 					this.Permission = perm;
 
 					ClientPackets.Instance.Result(this, 0); // Success
@@ -164,6 +181,17 @@ namespace Auth
 
 			ClientPackets.Instance.Result(this, 1);  // Fail
 			return;
+		}
+		#endregion
+
+		internal void JoinServer(ushort index)
+		{
+			if (!Server.Instance.GameServers.ContainsKey(index))
+			{
+				ConsoleUtils.ShowWarning("User '{0}' trying to join invalid server {1}", this.UserId, index);
+				return;
+			}
+			Server.Instance.GameServers[index].UserJoin(this);
 		}
 	}
 }
