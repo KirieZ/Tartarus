@@ -109,8 +109,8 @@
     <Compile Include="..\src\Game\Content\Arcadia.cs">
       <Link>Content\Arcadia.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\Database\Player.cs">
-      <Link>Database\Player.cs</Link>
+    <Compile Include="..\src\Game\Content\Player.cs">
+      <Link>Content\Player.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_AuctionCategory.cs">
       <Link>Database\Structures\DB_AuctionCategory.cs</Link>

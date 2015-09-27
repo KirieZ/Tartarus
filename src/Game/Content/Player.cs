@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using Game;
 
-namespace Game.Database
+namespace Game.Content
 {
     [Flags]
     public enum JobDepth
