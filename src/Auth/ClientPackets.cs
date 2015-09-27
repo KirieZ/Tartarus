@@ -75,7 +75,7 @@ namespace Auth
 			string userId = stream.ReadString(61);
 			byte[] cryptedPass = stream.ReadBytes(56);
 
-			GameClient.UserLogin(client, userId, cryptedPass);
+			client.Login(userId, cryptedPass);
 		}
 
 		private void CA_IMBC_Account(GameClient client, PacketStream stream)
@@ -83,7 +83,7 @@ namespace Auth
 			string userId = stream.ReadString(61);
 			string otp = stream.ReadString(48);
 
-			GameClient.UserIMBCLogin(client, userId, otp);
+			client.IMBCLogin(userId, otp);
 		}
 
 		/// <summary>

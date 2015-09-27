@@ -44,11 +44,11 @@ namespace Auth
 			this.OutCipher = new XRC4Cipher(Globals.RC4Key);
 		}
 
-		internal static void UserLogin(GameClient client, string userId, byte[] cryptedPass)
+		internal void Login(string userId, byte[] cryptedPass)
 		{
 			string userPass = Des.Decrypt(cryptedPass).Trim('\0');
 
-			client.AccountId = -1;
+			this.AccountId = -1;
 
             using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
             {
@@ -64,8 +64,8 @@ namespace Auth
                         {
                             while (reader.Read())
                             {
-                                client.AccountId = (int)reader[0];
-                                client.Permission = (byte)reader[3];
+                                this.AccountId = (int)reader[0];
+                                this.Permission = (byte)reader[3];
                             }
                         }
                     }
@@ -74,17 +74,17 @@ namespace Auth
                 }
             }
 
-			if (client.AccountId >= 0)
+			if (this.AccountId >= 0)
 			{
-				ClientPackets.Instance.Result(client, 0); // Success
+				ClientPackets.Instance.Result(this, 0); // Success
 			}
 			else
 			{
-				ClientPackets.Instance.Result(client, 1);  // Fail
+				ClientPackets.Instance.Result(this, 1);  // Fail
 			}
 		}
 
-		internal static void UserIMBCLogin(GameClient client, string userId, string otp)
+		internal void IMBCLogin(string userId, string otp)
 		{
 			int accId = 0;
 			byte perm = 0;
@@ -154,15 +154,15 @@ namespace Auth
 						}
 					}
 
-					client.AccountId = accId;
-					client.Permission = perm;
+					this.AccountId = accId;
+					this.Permission = perm;
 
-					ClientPackets.Instance.Result(client, 0); // Success
+					ClientPackets.Instance.Result(this, 0); // Success
 					return;
 				}
 			}
-			
-			ClientPackets.Instance.Result(client, 1);  // Fail
+
+			ClientPackets.Instance.Result(this, 1);  // Fail
 			return;
 		}
 	}
