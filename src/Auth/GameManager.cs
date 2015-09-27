@@ -160,7 +160,15 @@ namespace Auth
 							}
 						}
 					} while (bytesRead - 1 > curOffset);
-
+					
+					gs.ClSocket.BeginReceive(
+						gs.Buffer,
+						0,
+						Globals.MaxBuffer,
+						SocketFlags.None,
+						new AsyncCallback(ReadCallback),
+						gs
+					);
 				}
 				else
 				{

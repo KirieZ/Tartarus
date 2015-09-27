@@ -158,6 +158,14 @@ namespace Game
 						}
 					} while (bytesRead - 1 > curOffset);
 
+					Auth.ClSocket.BeginReceive(
+						Auth.Buffer,
+						0,
+						Globals.MaxBuffer,
+						SocketFlags.None,
+						new AsyncCallback(ReadCallback),
+						null
+					);
 				}
 				else
 				{
