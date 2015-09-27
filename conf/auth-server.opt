@@ -27,4 +27,7 @@ gameserver_port: 4444
 // must have a maximum length of 10 characters
 acceptor_key: "secret"
 
+// Open debug window when server starts?
+debug_onstart: 0
+
 import: conf/import/auth-server.txt

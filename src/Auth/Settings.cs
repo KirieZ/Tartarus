@@ -76,6 +76,10 @@ namespace Auth
 
 			// Other Settings
 			LoginDebug = (Boolean)ParseSetting(ref settings, DType.Bool, "login_debug", false);
+
+			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
+			if (DebugOnStart)
+				ConsoleHelper.Windows_ShowDebug(null);
 		}
 
 		/// <summary>

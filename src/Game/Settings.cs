@@ -98,6 +98,10 @@ namespace Game
 			SqlUserUsername = (String)ParseSetting(ref settings, DType.String, "sql.user_username", defaultSqlUser, true);
 			SqlUserPassword = (String)ParseSetting(ref settings, DType.String, "sql.user_password", defaultSqlPass, true);
 			SqlUserDatabase = (String)ParseSetting(ref settings, DType.String, "sql.user_database", defaultSqlDb, true);
+
+			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
+			if (DebugOnStart)
+				ConsoleHelper.Windows_ShowDebug(null);
 		}
 
 		/// <summary>

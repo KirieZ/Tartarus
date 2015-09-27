@@ -45,4 +45,7 @@ map_length_y: 16
 // modified clients
 check_collision: 1
 
+// Open debug window when server starts?
+debug_onstart: 0
+
 import: conf/import/game-server.txt
