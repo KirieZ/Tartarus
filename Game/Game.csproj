@@ -115,14 +115,35 @@
     <Compile Include="..\src\Game\Database\Structures\DB_AuctionCategory.cs">
       <Link>Database\Structures\DB_AuctionCategory.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_CreatureLevelBonus.cs">
+      <Link>Database\Structures\DB_CreatureLevelBonus.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_DropGroup.cs">
+      <Link>Database\Structures\DB_DropGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_EventArea.cs">
+      <Link>Database\Structures\DB_EventArea.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_ItemEffect.cs">
       <Link>Database\Structures\DB_ItemEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Monster.cs">
+      <Link>Database\Structures\DB_Monster.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_MonsterDropTable.cs">
+      <Link>Database\Structures\DB_MonsterDropTable.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_MonsterSkill.cs">
       <Link>Database\Structures\DB_MonsterSkill.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_SetItemEffect.cs">
+      <Link>Database\Structures\DB_SetItemEffect.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_String.cs">
       <Link>Database\Structures\DB_String.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Summon.cs">
+      <Link>Database\Structures\DB_Summon.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>

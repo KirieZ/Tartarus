@@ -2,7 +2,7 @@
 // Database Engine
 //	0: SqlServer
 //	1: MySQL
-sql.engine: 1
+sql.engine: 0
 
 // Global Settings (If nothing is specified for a connection, this is used)
 sql.hostname: 127.0.0.1
@@ -14,16 +14,16 @@ sql.database: rappelz
 // Auth server
 sql.auth_hostname: 127.0.0.1
 sql.auth_port: 3306
-sql.auth_username: rappelz
-sql.auth_password: rappelz
-sql.auth_database: rappelz_auth
+sql.auth_username: sa
+sql.auth_password: shadowMASTER2501
+sql.auth_database: auth
 
 // Game server
 sql.game_hostname: 127.0.0.1
 sql.game_port: 3306
-sql.game_username: rappelz
-sql.game_password: rappelz
-sql.game_database: rappelz_game
+sql.game_username: sa
+sql.game_password: shadowMASTER2501
+sql.game_database: arcadia
 
 // User Database
 sql.user_hostname: 127.0.0.1

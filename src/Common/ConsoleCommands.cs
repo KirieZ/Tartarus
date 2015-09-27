@@ -65,7 +65,7 @@ namespace Common
 		public static void Load(Dictionary<string, Command> cmds)
 		{
 			Commands = cmds;
-            ConsoleUtils.ShowStatus("Commands table loaded.");
+            ConsoleUtils.ShowNotice("Commands table loaded.");
 		}
 
 		/// <summary>

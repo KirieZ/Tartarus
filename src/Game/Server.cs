@@ -30,7 +30,7 @@ namespace Game
             ConsoleCommands.Load(GetConsoleCommands());
 
 			#region Settings Load
-			ConsoleUtils.ShowStatus("Loading config files...");
+
 			Config conf = new Config();
 			bool error = false;
 
@@ -41,7 +41,7 @@ namespace Game
 
 			if (error)
 			{
-				ConsoleUtils.ShowNotice("Fix config errors and restart the server.");
+				ConsoleUtils.ShowError("Fix config errors and restart the server.");
 				return;
 			}
 
@@ -59,10 +59,17 @@ namespace Game
 				else
 					ConsoleUtils.ShowError("Invalid 'console_silent' value. Defaulting to 0...");
 			}
-			#endregion
 
             sqlConType = Settings.SqlEngine;
-            sqlConString = "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;";        
+            sqlConString = "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;";
+
+			#endregion
+
+            #region Content Load
+
+            Arcadia.Initialize(sqlConType, sqlConString);
+
+            #endregion
         }
 
 		/// <summary>
@@ -71,7 +78,6 @@ namespace Game
 		public override void Start()
 		{
 			AuthManager.Instance.Start();
-            Arcadia.Initialize(sqlConType, sqlConString);
 		}
 
 		/// <summary>
