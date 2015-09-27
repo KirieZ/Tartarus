@@ -85,6 +85,11 @@ namespace Game
 		private void ConnectCallback(IAsyncResult ar)
 		{
 			Socket socket = (Socket)ar.AsyncState;
+			if (!socket.Connected)
+			{
+				ConsoleUtils.ShowWarning("Could not connect to Auth-Server. Check your settings and try again...");
+				return;
+			}
 			socket.EndConnect(ar);
 
 			Auth = new AuthServer(socket);
