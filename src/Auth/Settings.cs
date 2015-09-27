@@ -31,6 +31,7 @@ namespace Auth
 
 		// Other Settings
 		public static Boolean LoginDebug;
+		public static String WindowTitle;
 
 		/// <summary>
 		/// Types of Settings
@@ -80,6 +81,8 @@ namespace Auth
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)
 				ConsoleHelper.Windows_ShowDebug(null);
+
+			WindowTitle = (String)ParseSetting(ref settings, DType.String, "window_name", "Auth");
 		}
 
 		/// <summary>

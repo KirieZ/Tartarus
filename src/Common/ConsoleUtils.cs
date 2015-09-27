@@ -51,12 +51,9 @@ namespace Common
 		/// <summary>
 		/// Displays the emulator header
 		/// </summary>
-		public static void ShowHeader()
+		public static void ShowHeader(string windowTitle)
 		{
-			//Console.BackgroundColor = ConsoleColor.Red;
-			//Console.ForegroundColor = ConsoleColor.White;
-
-            ConsoleMessage newMessage = new ConsoleMessage();
+			ConsoleMessage newMessage = new ConsoleMessage();
 
             newMessage.TextBlocks = new string[]
             {
@@ -77,6 +74,7 @@ namespace Common
             newMessage.ForeColor = Color.White;
 
             consoleGUI.Instance.Print(newMessage);
+			consoleGUI.Instance.SetTitle(windowTitle);
 		}
 
         /// <summary>

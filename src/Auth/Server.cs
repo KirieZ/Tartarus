@@ -26,10 +26,6 @@ namespace Auth
 		/// </summary>
 		public override void Load()
 		{
-			ConsoleUtils.ShowHeader();
-
-			ConsoleCommands.Load(GetConsoleCommands());
-
 			#region Settings Load
 			ConsoleUtils.ShowStatus("Loading config files...");
 			Config conf = new Config();
@@ -48,6 +44,8 @@ namespace Auth
 
 			Settings.Set(conf.Data);
 
+			ConsoleUtils.ShowHeader(Settings.WindowTitle);
+
 			ConsoleUtils.ShowNotice("Config files loaded.");
 
 			// Apply console filters aftere the notice that config files were loaded,
@@ -61,6 +59,8 @@ namespace Auth
 					ConsoleUtils.ShowError("Invalid 'console_silent' value. Defaulting to 0...");
 			}
 			#endregion
+
+			ConsoleCommands.Load(GetConsoleCommands());
 		}
 
 		/// <summary>

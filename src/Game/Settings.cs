@@ -14,6 +14,7 @@ namespace Game
 	/// </summary>
 	public static class Settings
 	{
+		public static String WindowTitle;
 		// Game Server Settings
 		public static String ServerIP;
 		public static UInt16 Port;
@@ -102,6 +103,8 @@ namespace Game
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)
 				ConsoleHelper.Windows_ShowDebug(null);
+
+			WindowTitle = (String)ParseSetting(ref settings, DType.String, "window_name", "Auth");
 		}
 
 		/// <summary>

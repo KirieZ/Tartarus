@@ -1,3 +1,6 @@
+// Window name
+window_name: Game
+
 // The address where server is listening for connections
 server_ip: 127.0.0.1
 

@@ -137,5 +137,10 @@ namespace Common.GUI
                 }
             }
         }
+
+		internal void SetTitle(string windowTitle)
+		{
+			this.Invoke(new MethodInvoker(delegate { this.Text = windowTitle; }));
+		}
 	}
 }

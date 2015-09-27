@@ -26,9 +26,6 @@ namespace Game
 		/// </summary>
 		public override void Load()
 		{
-			ConsoleUtils.ShowHeader();
-            ConsoleCommands.Load(GetConsoleCommands());
-
 			#region Settings Load
 
 			Config conf = new Config();
@@ -46,7 +43,7 @@ namespace Game
 			}
 
 			Settings.Set(conf.Data);
-
+			
 			ConsoleUtils.ShowNotice("Config files loaded.");
 
 			// Apply console filters aftere the notice that config files were loaded,
@@ -64,6 +61,9 @@ namespace Game
             sqlConString = "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;";
 
 			#endregion
+			
+			ConsoleUtils.ShowHeader(Settings.WindowTitle);
+			ConsoleCommands.Load(GetConsoleCommands());
 
             #region Content Load
 
