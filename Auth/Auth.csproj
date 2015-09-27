@@ -53,6 +53,9 @@
     <Compile Include="..\src\Auth\ClientPackets.cs">
       <Link>Auth\ClientPackets.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\ConsoleHelper.cs">
+      <Link>Auth\ConsoleHelper.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\GameClient.cs">
       <Link>Auth\GameClient.cs</Link>
     </Compile>

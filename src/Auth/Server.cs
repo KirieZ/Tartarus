@@ -28,6 +28,8 @@ namespace Auth
 		{
 			ConsoleUtils.ShowHeader();
 
+			ConsoleCommands.Load(GetConsoleCommands());
+
 			#region Settings Load
 			ConsoleUtils.ShowStatus("Loading config files...");
 			Config conf = new Config();
@@ -75,6 +77,19 @@ namespace Auth
 			GameManager.Instance.Start();
 			ClientManager.Instance.Start();
 			#endregion
+		}
+
+		/// <summary>
+		/// Returns a dictionary with console commands
+		/// </summary>
+		/// <returns></returns>
+		public static Dictionary<string, ConsoleCommands.Command> GetConsoleCommands()
+		{
+			Dictionary<string, ConsoleCommands.Command> cmdList = new Dictionary<string, ConsoleCommands.Command>();
+
+			cmdList.Add("Windows.ShowDebug", new ConsoleCommands.Command("", ConsoleHelper.Windows_ShowDebug));
+
+			return cmdList;
 		}
 
 		/// <summary>
