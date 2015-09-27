@@ -50,33 +50,29 @@ namespace Auth
 
 			client.AccountId = -1;
 
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
-			{
-				using (DbConnection dbCon = dbManager.CreateConnection())
-				{
-					using (DbCommand dbCmd = dbCon.CreateCommand())
-					{
-						dbCmd.CommandText = "SELECT * FROM login WHERE userid = @id AND password = @pass";
-						dbManager.CreateInParameter(dbCmd, "id", System.Data.DbType.String, userId);
-						dbManager.CreateInParameter(dbCmd, "pass", System.Data.DbType.String, userPass);
-						try
-						{
-							dbCon.Open();
+            using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM login WHERE userid = @id AND password = @pass"))
+                {
+                    dbManager.CreateInParameter(dbCmd, "id", System.Data.DbType.String, userId);
+                    dbManager.CreateInParameter(dbCmd, "pass", System.Data.DbType.String, userPass);
+                    try
+                    {
+                        dbCmd.Connection.Open();
 
-							using (DbDataReader reader = dbCmd.ExecuteReader())
-							{
-								while (reader.Read())
-								{
-									client.AccountId = (int)reader[0];
-									client.Permission = (byte)reader[3];
-								}
-							}
-						}
-						catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
-						finally { dbCon.Close(); }
-					}
-				}
-			}
+                        using (DbDataReader reader = dbCmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                client.AccountId = (int)reader[0];
+                                client.Permission = (byte)reader[3];
+                            }
+                        }
+                    }
+                    catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
 
 			if (client.AccountId >= 0)
 			{

@@ -44,7 +44,7 @@ namespace Common
 
             if (dbFactory != null)
             {
-                using (DbConnection dbCon = CreateConnection())
+                using (DbConnection dbCon = dbFactory.CreateConnection())
                 {
                     dbCon.ConnectionString = dbConString;
 
@@ -68,11 +68,14 @@ namespace Common
             }
         }
 
-        public DbConnection CreateConnection()
+        public DbCommand CreateCommand(string text)
         {
             DbConnection _dbCon = dbFactory.CreateConnection();
             _dbCon.ConnectionString = dbConString;
-            return _dbCon;
+            DbCommand _dbCmd = dbFactory.CreateCommand();
+            _dbCmd.Connection = _dbCon;
+            _dbCmd.CommandText = text;
+            return _dbCmd;
         }
 
         public DbParameter CreateInParameter(DbCommand cmd, string name, DbType type, object value)
@@ -85,6 +88,7 @@ namespace Common
                 name });
             dbParam.DbType = type;
             dbParam.Direction = ParameterDirection.Input;
+            dbParam.Value = value;
             cmd.Parameters.Add(dbParam);
             return dbParam;
         }

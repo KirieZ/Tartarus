@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Game.Content;
 using Game.Database;
 
 namespace Game
@@ -15,6 +16,9 @@ namespace Game
 	/// </summary>
 	public class Server : ServerBase
 	{
+        static int sqlConType = 0;
+        static string sqlConString = string.Empty;
+
 		public static readonly Server Instance = new Server();
 
 		/// <summary>
@@ -23,7 +27,7 @@ namespace Game
 		public override void Load()
 		{
 			ConsoleUtils.ShowHeader();
-            ConsoleUtils.ShowStatus("Console Commands Loaded: {0}", ConsoleCommands.Load(GetConsoleCommands()).ToString());
+            ConsoleCommands.Load(GetConsoleCommands());
 
 			#region Settings Load
 			ConsoleUtils.ShowStatus("Loading config files...");
@@ -57,8 +61,9 @@ namespace Game
 			}
 			#endregion
 
-            Player.Start();
-		}
+            sqlConType = Settings.SqlEngine;
+            sqlConString = "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;";        
+        }
 
 		/// <summary>
 		/// Server starting
@@ -66,6 +71,7 @@ namespace Game
 		public override void Start()
 		{
 			AuthManager.Instance.Start();
+            Arcadia.Initialize(sqlConType, sqlConString);
 		}
 
 		/// <summary>
