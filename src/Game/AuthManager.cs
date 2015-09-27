@@ -169,13 +169,25 @@ namespace Game
 				}
 				else
 				{
-					ConsoleUtils.ShowInfo("Server disconected.");
+					ConsoleUtils.ShowWarning("Connection to Auth-Server lost.");
+					Auth.ClSocket.Close();
 					return;
 				}
+			}
+			catch (SocketException e)
+			{
+				// 10054 : Socket closed, not a error
+				if (!(e.ErrorCode == 10054))
+					ConsoleUtils.ShowError(e.Message);
+
+				ConsoleUtils.ShowWarning("Connection to Auth-Server lost.");
+				Auth.ClSocket.Close();
 			}
 			catch (Exception e)
 			{
 				ConsoleUtils.ShowError(e.Message);
+				ConsoleUtils.ShowWarning("Connection to Auth-Server lost.");
+				Auth.ClSocket.Close();
 			}
 		}
 

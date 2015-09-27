@@ -19,8 +19,6 @@ namespace Auth
 	{
 		public static readonly GameManager Instance = new GameManager();
 
-		private CancellationToken _CancelToken;
-
 		/// <summary>
 		/// Starts the game-server listener
 		/// </summary>
@@ -160,7 +158,7 @@ namespace Auth
 							}
 						}
 					} while (bytesRead - 1 > curOffset);
-					
+
 					gs.ClSocket.BeginReceive(
 						gs.Buffer,
 						0,
@@ -172,9 +170,17 @@ namespace Auth
 				}
 				else
 				{
-					ConsoleUtils.ShowInfo("Server disconected.");
+					Server.Instance.OnGameServerDisconnects(gs);
 					return;
 				}
+			}
+			catch (SocketException e)
+			{
+				// 10054 : Socket closed, not a error
+				if (!(e.ErrorCode == 10054))
+					ConsoleUtils.ShowError(e.Message);
+
+				Server.Instance.OnGameServerDisconnects(gs);
 			}
 			catch (Exception e)
 			{

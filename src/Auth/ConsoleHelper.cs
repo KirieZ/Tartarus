@@ -34,5 +34,22 @@ namespace Auth
 				ConsoleUtils.ShowInfo("Debug GUI is already open.\n");
 			}
 		}
+
+		/// <summary>
+		/// Lists connected game-servers
+		/// </summary>
+		/// <param name="args"></param>
+		internal static void ServerList(object[] args)
+		{
+			ConsoleUtils.ShowInfo("\tServer List");
+			ConsoleUtils.ShowInfo("Index\tName\tIP:Port");
+			
+			foreach (GameServer gs in Server.Instance.GameServers.Values)
+			{
+				ConsoleUtils.ShowInfo("{0}\t{1}\t{2}:{3}", gs.Index, gs.Name, gs.IP, gs.Port);
+			}
+
+			return;
+		}
 	}
 }

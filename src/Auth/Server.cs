@@ -87,6 +87,7 @@ namespace Auth
 		{
 			Dictionary<string, ConsoleCommands.Command> cmdList = new Dictionary<string, ConsoleCommands.Command>();
 
+			cmdList.Add("servers", new ConsoleCommands.Command("", ConsoleHelper.ServerList));
 			cmdList.Add("Windows.ShowDebug", new ConsoleCommands.Command("", ConsoleHelper.Windows_ShowDebug));
 
 			return cmdList;
@@ -113,11 +114,29 @@ namespace Auth
 				return;
 			}
 
+			gs.Index = index;
 			GameServers.Add(index, gs);
 			ConsoleUtils.ShowInfo("Connection with Game Server '{0}' stabilished.", gs.Name);
 			GamePackets.Instance.RegisterResult(gs, 0);
 			
 			return;
+		}
+
+		/// <summary>
+		/// Called when a Game-Server disconnects from Auth
+		/// </summary>
+		/// <param name="gs"></param>
+		internal void OnGameServerDisconnects(GameServer gs)
+		{
+			ConsoleUtils.ShowInfo("Game-Server '{0}' disconnected.", gs.Name);
+			if (!GameServers.ContainsKey(gs.Index))
+			{
+				ConsoleUtils.ShowError("Failed to remove Game-Server from server list, invalid index {0}", gs.Index);
+				return;
+			}
+
+			GameServers.Remove(gs.Index);
+			gs.ClSocket.Close();
 		}
 	}
 }

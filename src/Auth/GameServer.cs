@@ -23,13 +23,14 @@ namespace Auth
 		public int Offset { get; set; }
 
 		// Server Info
+		public ushort Index { get; set; }
 		public string Name { get; set; }
 		public string IP { get; set; }
 		public short Port { get; set; }
 		public string NoticeUrl { get; set; }
 		public bool AdultServer { get; set; }
 		public ushort UserRatio { get; set; }
-
+		
 		public GameServer(Socket socket)
 		{
 			this.ClSocket = socket;
