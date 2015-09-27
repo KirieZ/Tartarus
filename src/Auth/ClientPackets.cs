@@ -29,6 +29,7 @@ namespace Auth
 			//PacketsDb.Add(0x270F, parse_Unknown);
 			PacketsDb.Add(0x2711, CA_Version);
 			PacketsDb.Add(0x271A, CA_Account);
+			PacketsDb.Add(0x271C, CA_IMBC_Account);
 			PacketsDb.Add(0x2725, CA_ServerList);
 			PacketsDb.Add(0x2727, CA_SelectServer);
 			#endregion
@@ -75,6 +76,14 @@ namespace Auth
 			byte[] cryptedPass = stream.ReadBytes(56);
 
 			GameClient.UserLogin(client, userId, cryptedPass);
+		}
+
+		private void CA_IMBC_Account(GameClient client, PacketStream stream)
+		{
+			string userId = stream.ReadString(61);
+			string otp = stream.ReadString(48);
+
+			GameClient.UserIMBCLogin(client, userId, otp);
 		}
 
 		/// <summary>

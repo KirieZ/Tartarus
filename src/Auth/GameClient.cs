@@ -83,5 +83,87 @@ namespace Auth
 				ClientPackets.Instance.Result(client, 1);  // Fail
 			}
 		}
+
+		internal static void UserIMBCLogin(GameClient client, string userId, string otp)
+		{
+			int accId = 0;
+			byte perm = 0;
+			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			{
+				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM login WHERE userid = @id"))
+				{
+					dbManager.CreateInParameter(dbCmd, "id", System.Data.DbType.String, userId);
+					try
+					{
+						dbCmd.Connection.Open();
+
+						using (DbDataReader reader = dbCmd.ExecuteReader())
+						{
+							while (reader.Read())
+							{
+								accId = (int)reader[0];
+								perm = (byte)reader[3];
+							}
+						}
+					}
+					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+					finally { dbCmd.Connection.Close(); }
+				}
+			}
+
+			if (accId > 0)
+			{ // Account exists, lets check otp
+				string dbOtp = "";
+
+				using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+				{
+					using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM otp WHERE account_id = @acc"))
+					{
+						dbManager.CreateInParameter(dbCmd, "acc", System.Data.DbType.String, accId);
+						try
+						{
+							dbCmd.Connection.Open();
+
+							using (DbDataReader reader = dbCmd.ExecuteReader())
+							{
+								while (reader.Read())
+								{
+									dbOtp = (string)reader[1];
+								}
+							}
+						}
+						catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+						finally { dbCmd.Connection.Close(); }
+					}
+				}
+
+				if (dbOtp.Length > 0 && dbOtp.Equals(otp))
+				{ // Valid otp, remove entry
+					using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+					{
+						using (DbCommand dbCmd = dbManager.CreateCommand("DELETE FROM otp WHERE account_id = @acc"))
+						{
+							dbManager.CreateInParameter(dbCmd, "acc", System.Data.DbType.String, accId);
+							try
+							{
+								dbCmd.Connection.Open();
+								dbCmd.ExecuteNonQuery();
+							}
+							catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+							finally { dbCmd.Connection.Close(); }
+						}
+					}
+
+					client.AccountId = accId;
+					client.Permission = perm;
+
+					ClientPackets.Instance.Result(client, 0); // Success
+					return;
+				}
+			}
+			
+			ClientPackets.Instance.Result(client, 1);  // Fail
+			return;
+		}
 	}
 }
