@@ -62,10 +62,10 @@ namespace Common
 		/// Called to set the commands list
 		/// </summary>
 		/// <param name="cmds">the command list</param>
-		public static bool Load(Dictionary<string, Command> cmds)
+		public static void Load(Dictionary<string, Command> cmds)
 		{
 			Commands = cmds;
-            return Commands.Count > 0;
+            ConsoleUtils.ShowStatus("Commands table loaded.");
 		}
 
 		/// <summary>

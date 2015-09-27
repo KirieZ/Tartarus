@@ -106,8 +106,23 @@
     <Compile Include="..\src\Game\ConsoleHelper.cs">
       <Link>Game\ConsoleHelper.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\Arcadia.cs">
+      <Link>Content\Arcadia.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Player.cs">
-      <Link>Game\Database\Player.cs</Link>
+      <Link>Database\Player.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_AuctionCategory.cs">
+      <Link>Database\Structures\DB_AuctionCategory.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_ItemEffect.cs">
+      <Link>Database\Structures\DB_ItemEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_MonsterSkill.cs">
+      <Link>Database\Structures\DB_MonsterSkill.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_String.cs">
+      <Link>Database\Structures\DB_String.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>

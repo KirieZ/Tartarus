@@ -59,101 +59,11 @@ namespace Game.Database
 
         static internal void LoadLvDB()
         {
-            List<long> expt = new List<long>();
-            List<int> jp0t = new List<int>();
-            List<int> jp1t = new List<int>();
-            List<int> jp2t = new List<int>();
-            List<int> jp3t = new List<int>();
-
-            using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
-            {
-                using (DbConnection dbCon = dbManager.CreateConnection())
-                {
-                    using (DbCommand dbCmd = dbCon.CreateCommand())
-                    {
-                        dbCmd.CommandText = "SELECT * FROM LevelResource";
-
-                        try
-                        {
-                            dbCon.Open();
-
-                            using (DbDataReader reader = dbCmd.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    int level = (int)reader[0];
-
-                                    long exp = (long)reader[1];
-                                    int jp0 = (int)reader[2];
-                                    int jp1 = (int)reader[3];
-                                    int jp2 = (int)reader[4];
-                                    int jp3 = (int)reader[5];
-
-                                    if (exp > 0)
-                                        expt.Add(exp);
-                                    if (jp0 > 0)
-                                        jp0t.Add(jp0);
-                                    if (jp1 > 0)
-                                        jp1t.Add(jp1);
-                                    if (jp2 > 0)
-                                        jp2t.Add(jp2);
-                                    if (jp3 > 0)
-                                        jp3t.Add(jp3);
-                                }
-                            }
-                        }
-                        catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); return; }
-                        finally { dbCon.Close(); }
-                    }
-                }
-
-                expt.Add(0);
-                jp0t.Add(0);
-                jp1t.Add(0);
-                jp2t.Add(0);
-                jp3t.Add(0);
-
-                ExpTable = expt.ToArray();
-                Jp0Table = jp0t.ToArray();
-                Jp1Table = jp1t.ToArray();
-                Jp2Table = jp2t.ToArray();
-                Jp3Table = jp3t.ToArray();
-
-                ConsoleUtils.ShowStatus("Player EXP Table Loaded.");
-            }
         }
 
         static internal void LoadJobDB()
         {
-            ConsoleUtils.ShowStatus("Loading Job Table...");
 
-            JobDB = new Dictionary<int, JobDBEntry>();
-
-            using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
-            {
-                //while (reader.Read())
-                //{
-                //    JobDBEntry job = new JobDBEntry();
-                //    int jobId = (int)reader[0];
-                //    job.JobDepth = (JobDepth)(byte)reader[1];
-                //    job.StrMult = (float)reader[2];
-                //    job.VitMult = (float)reader[3];
-                //    job.DexMult = (float)reader[4];
-                //    job.AgiMult = (float)reader[5];
-                //    job.IntMult = (float)reader[6];
-                //    job.WisMult = (float)reader[7];
-                //    job.LuckMult = (float)reader[8];
-
-                //    if (JobDB.ContainsKey(jobId))
-                //    {
-                //        ConsoleUtils.ShowWarning("Duplicated job ID {0} at dbo.JobResource", jobId);
-                //    }
-                //    else
-                //    {
-                //        JobDB.Add(jobId, job);
-                //    }
-                //}
-            }
         }
 
         /// <summary>
@@ -161,9 +71,6 @@ namespace Game.Database
         /// </summary>
         public static void Start()
         {
-            LoadLvDB();
-            //TODO : Implement LoadJobDB
-            //LoadJobDB();
         }
     }
 }
