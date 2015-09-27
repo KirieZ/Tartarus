@@ -136,7 +136,9 @@ namespace Common
 						// When doing a packet debug, it must not have replacers
 						// because packet data might have '{' which will crash
 						// the server
-                        consoleGUI.Instance.Print(new ConsoleMessage { TextBlocks = new string[] { text } });
+						if (debugGUI.Instance == null) return;
+
+                        debugGUI.Instance.PacketPrint(text);
 						return;
 
 					default:
