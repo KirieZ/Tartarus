@@ -10,6 +10,7 @@ using Common;
 using Common.RC4;
 using System.Data.Common;
 using Common.Utilities;
+using System.Security.Cryptography;
 namespace Auth
 {
 	/// <summary>
@@ -58,6 +59,23 @@ namespace Auth
 			string userPass = Des.Decrypt(cryptedPass).Trim('\0');
 
 			this.AccountId = -1;
+
+			if (Settings.UseMD5)
+			{
+				using (MD5 md5Hash = MD5.Create())
+				{
+					byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(userPass));
+
+					StringBuilder sBuilder = new StringBuilder();
+
+					for (int i = 0; i < data.Length; i++)
+					{
+						sBuilder.Append(data[i].ToString("x2"));
+					}
+
+					userPass = sBuilder.ToString();
+				}
+			}
 
             using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
             {

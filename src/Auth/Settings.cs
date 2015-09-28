@@ -32,6 +32,7 @@ namespace Auth
 		// Other Settings
 		public static Boolean LoginDebug;
 		public static String WindowTitle;
+		public static Boolean UseMD5;
 
 		/// <summary>
 		/// Types of Settings
@@ -77,12 +78,12 @@ namespace Auth
 
 			// Other Settings
 			LoginDebug = (Boolean)ParseSetting(ref settings, DType.Bool, "login_debug", false);
+			WindowTitle = (String)ParseSetting(ref settings, DType.String, "window_name", "Auth");
+			UseMD5 = (Boolean)ParseSetting(ref settings, DType.Bool, "use_md5", false);
 
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)
 				ConsoleHelper.Windows_ShowDebug(null);
-
-			WindowTitle = (String)ParseSetting(ref settings, DType.String, "window_name", "Auth");
 		}
 
 		/// <summary>

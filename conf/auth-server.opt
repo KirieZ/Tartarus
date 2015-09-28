@@ -33,4 +33,7 @@ acceptor_key: "secret"
 // Open debug window when server starts?
 debug_onstart: 0
 
+// Use MD5 hashed passwords?
+use_md5: 0
+
 import: conf/import/auth-server.txt
