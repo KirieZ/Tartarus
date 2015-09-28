@@ -103,6 +103,12 @@
     <Compile Include="..\src\Game\AuthServer.cs">
       <Link>Game\AuthServer.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\ClientManager.cs">
+      <Link>Game\ClientManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\ClientPackets.cs">
+      <Link>Game\ClientPackets.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\ConsoleHelper.cs">
       <Link>Game\ConsoleHelper.cs</Link>
     </Compile>
@@ -144,6 +150,9 @@
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_Summon.cs">
       <Link>Database\Structures\DB_Summon.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\GameClient.cs">
+      <Link>Game\GameClient.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>

@@ -82,6 +82,7 @@ namespace Game
 			PendingUsers = new Dictionary<string, byte[]>();
 
 			AuthManager.Instance.Start();
+			ClientManager.Instance.Start();
 		}
 
 		/// <summary>
