@@ -45,8 +45,6 @@ namespace Game
 			}
 
 			Settings.Set(conf.Data);
-			
-			ConsoleUtils.ShowNotice("Config files loaded.");
 
 			// Apply console filters aftere the notice that config files were loaded,
 			// so if notice is disabled, it avoids the feel that configs were never loaded.

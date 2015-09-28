@@ -130,6 +130,9 @@
     <Compile Include="..\src\Game\Database\Structures\DB_EventArea.cs">
       <Link>Database\Structures\DB_EventArea.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Item.cs">
+      <Link>Database\Structures\DB_Item.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_ItemEffect.cs">
       <Link>Database\Structures\DB_ItemEffect.cs</Link>
     </Compile>
@@ -150,6 +153,9 @@
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_Summon.cs">
       <Link>Database\Structures\DB_Summon.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_SummonName.cs">
+      <Link>Database\Structures\DB_SummonName.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\GameClient.cs">
       <Link>Game\GameClient.cs</Link>

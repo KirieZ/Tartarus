@@ -12,15 +12,19 @@ namespace Game.Content
     {
         internal static int conType = 0;
         internal static string conString = string.Empty;
+        public static List<DB_AutoAuction> AutoAuctionResource;
         public static List<DB_AuctionCategory> AuctionCategoryResource;
         public static List<DB_CreateLevelBonus> CreatureLevelBonus;
         public static List<DB_EventArea> EventAreaResource;
         public static List<DB_DropGroup> DropGroupResource;
+        public static List<DB_Item> ItemResource;
         public static List<DB_ItemEffect> ItemEffectResource;
         public static List<DB_Monster> MonsterResource;
         public static List<DB_MonsterDropTable> MonsterDropTableResource;
         public static List<DB_MonsterSkill> MonsterSkillResource;
         public static List<DB_SetItemEffect> SetItemEffectResource;
+        public static List<DB_SummonName> SummonDefaultNameResource;
+        public static List<DB_SummonName> SummonUniqueNameResource;
         public static List<DB_Summon> SummonResource;
         public static List<DB_String> StringResource;
 
@@ -65,6 +69,53 @@ namespace Game.Content
             }
 
             ConsoleUtils.ShowNotice("{0} entries loaded from AuctionCategoryResource", AuctionCategoryResource.Count);
+        }
+
+        internal static void LoadAutoAuctionResource()
+        {
+            AutoAuctionResource = new List<DB_AutoAuction>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM AutoAuctionResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                AutoAuctionResource.Add(
+                                    new DB_AutoAuction
+                                    {
+                                        id = (int)dbReader[off++],
+                                        item_id = (int)dbReader[off++],
+                                        auctionseller_id = (int)dbReader[off++],
+                                        price = (long)dbReader[off++],
+                                        secroute_apply = Convert.ToChar(dbReader[off++]),
+                                        local_flag = (int)dbReader[off++],
+                                        auction_enrollment_time = (DateTime)dbReader[off++],
+                                        repeat_apply = Convert.ToChar(dbReader[off++]),
+                                        repeat_term = (int)dbReader[off++],
+                                        auctiontime_type = (short)dbReader[off++],
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from AutoAuctionResource", AutoAuctionResource.Count);
         }
 
         internal static void LoadCreatureBonus()
@@ -249,6 +300,153 @@ namespace Game.Content
             }
 
             ConsoleUtils.ShowNotice("{0} entries loaded from EventAreaResource", EventAreaResource.Count);
+        }
+
+        internal static void LoadItem()
+        {
+            ItemResource = new List<DB_Item>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM ItemResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                ItemResource.Add(
+                                    new DB_Item
+                                    {
+                                        id = (int)dbReader[off++],
+                                        name_id = (int)dbReader[off++],
+                                        tooltip_id = (int)dbReader[off++],
+                                        type = (int)dbReader[off++],
+                                        Group = (int)dbReader[off++],
+                                        Class = (int)dbReader[off++],
+                                        wear_type = (int)dbReader[off++],
+                                        Set_id = (int)dbReader[off++],
+                                        Set_part_flag = (int)dbReader[off++],
+                                        grade = (byte)dbReader[off++],
+                                        rank = (int)dbReader[off++],
+                                        level = (int)dbReader[off++],
+                                        enhance = (int)dbReader[off++],
+                                        socket = (int)dbReader[off++],
+                                        status_flag = (int)dbReader[off++],
+                                        limit_deva = Convert.ToChar(dbReader[off++]),
+                                        limit_asura = Convert.ToChar(dbReader[off++]),
+                                        limit_gaia = Convert.ToChar(dbReader[off++]),
+                                        limit_fighter = Convert.ToChar(dbReader[off++]),
+                                        limit_hunter = Convert.ToChar(dbReader[off++]),
+                                        limit_magician = Convert.ToChar(dbReader[off++]),
+                                        limit_summoner = Convert.ToChar(dbReader[off++]),
+                                        use_min_level = (int)dbReader[off++],
+                                        use_max_level = (int)dbReader[off++],
+                                        target_min_level = (int)dbReader[off++],
+                                        target_max_level = (int)dbReader[off++],
+                                        range = (decimal)dbReader[off++],
+                                        weight = (decimal)dbReader[off++],
+                                        price = (int)dbReader[off++],
+                                        huntaholic_point = (int)dbReader[off++],
+                                        ethereal_durability = (int)dbReader[off++],
+                                        endurance = (int)dbReader[off++],
+                                        material = (int)dbReader[off++],
+                                        summon_id = (int)dbReader[off++],
+                                        item_use_flag = (int)dbReader[off++],
+                                        available_period = (int)dbReader[off++],
+                                        decrease_type = (byte)dbReader[off++],
+                                        throw_range = (decimal)dbReader[off++],
+                                        base_type_0 = (short)dbReader[off++],
+                                        base_var1_0 = (decimal)dbReader[off++],
+                                        base_var2_0 = (decimal)dbReader[off++],
+                                        base_type_1 = (short)dbReader[off++],
+                                        base_var1_1 = (decimal)dbReader[off++],
+                                        base_var2_1 = (decimal)dbReader[off++],
+                                        base_type_2 = (short)dbReader[off++],
+                                        base_var1_2 = (decimal)dbReader[off++],
+                                        base_var2_2 = (decimal)dbReader[off++],
+                                        base_type_3 = (short)dbReader[off++],
+                                        base_var1_3 = (decimal)dbReader[off++],
+                                        base_var2_3 = (decimal)dbReader[off++],
+                                        opt_type_0 = (short)dbReader[off++],
+                                        opt_var1_0 = (decimal)dbReader[off++],
+                                        opt_var2_0 = (decimal)dbReader[off++],
+                                        opt_type_1 = (short)dbReader[off++],
+                                        opt_var1_1 = (decimal)dbReader[off++],
+                                        opt_var2_1 = (decimal)dbReader[off++],
+                                        opt_type_2 = (short)dbReader[off++],
+                                        opt_var1_2 = (decimal)dbReader[off++],
+                                        opt_var2_2 = (decimal)dbReader[off++],
+                                        opt_type_3 = (short)dbReader[off++],
+                                        opt_var1_3 = (decimal)dbReader[off++],
+                                        opt_var2_3 = (decimal)dbReader[off++],
+                                        effect_id = (int)dbReader[off++],
+                                        enhance_0_id = (short)dbReader[off++],
+                                        enhance_0_01 = (decimal)dbReader[off++],
+                                        enhance_0_02 = (decimal)dbReader[off++],
+                                        enhance_0_03 = (decimal)dbReader[off++],
+                                        enhance_0_04 = (decimal)dbReader[off++],
+                                        enhance_1_id = (short)dbReader[off++],
+                                        enhance_1_01 = (decimal)dbReader[off++],
+                                        enhance_1_02 = (decimal)dbReader[off++],
+                                        enhance_1_03 = (decimal)dbReader[off++],
+                                        enhance_1_04 = (decimal)dbReader[off++],
+                                        skill_id = (int)dbReader[off++],
+                                        state_id = (int)dbReader[off++],
+                                        state_level = (int)dbReader[off++],
+                                        state_time = (int)dbReader[off++],
+                                        state_type = (int)dbReader[off++],
+                                        cool_time = (int)dbReader[off++],
+                                        cool_time_group = (short)dbReader[off++],
+                                        model_type_dem = (int)dbReader[off++],
+                                        model_type_def = (int)dbReader[off++],
+                                        model_type_asm = (int)dbReader[off++],
+                                        model_type_asf = (int)dbReader[off++],
+                                        model_type_gam = (int)dbReader[off++],
+                                        model_type_gaf = (int)dbReader[off++],
+                                        deco_model_change = (byte)dbReader[off++],
+                                        model_00 = (string)dbReader[off++],
+                                        model_01 = (string)dbReader[off++],
+                                        model_02 = (string)dbReader[off++],
+                                        model_03 = (string)dbReader[off++],
+                                        model_04 = (string)dbReader[off++],
+                                        model_05 = (string)dbReader[off++],
+                                        model_06 = (string)dbReader[off++],
+                                        model_07 = (string)dbReader[off++],
+                                        model_08 = (string)dbReader[off++],
+                                        model_09 = (string)dbReader[off++],
+                                        model_10 = (string)dbReader[off++],
+                                        model_11 = (string)dbReader[off++],
+                                        model_12 = (string)dbReader[off++],
+                                        model_13 = (string)dbReader[off++],
+                                        model_14 = (string)dbReader[off++],
+                                        model_15 = (string)dbReader[off++],
+                                        model_16 = (string)dbReader[off++],
+                                        model_17 = (string)dbReader[off++],
+                                        texture_filename = (string)dbReader[off++],
+                                        drop_type = (string)dbReader[off++],
+                                        icon_id = (int)dbReader[off++],
+                                        icon_file_name = (string)dbReader[off++],
+                                        script_text = (string)dbReader[off++]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.ToString());
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from ItemResource", ItemResource.Count);
         }
 
         internal static void LoadItemEffect()
@@ -671,6 +869,82 @@ namespace Game.Content
             ConsoleUtils.ShowNotice("{0} entries loaded from SetItemEffectResource", SetItemEffectResource.Count);
         }
 
+        internal static void LoadSummonDefaultName()
+        {
+            SummonDefaultNameResource = new List<DB_SummonName>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SummonDefaultNameResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                SummonDefaultNameResource.Add(
+                                    new DB_SummonName
+                                    {
+                                        id = (int)dbReader[0],
+                                        kind = (int)dbReader[1],
+                                        text_id = (int)dbReader[2]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from SummonDefaultNameResource", SummonDefaultNameResource.Count);
+        }
+
+        internal static void LoadSummonUniqueName()
+        {
+            SummonUniqueNameResource = new List<DB_SummonName>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SummonUniqueNameResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                SummonDefaultNameResource.Add(
+                                    new DB_SummonName
+                                    {
+                                        id = (int)dbReader[0],
+                                        kind = (int)dbReader[1],
+                                        text_id = (int)dbReader[2]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from SummonUniqueNameResource", SummonUniqueNameResource.Count);
+        }
+
         internal static void LoadString()
         {
             StringResource = new List<DB_String>();
@@ -806,14 +1080,18 @@ namespace Game.Content
             conString = _conString;
 
             LoadAuctionCategory();
+            LoadAutoAuctionResource();
             LoadCreatureBonus();
             LoadDropGroup();
             LoadEventArea();
+            LoadItem();
             LoadItemEffect();
             LoadMonster();
             LoadMonsterDropTable();
             LoadMonsterSkill();
             LoadSetItemEffect();
+            LoadSummonDefaultName();
+            LoadSummonUniqueName();
             LoadString();
             LoadSummon();
         }
