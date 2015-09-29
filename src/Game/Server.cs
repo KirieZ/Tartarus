@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Common;
 using Game.Content;
 using Game.Database;
+using Game.Network;
 
 namespace Game
 {

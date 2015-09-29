@@ -11,7 +11,7 @@ using Common.RC4;
 using System.Data.Common;
 using Common.Utilities;
 
-namespace Game
+namespace Game.Network
 {
 	/// <summary>
 	/// Holds a GameClient data

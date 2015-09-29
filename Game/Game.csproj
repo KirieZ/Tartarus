@@ -94,20 +94,8 @@
     <Compile Include="..\src\Common\Utilities\XDes.cs">
       <Link>Common\Utilities\XDes.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\AuthManager.cs">
-      <Link>Game\AuthManager.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Game\AuthPackets.cs">
-      <Link>Game\AuthPackets.cs</Link>
-    </Compile>
     <Compile Include="..\src\Game\AuthServer.cs">
       <Link>Game\AuthServer.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Game\ClientManager.cs">
-      <Link>Game\ClientManager.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Game\ClientPackets.cs">
-      <Link>Game\ClientPackets.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\ConsoleHelper.cs">
       <Link>Game\ConsoleHelper.cs</Link>
@@ -120,6 +108,9 @@
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_AuctionCategory.cs">
       <Link>Database\Structures\DB_AuctionCategory.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_AutoAction.cs">
+      <Link>Database\Structures\DB_AutoAction.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_CreatureLevelBonus.cs">
       <Link>Database\Structures\DB_CreatureLevelBonus.cs</Link>
@@ -148,6 +139,12 @@
     <Compile Include="..\src\Game\Database\Structures\DB_SetItemEffect.cs">
       <Link>Database\Structures\DB_SetItemEffect.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Skill.cs">
+      <Link>Database\Structures\DB_Skill.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_SkillJP.cs">
+      <Link>Database\Structures\DB_SkillJP.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_String.cs">
       <Link>Database\Structures\DB_String.cs</Link>
     </Compile>
@@ -157,8 +154,20 @@
     <Compile Include="..\src\Game\Database\Structures\DB_SummonName.cs">
       <Link>Database\Structures\DB_SummonName.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\GameClient.cs">
-      <Link>Game\GameClient.cs</Link>
+    <Compile Include="..\src\Game\Network\AuthManager.cs">
+      <Link>Network\AuthManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\AuthPackets.cs">
+      <Link>Network\AuthPackets.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\ClientManager.cs">
+      <Link>Network\ClientManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\ClientPackets.cs">
+      <Link>Network\ClientPackets.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\GameClient.cs">
+      <Link>Network\GameClient.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>

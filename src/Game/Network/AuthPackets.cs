@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 
-namespace Game
+namespace Game.Network
 {
 	/// <summary>
 	/// Packets exchanged between Game and Auth servers

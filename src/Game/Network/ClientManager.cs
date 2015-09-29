@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common;
 
-namespace Game
+namespace Game.Network
 {
 	/// <summary>
 	/// Handles the connection between Auth and Game Clients

@@ -23,6 +23,8 @@ namespace Game.Content
         public static List<DB_MonsterDropTable> MonsterDropTableResource;
         public static List<DB_MonsterSkill> MonsterSkillResource;
         public static List<DB_SetItemEffect> SetItemEffectResource;
+        public static List<DB_Skill> SkillResource;
+        public static List<DB_SkillJP> SkillJPResource;
         public static List<DB_SummonName> SummonDefaultNameResource;
         public static List<DB_SummonName> SummonUniqueNameResource;
         public static List<DB_Summon> SummonResource;
@@ -869,6 +871,246 @@ namespace Game.Content
             ConsoleUtils.ShowNotice("{0} entries loaded from SetItemEffectResource", SetItemEffectResource.Count);
         }
 
+        internal static void LoadSkill()
+        {
+            SkillResource = new List<DB_Skill>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SkillResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                SkillResource.Add(
+                                    new DB_Skill
+                                    {
+                                        id = (int)dbReader[off++],
+                                        text_id = (int)dbReader[off++],
+                                        desc_id = (int)dbReader[off++],
+                                        tooltip_id = (int)dbReader[off++],
+                                        is_valid = (byte)dbReader[off++],
+                                        elemental = Convert.ToChar(dbReader[off++]),
+                                        is_passive = Convert.ToChar(dbReader[off++]),
+                                        is_physical_act = Convert.ToChar(dbReader[off++]),
+                                        is_harmful = Convert.ToChar(dbReader[off++]),
+                                        is_need_target = Convert.ToChar(dbReader[off++]),
+                                        is_corpse = Convert.ToChar(dbReader[off++]),
+                                        is_toggle = Convert.ToChar(dbReader[off++]),
+                                        toggle_group = (int)dbReader[off++],
+                                        casting_type = Convert.ToChar(dbReader[off++]),
+                                        casting_level = Convert.ToChar(dbReader[off++]),
+                                        cast_range = (int)dbReader[off++],
+                                        valid_range = (int)dbReader[off++],
+                                        cost_hp = (int)dbReader[off++],
+                                        cost_hp_per_skl = (int)dbReader[off++],
+                                        cost_mp = (int)dbReader[off++],
+                                        cost_mp_per_skl = (int)dbReader[off++],
+                                        cost_mp_per_enhance = (int)dbReader[off++],
+                                        cost_hp_per = (decimal)dbReader[off++],
+                                        cost_hp_per_skl_per = (decimal)dbReader[off++],
+                                        cost_mp_per = (decimal)dbReader[off++],
+                                        cost_mp_per_skl_per = (decimal)dbReader[off++],
+                                        cost_havoc = (int)dbReader[off++],
+                                        cost_havoc_per_skl = (int)dbReader[off++],
+                                        cost_energy = (decimal)dbReader[off++],
+                                        cost_energy_per_skl = (decimal)dbReader[off++],
+                                        cost_exp = (int)dbReader[off++],
+                                        cost_exp_per_enhance = (int)dbReader[off++],
+                                        cost_jp = (int)dbReader[off++],
+                                        cost_jp_per_enhance = (int)dbReader[off++],
+                                        cost_item = (int)dbReader[off++],
+                                        cost_item_count = (int)dbReader[off++],
+                                        cost_item_count_per_skl = (int)dbReader[off++],
+                                        need_level = (int)dbReader[off++],
+                                        need_hp = (int)dbReader[off++],
+                                        need_mp = (int)dbReader[off++],
+                                        need_havoc = (int)dbReader[off++],
+                                        need_havoc_burst = (int)dbReader[off++],
+                                        need_state_id = (int)dbReader[off++],
+                                        need_state_level = (byte)dbReader[off++],
+                                        need_state_exhaust = (byte)dbReader[off++],
+                                        vf_one_hand_sword = Convert.ToChar(dbReader[off++]),
+                                        vf_two_hand_sword = Convert.ToChar(dbReader[off++]),
+                                        vf_double_sword = Convert.ToChar(dbReader[off++]),
+                                        vf_dagger = Convert.ToChar(dbReader[off++]),
+                                        vf_double_dagger = Convert.ToChar(dbReader[off++]),
+                                        vf_spear = Convert.ToChar(dbReader[off++]),
+                                        vf_axe = Convert.ToChar(dbReader[off++]),
+                                        vf_one_hand_axe = Convert.ToChar(dbReader[off++]),
+                                        vf_double_axe = Convert.ToChar(dbReader[off++]),
+                                        vf_one_hand_mace = Convert.ToChar(dbReader[off++]),
+                                        vf_two_hand_mace = Convert.ToChar(dbReader[off++]),
+                                        vf_lightbow = Convert.ToChar(dbReader[off++]),
+                                        vf_heavybow = Convert.ToChar(dbReader[off++]),
+                                        vf_crossbow = Convert.ToChar(dbReader[off++]),
+                                        vf_one_hand_staff = Convert.ToChar(dbReader[off++]),
+                                        vf_two_hand_staff = Convert.ToChar(dbReader[off++]),
+                                        vf_shield_only = Convert.ToChar(dbReader[off++]),
+                                        vf_is_not_need_weapon = Convert.ToChar(dbReader[off++]),
+                                        delay_cast = (decimal)dbReader[off++],
+                                        delay_cast_per_skl = (decimal)dbReader[off++],
+                                        delay_cast_mode_per_enhance = (decimal)dbReader[off++],
+                                        delay_common = (decimal)dbReader[off++],
+                                        delay_cooltime = (decimal)dbReader[off++],
+                                        delay_cooltime_mode_per_enhance = (decimal)dbReader[off++],
+                                        cool_time_group_id = (int)dbReader[off++],
+                                        uf_self = Convert.ToChar(dbReader[off++]),
+                                        uf_party = Convert.ToChar(dbReader[off++]),
+                                        uf_guild = Convert.ToChar(dbReader[off++]),
+                                        uf_neutral = Convert.ToChar(dbReader[off++]),
+                                        uf_purple = Convert.ToChar(dbReader[off++]),
+                                        uf_enemy = Convert.ToChar(dbReader[off++]),
+                                        tf_avatar = Convert.ToChar(dbReader[off++]),
+                                        tf_summon = Convert.ToChar(dbReader[off++]),
+                                        tf_monster = Convert.ToChar(dbReader[off++]),
+                                        target = (short)dbReader[off++],
+                                        effect_type = (short)dbReader[off++],
+                                        state_id = (int)dbReader[off++],
+                                        state_level_base = (int)dbReader[off++],
+                                        state_level_per_skl = (decimal)dbReader[off++],
+                                        state_level_per_enhance = (decimal)dbReader[off++],
+                                        state_second = (decimal)dbReader[off++],
+                                        state_second_per_level = (decimal)dbReader[off++],
+                                        state_second_per_enhance = (decimal)dbReader[off++],
+                                        state_type = Convert.ToChar(dbReader[off++]),
+                                        probability_on_hit = (int)dbReader[off++],
+                                        probability_inc_by_slv = (int)dbReader[off++],
+                                        hit_bonus = (short)dbReader[off++],
+                                        hit_bonus_per_enhance = (short)dbReader[off++],
+                                        percentage = (short)dbReader[off++],
+                                        hate_mod = (decimal)dbReader[off++],
+                                        hate_basic = (short)dbReader[off++],
+                                        hate_per_skl = (decimal)dbReader[off++],
+                                        hate_per_enhance = (decimal)dbReader[off++],
+                                        critical_bonus = (int)dbReader[off++],
+                                        critical_bonus_per_skl = (int)dbReader[off++],
+                                        var1 = (decimal)dbReader[off++],
+                                        var2 = (decimal)dbReader[off++],
+                                        var3 = (decimal)dbReader[off++],
+                                        var4 = (decimal)dbReader[off++],
+                                        var5 = (decimal)dbReader[off++],
+                                        var6 = (decimal)dbReader[off++],
+                                        var7 = (decimal)dbReader[off++],
+                                        var8 = (decimal)dbReader[off++],
+                                        var9 = (decimal)dbReader[off++],
+                                        var10 = (decimal)dbReader[off++],
+                                        var11 = (decimal)dbReader[off++],
+                                        var12 = (decimal)dbReader[off++],
+                                        var13 = (decimal)dbReader[off++],
+                                        var14 = (decimal)dbReader[off++],
+                                        var15 = (decimal)dbReader[off++],
+                                        var16 = (decimal)dbReader[off++],
+                                        var17 = (decimal)dbReader[off++],
+                                        var18 = (decimal)dbReader[off++],
+                                        var19 = (decimal)dbReader[off++],
+                                        var20 = (decimal)dbReader[off++],
+                                        icon_id = (int)dbReader[off++],
+                                        icon_file_name = (string)dbReader[off++],
+                                        is_projectile = (byte)dbReader[off++],
+                                        projectile_speed = (decimal)dbReader[off++],
+                                        projectile_acceleration = (decimal)dbReader[off++]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from SkillResource", SkillResource.Count);
+        }
+
+        internal static void LoadSkillJP()
+        {
+            SkillJPResource = new List<DB_SkillJP>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SkillJPResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                SkillJPResource.Add(
+                                    new DB_SkillJP
+                                    {
+                                        skill_id = (int)dbReader[off++],
+                                        jp_01 = (int)dbReader[off++],
+                                        jp_02 = (int)dbReader[off++],
+                                        jp_03 = (int)dbReader[off++],
+                                        jp_04 = (int)dbReader[off++],
+                                        jp_05 = (int)dbReader[off++],
+                                        jp_06 = (int)dbReader[off++],
+                                        jp_07 = (int)dbReader[off++],
+                                        jp_08 = (int)dbReader[off++],
+                                        jp_09 = (int)dbReader[off++],
+                                        jp_10 = (int)dbReader[off++],
+                                        jp_11 = (int)dbReader[off++],
+                                        jp_12 = (int)dbReader[off++],
+                                        jp_13 = (int)dbReader[off++],
+                                        jp_14 = (int)dbReader[off++],
+                                        jp_15 = (int)dbReader[off++],
+                                        jp_16 = (int)dbReader[off++],
+                                        jp_17 = (int)dbReader[off++],
+                                        jp_18 = (int)dbReader[off++],
+                                        jp_19 = (int)dbReader[off++],
+                                        jp_20 = (int)dbReader[off++],
+                                        jp_31 = (int)dbReader[off++],
+                                        jp_32 = (int)dbReader[off++],
+                                        jp_33 = (int)dbReader[off++],
+                                        jp_34 = (int)dbReader[off++],
+                                        jp_35 = (int)dbReader[off++],
+                                        jp_36 = (int)dbReader[off++],
+                                        jp_37 = (int)dbReader[off++],
+                                        jp_38 = (int)dbReader[off++],
+                                        jp_39 = (int)dbReader[off++],
+                                        jp_40 = (int)dbReader[off++],
+                                        jp_41 = (int)dbReader[off++],
+                                        jp_42 = (int)dbReader[off++],
+                                        jp_43 = (int)dbReader[off++],
+                                        jp_44 = (int)dbReader[off++],
+                                        jp_45 = (int)dbReader[off++],
+                                        jp_46 = (int)dbReader[off++],
+                                        jp_47 = (int)dbReader[off++],
+                                        jp_48 = (int)dbReader[off++],
+                                        jp_49 = (int)dbReader[off++],
+                                        jp_50 = (int)dbReader[off++],
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from SkillJPResource", SkillJPResource.Count);
+        }
+
         internal static void LoadSummonDefaultName()
         {
             SummonDefaultNameResource = new List<DB_SummonName>();
@@ -1090,6 +1332,8 @@ namespace Game.Content
             LoadMonsterDropTable();
             LoadMonsterSkill();
             LoadSetItemEffect();
+            LoadSkill();
+            LoadSkillJP();
             LoadSummonDefaultName();
             LoadSummonUniqueName();
             LoadString();
