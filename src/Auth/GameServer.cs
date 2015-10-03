@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using System.Security.Cryptography;
+using Auth.Network;
 
 namespace Auth
 {

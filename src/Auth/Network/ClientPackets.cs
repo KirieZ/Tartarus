@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 
-namespace Auth
+namespace Auth.Network
 {
 	/// <summary>
 	/// Packets exchanged between Client and Auth

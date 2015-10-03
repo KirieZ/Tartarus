@@ -47,26 +47,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\Auth\ClientManager.cs">
-      <Link>Auth\ClientManager.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Auth\ClientPackets.cs">
-      <Link>Auth\ClientPackets.cs</Link>
-    </Compile>
     <Compile Include="..\src\Auth\ConsoleHelper.cs">
       <Link>Auth\ConsoleHelper.cs</Link>
     </Compile>
     <Compile Include="..\src\Auth\GameClient.cs">
       <Link>Auth\GameClient.cs</Link>
     </Compile>
-    <Compile Include="..\src\Auth\GameManager.cs">
-      <Link>Auth\GameManager.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Auth\GamePackets.cs">
-      <Link>Auth\GamePackets.cs</Link>
-    </Compile>
     <Compile Include="..\src\Auth\GameServer.cs">
       <Link>Auth\GameServer.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\ClientManager.cs">
+      <Link>Network\ClientManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\ClientPackets.cs">
+      <Link>Network\ClientPackets.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\GameManager.cs">
+      <Link>Network\GameManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\GamePackets.cs">
+      <Link>Network\GamePackets.cs</Link>
     </Compile>
     <Compile Include="..\src\Auth\Program.cs">
       <Link>Auth\Program.cs</Link>

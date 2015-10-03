@@ -1,3 +1,4 @@
+using Auth.Network;
 // Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
 using Common;
