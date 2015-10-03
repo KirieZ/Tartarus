@@ -94,6 +94,7 @@ namespace Auth
                                 this.AccountId = (int)reader[0];
 								this.UserId = (string)reader[1];
                                 this.Permission = (byte)reader[3];
+								this.LastServerId = Convert.ToUInt16((int)reader[4]);
                             }
                         }
                     }
@@ -121,6 +122,7 @@ namespace Auth
 		{
 			int accId = 0;
 			byte perm = 0;
+			ushort svId = 0;
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
@@ -137,6 +139,7 @@ namespace Auth
 							{
 								accId = (int)reader[0];
 								perm = (byte)reader[3];
+								svId = Convert.ToUInt16((int)reader[4]);
 							}
 						}
 					}
@@ -191,6 +194,7 @@ namespace Auth
 					this.AccountId = accId;
 					this.UserId = userId;
 					this.Permission = perm;
+					this.LastServerId = svId;
 
 					ClientPackets.Instance.Result(this, 0); // Success
 					return;
@@ -209,6 +213,24 @@ namespace Auth
 				ConsoleUtils.ShowWarning("User '{0}' trying to join invalid server {1}", this.UserId, index);
 				return;
 			}
+
+			// Updates last_serverid
+			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			{
+				using (DbCommand dbCmd = dbManager.CreateCommand("UPDATE login SET last_serverid = @sid WHERE account_id = @acc"))
+				{
+					dbManager.CreateInParameter(dbCmd, "sid", System.Data.DbType.Int32, (int)index);
+					dbManager.CreateInParameter(dbCmd, "acc", System.Data.DbType.Int32, this.AccountId);
+					try
+					{
+						dbCmd.Connection.Open();
+						dbCmd.ExecuteNonQuery();
+					}
+					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+					finally { dbCmd.Connection.Close(); }
+				}
+			}
+
 			Server.Instance.GameServers[index].UserJoin(this);
 		}
 	}
