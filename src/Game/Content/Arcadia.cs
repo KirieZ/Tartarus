@@ -19,12 +19,16 @@ namespace Game.Content
         public static List<DB_DropGroup> DropGroupResource;
         public static List<DB_Item> ItemResource;
         public static List<DB_ItemEffect> ItemEffectResource;
+        public static List<DB_Level> LevelResource;
+        public static List<DB_Market> MarketResource;
         public static List<DB_Monster> MonsterResource;
         public static List<DB_MonsterDropTable> MonsterDropTableResource;
         public static List<DB_MonsterSkill> MonsterSkillResource;
+        public static List<DB_Quest> QuestResource;
         public static List<DB_SetItemEffect> SetItemEffectResource;
         public static List<DB_Skill> SkillResource;
         public static List<DB_SkillJP> SkillJPResource;
+        public static List<DB_SkillTree> SkillTreeResource;
         public static List<DB_SummonName> SummonDefaultNameResource;
         public static List<DB_SummonName> SummonUniqueNameResource;
         public static List<DB_Summon> SummonResource;
@@ -513,6 +517,87 @@ namespace Game.Content
             ConsoleUtils.ShowNotice("{0} entries loaded from ItemEffectResource", ItemEffectResource.Count);
         }
 
+        internal static void LoadLevel()
+        {
+            LevelResource = new List<DB_Level>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM LevelResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                LevelResource.Add(
+                                    new DB_Level
+                                    {
+                                        level = (int)dbReader[0],
+                                        normal_exp = (long)dbReader[1],
+                                        jl1 = (int)dbReader[2],
+                                        jl2 = (int)dbReader[3],
+                                        jl3 = (int)dbReader[4],
+                                        jl4 = (int)dbReader[0]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from LevelResource", LevelResource.Count);
+        }
+
+        internal static void LoadMarket()
+        {
+            MarketResource = new List<DB_Market>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM MarketResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                MarketResource.Add(
+                                    new DB_Market
+                                    {
+                                        sort_id = (int)dbReader[0],
+                                        name = (string)dbReader[1],
+                                        code = (int)dbReader[2],
+                                        price_ratio = (decimal)dbReader[3],
+                                        huntaholic_ratio = (decimal)dbReader[4]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from MarketResource", MarketResource.Count);
+        }
+
         internal static void LoadMonster()
         {
             MonsterResource = new List<DB_Monster>();
@@ -803,6 +888,118 @@ namespace Game.Content
             }
 
             ConsoleUtils.ShowNotice("{0} entries loaded from MonsterSkillResource", MonsterSkillResource.Count);
+        }
+
+        internal static void LoadQuest()
+        {
+            QuestResource = new List<DB_Quest>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM QuestResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                QuestResource.Add(
+                                    new DB_Quest
+                                    {
+                                        id = (int)dbReader[off++],
+                                        text_id_quest = (int)dbReader[off++],
+                                        text_id_summary = (int)dbReader[off++],
+                                        text_id_status = (int)dbReader[off++],
+                                        limit_begin_time = (int)dbReader[off++],
+                                        limit_end_time = (int)dbReader[off++],
+                                        limit_level = (int)dbReader[off++],
+                                        limit_job_level = (int)dbReader[off++],
+                                        limit_max_level = (int)dbReader[off++],
+                                        limit_max_job_level = (int)dbReader[off++],
+                                        limit_deva = Convert.ToChar(dbReader[off++]),
+                                        limit_asura = Convert.ToChar(dbReader[off++]),
+                                        limit_gaia = Convert.ToChar(dbReader[off++]),
+                                        limit_fighter = Convert.ToChar(dbReader[off++]),
+                                        limit_hunter = Convert.ToChar(dbReader[off++]),
+                                        limit_magician = Convert.ToChar(dbReader[off++]),
+                                        limit_summoner = Convert.ToChar(dbReader[off++]),
+                                        limit_job = (int)dbReader[off++],
+                                        limit_favor_group_id = (int)dbReader[off++],
+                                        limit_favor = (int)dbReader[off++],
+                                        repeatable = Convert.ToChar(dbReader[off++]),
+                                        invoke_condition = (int)dbReader[off++],
+                                        invoke_value = (int)dbReader[off++],
+                                        time_limit_type = Convert.ToChar(dbReader[off++]),
+                                        time_limit = (int)dbReader[off++],
+                                        type = (int)dbReader[off++],
+                                        value1 = (int)dbReader[off++],
+                                        value2 = (int)dbReader[off++],
+                                        value3 = (int)dbReader[off++],
+                                        value4 = (int)dbReader[off++],
+                                        value5 = (int)dbReader[off++],
+                                        value6 = (int)dbReader[off++],
+                                        value7 = (int)dbReader[off++],
+                                        value8 = (int)dbReader[off++],
+                                        value9 = (int)dbReader[off++],
+                                        value10 = (int)dbReader[off++],
+                                        value11 = (int)dbReader[off++],
+                                        value12 = (int)dbReader[off++],
+                                        drop_group_id = (int)dbReader[off++],
+                                        quest_difficulty = (int)dbReader[off++],
+                                        favor_group_id = (int)dbReader[off++],
+                                        hate_group_id = (int)dbReader[off++],
+                                        favor = (int)dbReader[off++],
+                                        exp = (long)dbReader[off++],
+                                        jp = (int)dbReader[off++],
+                                        holicpoint = (int)dbReader[off++],
+                                        gold = (int)dbReader[off++],
+                                        default_reward_id = (int)dbReader[off++],
+                                        default_reward_level = (int)dbReader[off++],
+                                        default_reward_quantity = (int)dbReader[off++],
+                                        optional_reward_id1 = (int)dbReader[off++],
+                                        optional_reward_level1 = (int)dbReader[off++],
+                                        optional_reward_quantity1 = (int)dbReader[off++],
+                                        optional_reward_id2 = (int)dbReader[off++],
+                                        optional_reward_level2 = (int)dbReader[off++],
+                                        optional_reward_quantity2 = (int)dbReader[off++],
+                                        optional_reward_id3 = (int)dbReader[off++],
+                                        optional_reward_level3 = (int)dbReader[off++],
+                                        optional_reward_quantity3 = (int)dbReader[off++],
+                                        optional_reward_id4 = (int)dbReader[off++],
+                                        optional_reward_level4 = (int)dbReader[off++],
+                                        optional_reward_quantity4 = (int)dbReader[off++],
+                                        optional_reward_id5 = (int)dbReader[off++],
+                                        optional_reward_level5 = (int)dbReader[off++],
+                                        optional_reward_quantity5 = (int)dbReader[off++],
+                                        optional_reward_id6 = (int)dbReader[off++],
+                                        optional_reward_level6 = (int)dbReader[off++],
+                                        optional_reward_quantity6 = (int)dbReader[off++],
+                                        forequest1 = (int)dbReader[off++],
+                                        forequest2 = (int)dbReader[off++],
+                                        forequest3 = (int)dbReader[off++],
+                                        or_flag = Convert.ToChar(dbReader[off++]),
+                                        script_start_text = (string)dbReader[off++],
+                                        script_end_text = (string)dbReader[off++],
+                                        script_text = (string)dbReader[off++]
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from QuestResource", QuestResource.Count);
         }
 
         internal static void LoadSetItemEffect()
@@ -1111,6 +1308,56 @@ namespace Game.Content
             ConsoleUtils.ShowNotice("{0} entries loaded from SkillJPResource", SkillJPResource.Count);
         }
 
+        internal static void LoadSkillTree()
+        {
+            SkillTreeResource = new List<DB_SkillTree>();
+
+            using (DBManager dbManager = new DBManager(conType, conString))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SkillTreeResource"))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                SkillTreeResource.Add(
+                                    new DB_SkillTree
+                                    {
+                                        job_id = (int)dbReader[off++],
+                                        skill_id = (int)dbReader[off++],
+                                        min_skill_lv = (int)dbReader[off++],
+                                        max_skill_lv = (int)dbReader[off++],
+                                        lv = (int)dbReader[off++],
+                                        job_lv = (int)dbReader[off++],
+                                        jp_ratio = (decimal)dbReader[off++],
+                                        need_skill_id_1 = (int)dbReader[off++],
+                                        need_skill_lv_1 = (int)dbReader[off++],
+                                        need_skill_id_2 = (int)dbReader[off++],
+                                        need_skill_lv_2 = (int)dbReader[off++],
+                                        need_skill_id_3 = (int)dbReader[off++],
+                                        need_skill_lv_3 = (int)dbReader[off++],
+                                    });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from SkillTreeResource", SkillTreeResource.Count);
+        }
+
         internal static void LoadSummonDefaultName()
         {
             SummonDefaultNameResource = new List<DB_SummonName>();
@@ -1328,12 +1575,16 @@ namespace Game.Content
             LoadEventArea();
             LoadItem();
             LoadItemEffect();
+            LoadLevel();
+            LoadMarket();
             LoadMonster();
             LoadMonsterDropTable();
             LoadMonsterSkill();
+            LoadQuest();
             LoadSetItemEffect();
             LoadSkill();
             LoadSkillJP();
+            LoadSkillTree();
             LoadSummonDefaultName();
             LoadSummonUniqueName();
             LoadString();

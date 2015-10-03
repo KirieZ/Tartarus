@@ -130,6 +130,12 @@
     <Compile Include="..\src\Game\Database\Structures\DB_ItemEffect.cs">
       <Link>Database\Structures\DB_ItemEffect.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Level.cs">
+      <Link>Database\Structures\DB_Level.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Market.cs">
+      <Link>Database\Structures\DB_Market.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_Monster.cs">
       <Link>Database\Structures\DB_Monster.cs</Link>
     </Compile>
@@ -139,6 +145,9 @@
     <Compile Include="..\src\Game\Database\Structures\DB_MonsterSkill.cs">
       <Link>Database\Structures\DB_MonsterSkill.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Quest.cs">
+      <Link>Database\Structures\DB_Quest.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_SetItemEffect.cs">
       <Link>Database\Structures\DB_SetItemEffect.cs</Link>
     </Compile>
@@ -147,6 +156,9 @@
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_SkillJP.cs">
       <Link>Database\Structures\DB_SkillJP.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_SkillTree.cs">
+      <Link>Database\Structures\DB_SkillTree.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_String.cs">
       <Link>Database\Structures\DB_String.cs</Link>
