@@ -73,7 +73,7 @@ namespace Auth
 
 			ConsoleUtils.HexDump(data, "Sent to GameServer");
 
-			server.ClSocket.BeginSend(data, 0, data.Length,  SocketFlags.None, new AsyncCallback(SendCallback), server);
+			server.NetData.ClSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), server);
 		}
 
 		#region Internal
@@ -92,7 +92,7 @@ namespace Auth
 			GameServer gs = new GameServer(client);
 
 			client.BeginReceive(
-				gs.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
+				gs.NetData.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
 				new AsyncCallback(ReadCallback), gs
 			);
 		}
@@ -107,7 +107,7 @@ namespace Auth
 
 			try
 			{
-				int bytesRead = gs.ClSocket.EndReceive(ar);
+				int bytesRead = gs.NetData.ClSocket.EndReceive(ar);
 				if (bytesRead > 0)
 				{
 					int curOffset = 0;
@@ -115,52 +115,52 @@ namespace Auth
 
 					do
 					{
-						if (gs.PacketSize == 0)
+						if (gs.NetData.PacketSize == 0)
 						{
-							if (gs.Offset + bytesRead > 3)
+							if (gs.NetData.Offset + bytesRead > 3)
 							{
-								bytesToRead = (4 - gs.Offset);
-								gs.Data.Write(gs.Buffer, curOffset, bytesToRead);
+								bytesToRead = (4 - gs.NetData.Offset);
+								gs.NetData.Data.Write(gs.NetData.Buffer, curOffset, bytesToRead);
 								curOffset += bytesToRead;
-								gs.Offset = bytesToRead;
-								gs.PacketSize = BitConverter.ToInt32(gs.Data.ReadBytes(4, 0, true), 0);
+								gs.NetData.Offset = bytesToRead;
+								gs.NetData.PacketSize = BitConverter.ToInt32(gs.NetData.Data.ReadBytes(4, 0, true), 0);
 							}
 							else
 							{
-								gs.Data.Write(gs.Buffer, 0, bytesRead);
-								gs.Offset += bytesRead;
+								gs.NetData.Data.Write(gs.NetData.Buffer, 0, bytesRead);
+								gs.NetData.Offset += bytesRead;
 								curOffset += bytesRead;
 							}
 						}
 						else
 						{
-							int needBytes = gs.PacketSize - gs.Offset;
+							int needBytes = gs.NetData.PacketSize - gs.NetData.Offset;
 
 							// If there's enough bytes to complete this packet
 							if (needBytes <= (bytesRead - curOffset))
 							{
-								gs.Data.Write(gs.Buffer, curOffset, needBytes);
+								gs.NetData.Data.Write(gs.NetData.Buffer, curOffset, needBytes);
 								curOffset += needBytes;
 								// Packet is done, send to server to be parsed
 								// and continue.
-								PacketReceived(gs, gs.Data);
+								PacketReceived(gs, gs.NetData.Data);
 								// Do needed clean up to start a new packet
-								gs.Data = new PacketStream();
-								gs.PacketSize = 0;
-								gs.Offset = 0;
+								gs.NetData.Data = new PacketStream();
+								gs.NetData.PacketSize = 0;
+								gs.NetData.Offset = 0;
 							}
 							else
 							{
 								bytesToRead = (bytesRead - curOffset);
-								gs.Data.Write(gs.Buffer, curOffset, bytesToRead);
-								gs.Offset += bytesToRead;
+								gs.NetData.Data.Write(gs.NetData.Buffer, curOffset, bytesToRead);
+								gs.NetData.Offset += bytesToRead;
 								curOffset += bytesToRead;
 							}
 						}
 					} while (bytesRead - 1 > curOffset);
 
-					gs.ClSocket.BeginReceive(
-						gs.Buffer,
+					gs.NetData.ClSocket.BeginReceive(
+						gs.NetData.Buffer,
 						0,
 						Globals.MaxBuffer,
 						SocketFlags.None,
@@ -200,7 +200,7 @@ namespace Auth
 				GameServer gs = (GameServer)ar.AsyncState;
 
 				// Complete sending the data to the remote device.
-				int bytesSent = gs.ClSocket.EndSend(ar);
+				int bytesSent = gs.NetData.ClSocket.EndSend(ar);
 			}
 			catch (Exception)
 			{

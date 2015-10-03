@@ -1,16 +1,13 @@
 // Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using Common;
-using Common.RC4;
-using System.Data.Common;
 using Common.Utilities;
+using System;
+using System.Data.Common;
+using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text;
+
 namespace Auth
 {
 	/// <summary>
@@ -22,30 +19,19 @@ namespace Auth
 		static string sqlConString = "Server="+Settings.SqlIp+";Database="+Settings.SqlDatabase+";UID="+Settings.SqlUsername+";PWD="+Settings.SqlPassword+";Connection Timeout=5;";
 		static XDes Des = new XDes(Globals.DESKey);
 
-		// Network Data
-		public Socket ClSocket;
-		public byte[] Buffer;
-		public PacketStream Data;
-		public int PacketSize;
-		public int Offset;
-		public XRC4Cipher InCipher;
-		public XRC4Cipher OutCipher;
-
+		public NetworkData NetData { get; set; }
+		
 		// User Info
-		public int AccountId;
-		public string UserId;
-		public byte Permission;
-		public ushort LastServerId;
+		public int AccountId { get; set; }
+		public string UserId { get; set; }
+		public byte Permission { get; set; }
+		public ushort LastServerId { get; set; }
 
-		public byte[] Key;
+		public byte[] Key { get; set; }
 
 		public GameClient(Socket socket)
 		{
-			this.ClSocket = socket;
-			this.Buffer = new byte[Globals.MaxBuffer];
-			this.Data = new PacketStream();
-			this.InCipher = new XRC4Cipher(Globals.RC4Key);
-			this.OutCipher = new XRC4Cipher(Globals.RC4Key);
+			this.NetData = new NetworkData(socket);
 		}
 
 		#region Login

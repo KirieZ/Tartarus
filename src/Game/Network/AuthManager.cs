@@ -73,7 +73,7 @@ namespace Game.Network
 
 			ConsoleUtils.HexDump(data, "Sent to AuthServer");
 
-			Auth.ClSocket.BeginSend(data, 0, data.Length,  SocketFlags.None, new AsyncCallback(SendCallback), null);
+			Auth.NetData.ClSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
 		}
 
 		#region Internal
@@ -95,7 +95,7 @@ namespace Game.Network
 			Auth = new AuthServer(socket);
 			AuthPackets.Instance.Register();
 
-			socket.BeginReceive(Auth.Buffer, 0, Globals.MaxBuffer, SocketFlags.None, new AsyncCallback(ReadCallback), null);
+			socket.BeginReceive(Auth.NetData.Buffer, 0, Globals.MaxBuffer, SocketFlags.None, new AsyncCallback(ReadCallback), null);
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace Game.Network
 		{
 			try
 			{
-				int bytesRead = Auth.ClSocket.EndReceive(ar);
+				int bytesRead = Auth.NetData.ClSocket.EndReceive(ar);
 				if (bytesRead > 0)
 				{
 					int curOffset = 0;
@@ -114,52 +114,52 @@ namespace Game.Network
 
 					do
 					{
-						if (Auth.PacketSize == 0)
+						if (Auth.NetData.PacketSize == 0)
 						{
-							if (Auth.Offset + bytesRead > 3)
+							if (Auth.NetData.Offset + bytesRead > 3)
 							{
-								bytesToRead = (4 - Auth.Offset);
-								Auth.Data.Write(Auth.Buffer, curOffset, bytesToRead);
+								bytesToRead = (4 - Auth.NetData.Offset);
+								Auth.NetData.Data.Write(Auth.NetData.Buffer, curOffset, bytesToRead);
 								curOffset += bytesToRead;
-								Auth.Offset = bytesToRead;
-								Auth.PacketSize = BitConverter.ToInt32(Auth.Data.ReadBytes(4, 0, true), 0);
+								Auth.NetData.Offset = bytesToRead;
+								Auth.NetData.PacketSize = BitConverter.ToInt32(Auth.NetData.Data.ReadBytes(4, 0, true), 0);
 							}
 							else
 							{
-								Auth.Data.Write(Auth.Buffer, 0, bytesRead);
-								Auth.Offset += bytesRead;
+								Auth.NetData.Data.Write(Auth.NetData.Buffer, 0, bytesRead);
+								Auth.NetData.Offset += bytesRead;
 								curOffset += bytesRead;
 							}
 						}
 						else
 						{
-							int needBytes = Auth.PacketSize - Auth.Offset;
+							int needBytes = Auth.NetData.PacketSize - Auth.NetData.Offset;
 
 							// If there's enough bytes to complete this packet
 							if (needBytes <= (bytesRead - curOffset))
 							{
-								Auth.Data.Write(Auth.Buffer, curOffset, needBytes);
+								Auth.NetData.Data.Write(Auth.NetData.Buffer, curOffset, needBytes);
 								curOffset += needBytes;
 								// Packet is done, send to server to be parsed
 								// and continue.
-								PacketReceived(Auth, Auth.Data);
+								PacketReceived(Auth, Auth.NetData.Data);
 								// Do needed clean up to start a new packet
-								Auth.Data = new PacketStream();
-								Auth.PacketSize = 0;
-								Auth.Offset = 0;
+								Auth.NetData.Data = new PacketStream();
+								Auth.NetData.PacketSize = 0;
+								Auth.NetData.Offset = 0;
 							}
 							else
 							{
 								bytesToRead = (bytesRead - curOffset);
-								Auth.Data.Write(Auth.Buffer, curOffset, bytesToRead);
-								Auth.Offset += bytesToRead;
+								Auth.NetData.Data.Write(Auth.NetData.Buffer, curOffset, bytesToRead);
+								Auth.NetData.Offset += bytesToRead;
 								curOffset += bytesToRead;
 							}
 						}
 					} while (bytesRead - 1 > curOffset);
 
-					Auth.ClSocket.BeginReceive(
-						Auth.Buffer,
+					Auth.NetData.ClSocket.BeginReceive(
+						Auth.NetData.Buffer,
 						0,
 						Globals.MaxBuffer,
 						SocketFlags.None,
@@ -170,7 +170,7 @@ namespace Game.Network
 				else
 				{
 					ConsoleUtils.ShowWarning("Connection to Auth-Server lost.");
-					Auth.ClSocket.Close();
+					Auth.NetData.ClSocket.Close();
 					return;
 				}
 			}
@@ -181,13 +181,13 @@ namespace Game.Network
 					ConsoleUtils.ShowError(e.Message);
 
 				ConsoleUtils.ShowWarning("Connection to Auth-Server lost.");
-				Auth.ClSocket.Close();
+				Auth.NetData.ClSocket.Close();
 			}
 			catch (Exception e)
 			{
 				ConsoleUtils.ShowError(e.Message);
 				ConsoleUtils.ShowWarning("Connection to Auth-Server lost.");
-				Auth.ClSocket.Close();
+				Auth.NetData.ClSocket.Close();
 			}
 		}
 
@@ -200,7 +200,7 @@ namespace Game.Network
 			try
 			{
 				// Complete sending the data to the remote device.
-				int bytesSent = Auth.ClSocket.EndSend(ar);
+				int bytesSent = Auth.NetData.ClSocket.EndSend(ar);
 			}
 			catch (Exception)
 			{

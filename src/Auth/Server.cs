@@ -136,7 +136,7 @@ namespace Auth
 			}
 
 			GameServers.Remove(gs.Index);
-			gs.ClSocket.Close();
+			gs.NetData.ClSocket.Close();
 		}
 	}
 }

@@ -18,12 +18,7 @@ namespace Auth
 	{
 		private Dictionary<string, GameClient> PendingClients;
 
-		// Network Data
-		public Socket ClSocket { get; set; }
-		public byte[] Buffer { get; set; }
-		public PacketStream Data { get; set; }
-		public int PacketSize { get; set; }
-		public int Offset { get; set; }
+		public NetworkData NetData { get; set; }
 
 		// Server Info
 		public ushort Index { get; set; }
@@ -36,9 +31,7 @@ namespace Auth
 		
 		public GameServer(Socket socket)
 		{
-			this.ClSocket = socket;
-			this.Buffer = new byte[Globals.MaxBuffer];
-			this.Data = new PacketStream();
+			this.NetData = new NetworkData(socket);
 			this.PendingClients = new Dictionary<string, GameClient>();
 		}
 

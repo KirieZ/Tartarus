@@ -76,6 +76,9 @@
       <Link>Common\GUI\debugGUI.designer.cs</Link>
       <DependentUpon>debugGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\Common\NetworkData.cs">
+      <Link>Common\NetworkData.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\PacketStream.cs">
       <Link>Common\PacketStream.cs</Link>
     </Compile>

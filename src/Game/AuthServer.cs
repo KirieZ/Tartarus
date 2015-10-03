@@ -1,12 +1,7 @@
 // Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using Common;
+using System.Net.Sockets;
 
 namespace Game
 {
@@ -16,11 +11,7 @@ namespace Game
 	public class AuthServer
 	{
 		// Network Data
-		public Socket ClSocket { get; set; }
-		public byte[] Buffer { get; set; }
-		public PacketStream Data { get; set; }
-		public int PacketSize { get; set; }
-		public int Offset { get; set; }
+		public NetworkData NetData { get; set; }
 
 		// Server Info
 		public string Key { get; set; }
@@ -29,9 +20,7 @@ namespace Game
 
 		public AuthServer(Socket socket)
 		{
-			this.ClSocket = socket;
-			this.Buffer = new byte[Globals.MaxBuffer];
-			this.Data = new PacketStream();
+			this.NetData = new NetworkData(socket);
 		}
 	}
 }

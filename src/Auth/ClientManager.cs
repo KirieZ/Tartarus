@@ -73,8 +73,8 @@ namespace Auth
 
 			ConsoleUtils.HexDump(data, "Sent to Client");
 
-			client.ClSocket.BeginSend(
-				client.OutCipher.DoCipher(ref data),
+			client.NetData.ClSocket.BeginSend(
+				client.NetData.OutCipher.DoCipher(ref data),
 				0,
 				data.Length,
 				0,
@@ -99,7 +99,7 @@ namespace Auth
 			GameClient gc = new GameClient(client);
 
 			client.BeginReceive(
-				gc.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
+				gc.NetData.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
 				new AsyncCallback(ReadCallback), gc
 			);
 		}
@@ -114,62 +114,62 @@ namespace Auth
 
 			try
 			{
-				int bytesRead = gc.ClSocket.EndReceive(ar);
+				int bytesRead = gc.NetData.ClSocket.EndReceive(ar);
 				if (bytesRead > 0)
 				{
 					int curOffset = 0;
 					int bytesToRead = 0;
-					byte[] decode = gc.InCipher.DoCipher(ref gc.Buffer, bytesRead);
+					byte[] decode = gc.NetData.InCipher.DoCipher(ref gc.NetData.Buffer, bytesRead);
 
 					do
 					{
-						
-						if (gc.PacketSize == 0)
+
+						if (gc.NetData.PacketSize == 0)
 						{
-							if (gc.Offset + bytesRead > 3)
+							if (gc.NetData.Offset + bytesRead > 3)
 							{
-								bytesToRead = (4 - gc.Offset);
-								gc.Data.Write(decode, curOffset, bytesToRead);
+								bytesToRead = (4 - gc.NetData.Offset);
+								gc.NetData.Data.Write(decode, curOffset, bytesToRead);
 								curOffset += bytesToRead;
-								gc.Offset = bytesToRead;
-								gc.PacketSize = BitConverter.ToInt32(gc.Data.ReadBytes(4, 0, true), 0);
+								gc.NetData.Offset = bytesToRead;
+								gc.NetData.PacketSize = BitConverter.ToInt32(gc.NetData.Data.ReadBytes(4, 0, true), 0);
 							}
 							else
 							{
-								gc.Data.Write(decode, 0, bytesRead);
-								gc.Offset += bytesRead;
+								gc.NetData.Data.Write(decode, 0, bytesRead);
+								gc.NetData.Offset += bytesRead;
 								curOffset += bytesRead;
 							}
 						}
 						else
 						{
-							int needBytes = gc.PacketSize - gc.Offset;
+							int needBytes = gc.NetData.PacketSize - gc.NetData.Offset;
 
 							// If there's enough bytes to complete this packet
 							if (needBytes <= (bytesRead - curOffset))
 							{
-								gc.Data.Write(decode, curOffset, needBytes);
+								gc.NetData.Data.Write(decode, curOffset, needBytes);
 								curOffset += needBytes;
 								// Packet is done, send to server to be parsed
 								// and continue.
-								PacketReceived(gc, gc.Data);
+								PacketReceived(gc, gc.NetData.Data);
 								// Do needed clean up to start a new packet
-								gc.Data = new PacketStream();
-								gc.PacketSize = 0;
-								gc.Offset = 0;
+								gc.NetData.Data = new PacketStream();
+								gc.NetData.PacketSize = 0;
+								gc.NetData.Offset = 0;
 							}
 							else
 							{
 								bytesToRead = (bytesRead - curOffset);
-								gc.Data.Write(decode, curOffset, bytesToRead);
-								gc.Offset += bytesToRead;
+								gc.NetData.Data.Write(decode, curOffset, bytesToRead);
+								gc.NetData.Offset += bytesToRead;
 								curOffset += bytesToRead;
 							}
 						}
 					} while (bytesRead - 1 > curOffset);
 
-					gc.ClSocket.BeginReceive(
-						gc.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
+					gc.NetData.ClSocket.BeginReceive(
+						gc.NetData.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
 						new AsyncCallback(ReadCallback), gc
 					);
 
@@ -198,7 +198,7 @@ namespace Auth
 				GameClient gc = (GameClient)ar.AsyncState;
 
 				// Complete sending the data to the remote device.
-				int bytesSent = gc.ClSocket.EndSend(ar);
+				int bytesSent = gc.NetData.ClSocket.EndSend(ar);
 			}
 			catch (Exception)
 			{
