@@ -64,6 +64,7 @@ namespace Game.Network
 			stream.WriteString(Settings.ServerIP, 16);
 			stream.WriteInt32(Settings.Port);
 			stream.WriteString(Settings.AcceptorKey, 10);
+			stream.WriteByte(Settings.Permission);
 
 			AuthManager.Instance.Send(stream);
 		}

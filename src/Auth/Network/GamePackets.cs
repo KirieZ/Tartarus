@@ -33,19 +33,6 @@ namespace Auth.Network
 		}
 
 		/// <summary>
-		/// The result of a join inform
-		/// </summary>
-		/// <param name="server"></param>
-		/// <param name="stream"></param>
-		private void GA_JoinResult(GameServer server, PacketStream stream)
-		{
-			string userId = stream.ReadString(61);
-			ushort result = stream.ReadUInt16();
-
-			server.JoinResult(userId, result);
-		}
-
-		/// <summary>
 		/// Called whenever a packet is received from a game client
 		/// </summary>
 		/// <param name="client"></param>
@@ -64,6 +51,19 @@ namespace Auth.Network
 		}
 
 		/// <summary>
+		/// The result of a join inform
+		/// </summary>
+		/// <param name="server"></param>
+		/// <param name="stream"></param>
+		private void GA_JoinResult(GameServer server, PacketStream stream)
+		{
+			string userId = stream.ReadString(61);
+			ushort result = stream.ReadUInt16();
+
+			server.JoinResult(userId, result);
+		}
+
+		/// <summary>
 		/// Register server data
 		/// </summary>
 		/// <param name="server"></param>
@@ -77,6 +77,7 @@ namespace Auth.Network
 			server.IP = stream.ReadString(16);
 			server.Port = (short)stream.ReadInt32();
 			string key = stream.ReadString(10);
+			server.Permission = stream.ReadByte();
 
 			Server.Instance.OnRegisterGameServer(index, server, key);
 		}

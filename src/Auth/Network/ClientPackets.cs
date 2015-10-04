@@ -155,10 +155,17 @@ namespace Auth.Network
 			PacketStream stream = new PacketStream(0x2726);
 
 			stream.WriteUInt16(client.LastServerId);
-			stream.WriteUInt16((ushort)Server.Instance.GameServers.Count);
+			stream.WriteUInt16(0);
+			ushort count = 0;
+
 			foreach(ushort index in Server.Instance.GameServers.Keys)
 			{
 				GameServer gs = Server.Instance.GameServers[index];
+				
+				if (gs.Permission > client.Permission) // Insufficient permission, skip
+					continue;
+
+				count++;
 
 				stream.WriteUInt16(index);
 				stream.WriteString(gs.Name, 21);
@@ -168,6 +175,9 @@ namespace Auth.Network
 				stream.WriteInt32(gs.Port);
 				stream.WriteUInt16(gs.UserRatio);
 			}
+
+			// Writes real server count
+			stream.WriteAt(BitConverter.GetBytes(count), Globals.HeaderLength + 2, 2);
 
 			ClientManager.Instance.Send(client, stream);
 		}

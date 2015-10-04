@@ -71,7 +71,7 @@ namespace Common
 
 		#region Write Methods
 		/// <summary>
-		/// Writes count bytes of given buffer to the packet at given offset
+		/// Writes count bytes of given buffer at given offset to the packet
 		/// </summary>
 		/// <param name="buffer"></param>
 		/// <param name="offset"></param>
@@ -79,6 +79,18 @@ namespace Common
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			this.inner.Write(buffer, offset, count);
+		}
+
+		/// <summary>
+		/// Writes count bytes of giver buffer to the packet at position offset
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <param name="position"></param>
+		/// <param name="count"></param>
+		public void WriteAt(byte[] buffer, int position, int count)
+		{
+			this.inner.Seek(position, SeekOrigin.Begin);
+			this.inner.Write(buffer, 0, count);
 		}
 
 		/// <summary>

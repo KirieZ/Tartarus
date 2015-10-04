@@ -29,7 +29,8 @@ namespace Auth
 		public string NoticeUrl { get; set; }
 		public bool AdultServer { get; set; }
 		public ushort UserRatio { get; set; }
-		
+		public byte Permission { get; set; }
+
 		public GameServer(Socket socket)
 		{
 			this.NetData = new NetworkData(socket);
@@ -42,6 +43,11 @@ namespace Auth
 		/// <param name="gameClient"></param>
 		internal void UserJoin(GameClient gameClient)
 		{
+			// Checks if user can join
+			// This if avoids hack attempts (joining a server that isn't listed)
+			if (gameClient.Permission < this.Permission)
+				return;
+
 			// Generates a join key
 			byte[] key = new byte[8];
 			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();

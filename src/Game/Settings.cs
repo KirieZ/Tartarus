@@ -27,6 +27,7 @@ namespace Game
 		public static UInt16 Index;
 		public static String Name;
 		public static String Notice;
+		public static Byte Permission;
 
 		// Database Settings
 		public static Int32 SqlEngine;
@@ -75,6 +76,7 @@ namespace Game
 			Index = (UInt16)ParseSetting(ref settings, DType.UInt16, "server_index", (UInt16)1);
 			Name = (String)ParseSetting(ref settings, DType.String, "server_name", "Tartarus");
 			Notice = (String)ParseSetting(ref settings, DType.String, "notice_url", "http://127.0.0.1/notice.htm");
+			Permission = (byte)ParseSetting(ref settings, DType.Byte, "min_permission", (byte)0);
 
 			// Loads default SQL Settings
 			String defaultSqlHost = (String)ParseSetting(ref settings, DType.String, "sql.hostname", "127.0.0.1");
@@ -200,10 +202,10 @@ namespace Game
 			}
 		}
 
-		private static Byte GetByte(string value, Byte defaultVal)
+		private static byte GetByte(string value, Byte defaultVal)
 		{
 			byte val;
-			if (Byte.TryParse(value, out val))
+			if (byte.TryParse(value, out val))
 			{
 				return val;
 			}

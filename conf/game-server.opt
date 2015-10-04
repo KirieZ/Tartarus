@@ -36,7 +36,11 @@ acceptor_key: "secret"
 // Server Index, Name and notice URL
 server_index: 1
 server_name: Tartarus
-notice_url: "http://127.0.0.1/notice.htm"
+notice_url: http://127.0.0.1/notice.htm
+
+// Permission required for account to join
+// 0 = Everyone can join
+min_permission: 0
 
 // Map Size
 map_length_x: 14
