@@ -13,16 +13,36 @@ using System.Threading.Tasks;
 namespace Game.Network
 {
 	/// <summary>
+	/// Holds an AuthServer data
+	/// </summary>
+	public class AuthServer
+	{
+		// Network Data
+		public NetworkData NetData { get; set; }
+
+		public AuthServer(Socket socket)
+		{
+			this.NetData = new NetworkData(socket);
+		}
+	}
+
+	/// <summary>
 	/// Handles the connection between Auth and Game Servers
 	/// </summary>
 	public class AuthManager
 	{
+		/// <summary>
+		/// Holds the instance to auth manager
+		/// </summary>
 		public static readonly AuthManager Instance = new AuthManager();
 
+		/// <summary>
+		/// Holds the auth server
+		/// </summary>
 		private AuthServer Auth;
 
 		/// <summary>
-		/// Starts the auth-server listener
+		/// Starts the auth-server connection
 		/// </summary>
 		/// <returns>true on success, false otherwise</returns>
 		public bool Start()
@@ -31,12 +51,14 @@ namespace Game.Network
 
 			try
 			{
+				// Parse string IP Address
 				IPAddress ip;
 				if (!IPAddress.TryParse(Settings.AuthServerIP, out ip))
 				{
 					ConsoleUtils.ShowFatalError("Failed to parse Server IP ({0})", Settings.ServerIP);
 					return false;
 				}
+				// Connect
 				socket.BeginConnect(new IPEndPoint(ip, Settings.AuthServerPort), new AsyncCallback(ConnectCallback), socket);
 			}
 			catch (Exception e)
@@ -58,6 +80,7 @@ namespace Game.Network
 		/// <param name="packetStream"></param>
 		private void PacketReceived(AuthServer server, PacketStream packetStream)
 		{
+			// Dumps packet data and process
 			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from AuthServer");
 			AuthPackets.Instance.PacketReceived(server, packetStream);
 		}
@@ -69,10 +92,11 @@ namespace Game.Network
 		/// <param name="packet"></param>
 		public void Send(PacketStream packet)
 		{
+			// Completes the packet and retrieve it
 			byte[] data = packet.GetPacket().ToArray();
 
+			// Dump and send
 			ConsoleUtils.HexDump(data, "Sent to AuthServer");
-
 			Auth.NetData.ClSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
 		}
 
@@ -92,9 +116,11 @@ namespace Game.Network
 			}
 			socket.EndConnect(ar);
 
+			// Initializes a new instance of Auth
 			Auth = new AuthServer(socket);
 			AuthPackets.Instance.Register();
 
+			// Starts to receive data
 			socket.BeginReceive(Auth.NetData.Buffer, 0, Globals.MaxBuffer, SocketFlags.None, new AsyncCallback(ReadCallback), null);
 		}
 
@@ -106,18 +132,24 @@ namespace Game.Network
 		{
 			try
 			{
+				// Retrieves the ammount of bytes received
 				int bytesRead = Auth.NetData.ClSocket.EndReceive(ar);
 				if (bytesRead > 0)
 				{
+					// The offset of the current buffer
 					int curOffset = 0;
+					// Bytes to use in the next write
 					int bytesToRead = 0;
 
 					do
-					{
+					{ // While there's data to read
+
 						if (Auth.NetData.PacketSize == 0)
-						{
+						{ // If we don't have the packet size yet
+
 							if (Auth.NetData.Offset + bytesRead > 3)
-							{
+							{ // If we can retrieve the packet size with the received data
+								// If yes, we read remaining bytes until we get the packet size
 								bytesToRead = (4 - Auth.NetData.Offset);
 								Auth.NetData.Data.Write(Auth.NetData.Buffer, curOffset, bytesToRead);
 								curOffset += bytesToRead;
@@ -126,13 +158,15 @@ namespace Game.Network
 							}
 							else
 							{
+								// If not, we read everything.
 								Auth.NetData.Data.Write(Auth.NetData.Buffer, 0, bytesRead);
 								Auth.NetData.Offset += bytesRead;
 								curOffset += bytesRead;
 							}
 						}
 						else
-						{
+						{ // If we have packet size
+							// How many bytes we need to complete this packet
 							int needBytes = Auth.NetData.PacketSize - Auth.NetData.Offset;
 
 							// If there's enough bytes to complete this packet
@@ -158,6 +192,7 @@ namespace Game.Network
 						}
 					} while (bytesRead - 1 > curOffset);
 
+					// Starts to receive more data
 					Auth.NetData.ClSocket.BeginReceive(
 						Auth.NetData.Buffer,
 						0,
@@ -176,7 +211,7 @@ namespace Game.Network
 			}
 			catch (SocketException e)
 			{
-				// 10054 : Socket closed, not a error
+				// 10054 : Socket closed, not an error
 				if (!(e.ErrorCode == 10054))
 					ConsoleUtils.ShowError(e.Message);
 

@@ -97,9 +97,6 @@
     <Compile Include="..\src\Common\Utilities\XDes.cs">
       <Link>Common\Utilities\XDes.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\AuthServer.cs">
-      <Link>Game\AuthServer.cs</Link>
-    </Compile>
     <Compile Include="..\src\Game\ConsoleHelper.cs">
       <Link>Game\ConsoleHelper.cs</Link>
     </Compile>
