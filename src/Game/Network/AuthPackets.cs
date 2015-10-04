@@ -89,7 +89,7 @@ namespace Game.Network
 		private void AG_UserJoin(AuthServer server, PacketStream stream)
 		{
 			string userId = stream.ReadString(61);
-			byte[] key = stream.ReadBytes(8);
+			ulong key = stream.ReadUInt64();
 
 			Server.Instance.PendingUser(userId, key);
 		}

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using Game;
+using System.Net.Sockets;
 
 namespace Game.Content
 {
@@ -34,7 +35,7 @@ namespace Game.Content
 		static int sqlConType = Settings.SqlEngine;
         static string sqlConString = "Server="+Settings.SqlGameIp+";Database="+Settings.SqlGameDatabase+";UID="+Settings.SqlGameUsername+";PWD="+Settings.SqlGamePassword+";Connection Timeout=5;";
 
-        /// <summary>
+		/// <summary>
         /// Table storing EXP-TNL (To-Next-Level) values
         /// </summary>
         public static long[] ExpTable;
@@ -72,5 +73,22 @@ namespace Game.Content
         public static void Start()
         {
         }
+
+
+		// Network Data
+		public NetworkData NetData { get; set; }
+
+		// User Info
+		public int AccountId { get; set; }
+		public string UserId { get; set; }
+		public byte Permission { get; set; }
+		public ushort LastServerId { get; set; }
+
+		public byte[] Key { get; set; }
+
+		public Player(Socket socket)
+		{
+			this.NetData = new NetworkData(socket);
+		}
     }
 }

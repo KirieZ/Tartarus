@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Game.Content;
 
 namespace Game.Network
 {
@@ -16,7 +17,7 @@ namespace Game.Network
 	{
 		public static readonly ClientPackets Instance = new ClientPackets();
 		
-		private delegate void PacketAction(GameClient client, PacketStream stream);
+		private delegate void PacketAction(Player client, PacketStream stream);
 
 		private Dictionary<ushort, PacketAction> PacketsDb;
 
@@ -42,7 +43,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		public void PacketReceived(GameClient client, PacketStream stream)
+		public void PacketReceived(Player client, PacketStream stream)
 		{
 			// Is it a known packet ID
 			if (!PacketsDb.ContainsKey(stream.GetId()))
@@ -62,7 +63,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_Version(GameClient client, PacketStream stream)
+		private void CS_Version(Player client, PacketStream stream)
 		{
 			//string version = stream.ReadString(20);
 		}
@@ -73,7 +74,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_SystemSpecs(GameClient client, PacketStream stream) { }
+		private void CS_SystemSpecs(Player client, PacketStream stream) { }
 		#endregion
 
 		#region Lobby
@@ -82,10 +83,12 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_AccountWithAuth(GameClient client, PacketStream stream)
+		private void CS_AccountWithAuth(Player client, PacketStream stream)
 		{
 			string userId = stream.ReadString(61);
 			ulong key = stream.ReadUInt64();
+
+			Server.Instance.OnUserJoin(userId, key);
 		}
 
 		/// <summary>
@@ -93,7 +96,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_CharacterList(GameClient client, PacketStream stream)
+		private void CS_CharacterList(Player client, PacketStream stream)
 		{
 			string account = stream.ReadString(61);
 		}
@@ -103,7 +106,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_CheckCharacterName(GameClient client, PacketStream stream)
+		private void CS_CheckCharacterName(Player client, PacketStream stream)
 		{
 			string name = stream.ReadString(19);
 		}
@@ -113,7 +116,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_CreateCharacter(GameClient client, PacketStream stream)
+		private void CS_CreateCharacter(Player client, PacketStream stream)
 		{
 			// Lobby_Character_Info
 		}
@@ -123,7 +126,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		private void CS_DeleteCharacter(GameClient client, PacketStream stream)
+		private void CS_DeleteCharacter(Player client, PacketStream stream)
 		{
 			string name = stream.ReadString(19);
 			//string securityCode = stream.ReadString(19);
@@ -140,7 +143,7 @@ namespace Game.Network
 		/// <param name="packetId"></param>
 		/// <param name="response"></param>
 		/// <param name="value"></param>
-		public void Response(GameClient client, ushort packetId, ushort response = 0, int value = 0)
+		public void Response(Player client, ushort packetId, ushort response = 0, int value = 0)
 		{
 			PacketStream stream = new PacketStream(0x0000);
 			
@@ -151,7 +154,7 @@ namespace Game.Network
 			ClientManager.Instance.Send(client, stream);
 		}
 
-		public void CharacterList(GameClient client)
+		public void CharacterList(Player client)
 		{
 			//uint currentSvTime
 			//ushort last_login_index

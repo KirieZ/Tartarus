@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
+using Game.Content;
 
 namespace Game.Network
 {
@@ -56,7 +57,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="gs"></param>
 		/// <param name="packetStream"></param>
-		private void PacketReceived(GameClient gameClient, PacketStream packetStream)
+		private void PacketReceived(Player gameClient, PacketStream packetStream)
 		{
 			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from Client");
 			ClientPackets.Instance.PacketReceived(gameClient, packetStream);
@@ -67,7 +68,7 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="packet"></param>
-		public void Send(GameClient client, PacketStream packet)
+		public void Send(Player client, PacketStream packet)
 		{
 			byte[] data = packet.GetPacket().ToArray();
 
@@ -96,7 +97,7 @@ namespace Game.Network
 			// Starts to accept another connection
 			listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
 
-			GameClient gc = new GameClient(client);
+			Player gc = new Player(client);
 
 			client.BeginReceive(
 				gc.NetData.Buffer, 0, Globals.MaxBuffer, SocketFlags.None,
@@ -110,7 +111,7 @@ namespace Game.Network
 		/// <param name="ar"></param>
 		private void ReadCallback(IAsyncResult ar)
 		{
-			GameClient gc = (GameClient)ar.AsyncState;
+			Player gc = (Player)ar.AsyncState;
 
 			try
 			{
@@ -195,7 +196,7 @@ namespace Game.Network
 			try
 			{
 				// Retrieve the socket from the state object.
-				GameClient gc = (GameClient)ar.AsyncState;
+				Player gc = (Player)ar.AsyncState;
 
 				// Complete sending the data to the remote device.
 				int bytesSent = gc.NetData.ClSocket.EndSend(ar);

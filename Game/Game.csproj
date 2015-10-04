@@ -199,9 +199,6 @@
     <Compile Include="..\src\Game\Network\ClientPackets.cs">
       <Link>Network\ClientPackets.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\Network\GameClient.cs">
-      <Link>Network\GameClient.cs</Link>
-    </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>
     </Compile>

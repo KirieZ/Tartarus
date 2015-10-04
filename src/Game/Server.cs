@@ -22,7 +22,7 @@ namespace Game
 
 		public static readonly Server Instance = new Server();
 
-		private static Dictionary<string, byte[]> PendingUsers;
+		private static Dictionary<string, ulong> PendingUsers;
 
 		/// <summary>
 		/// Loads Configs and ConsoleCommands
@@ -78,7 +78,7 @@ namespace Game
 		/// </summary>
 		public override void Start()
 		{
-			PendingUsers = new Dictionary<string, byte[]>();
+			PendingUsers = new Dictionary<string, ulong>();
 
 			AuthManager.Instance.Start();
 			ClientManager.Instance.Start();
@@ -157,7 +157,7 @@ namespace Game
 		/// </summary>
 		/// <param name="userId"></param>
 		/// <param name="key"></param>
-		internal void PendingUser(string userId, byte[] key)
+		internal void PendingUser(string userId, ulong key)
 		{
 			if (PendingUsers.ContainsKey(userId))
 				PendingUsers[userId] = key;
@@ -165,6 +165,17 @@ namespace Game
 				PendingUsers.Add(userId, key);
 
 			AuthPackets.Instance.JoinResult(userId, 0);
+		}
+
+		/// <summary>
+		/// Called when a User is trying to join the game-server lobby
+		/// from auth-server
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="key"></param>
+		internal void OnUserJoin(string userId, ulong key)
+		{
+			
 		}
 	}
 }
