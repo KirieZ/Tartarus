@@ -130,6 +130,18 @@
     <Compile Include="..\src\Game\Database\Structures\DB_ItemEffect.cs">
       <Link>Database\Structures\DB_ItemEffect.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Job.cs">
+      <Link>Database\Structures\DB_Job.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_JobLevel.cs">
+      <Link>Database\Structures\DB_JobLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Level.cs">
+      <Link>Database\Structures\DB_Level.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Market.cs">
+      <Link>Database\Structures\DB_Market.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_Monster.cs">
       <Link>Database\Structures\DB_Monster.cs</Link>
     </Compile>
@@ -138,6 +150,15 @@
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_MonsterSkill.cs">
       <Link>Database\Structures\DB_MonsterSkill.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Quest.cs">
+      <Link>Database\Structures\DB_Quest.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_QuestLink.cs">
+      <Link>Database\Structures\DB_QuestLink.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_RandomPool.cs">
+      <Link>Database\Structures\DB_RandomPool.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_SetItemEffect.cs">
       <Link>Database\Structures\DB_SetItemEffect.cs</Link>
@@ -148,11 +169,20 @@
     <Compile Include="..\src\Game\Database\Structures\DB_SkillJP.cs">
       <Link>Database\Structures\DB_SkillJP.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_SkillTree.cs">
+      <Link>Database\Structures\DB_SkillTree.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_Stat.cs">
+      <Link>Database\Structures\DB_Stat.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_String.cs">
       <Link>Database\Structures\DB_String.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_Summon.cs">
       <Link>Database\Structures\DB_Summon.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Database\Structures\DB_SummonLevel.cs">
+      <Link>Database\Structures\DB_SummonLevel.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Structures\DB_SummonName.cs">
       <Link>Database\Structures\DB_SummonName.cs</Link>
