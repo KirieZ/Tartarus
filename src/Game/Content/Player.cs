@@ -75,17 +75,20 @@ namespace Game.Content
         }
 
 
-		// Network Data
+		/// <summary>
+		/// Connection data
+		/// </summary>
 		public NetworkData NetData { get; set; }
 
-		// User Info
+		/// <summary>
+		/// User Account ID
+		/// </summary>
 		public int AccountId { get; set; }
-		public string UserId { get; set; }
+		/// <summary>
+		/// User Permission Level
+		/// </summary>
 		public byte Permission { get; set; }
-		public ushort LastServerId { get; set; }
-
-		public byte[] Key { get; set; }
-
+		
 		public Player(Socket socket)
 		{
 			this.NetData = new NetworkData(socket);

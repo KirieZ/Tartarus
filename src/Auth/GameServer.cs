@@ -62,7 +62,7 @@ namespace Auth
 				this.PendingClients[gameClient.UserId] = gameClient;
 
 			// Sends the request to Game-server
-			GamePackets.Instance.UserJoin(this, gameClient.UserId, key);
+			GamePackets.Instance.UserJoin(this, gameClient);
 		}
 
 		/// <summary>

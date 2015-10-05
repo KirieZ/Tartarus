@@ -90,8 +90,10 @@ namespace Game.Network
 		{
 			string userId = stream.ReadString(61);
 			ulong key = stream.ReadUInt64();
+			byte permission = stream.ReadByte();
+			int accId = stream.ReadInt32();
 
-			Server.Instance.PendingUser(userId, key);
+			Server.Instance.PendingUser(userId, key, permission, accId);
 		}
 
 		/// <summary>

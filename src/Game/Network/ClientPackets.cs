@@ -88,7 +88,7 @@ namespace Game.Network
 			string userId = stream.ReadString(61);
 			ulong key = stream.ReadUInt64();
 
-			Server.Instance.OnUserJoin(userId, key);
+			Server.Instance.OnUserJoin(client, userId, key);
 		}
 
 		/// <summary>
@@ -137,13 +137,13 @@ namespace Game.Network
 
 		#region Server Packets
 		/// <summary>
-		/// Sends a response to a packet
+		/// Sends the result of a packet
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="packetId"></param>
 		/// <param name="response"></param>
 		/// <param name="value"></param>
-		public void Response(Player client, ushort packetId, ushort response = 0, int value = 0)
+		public void Result(Player client, ushort packetId, ushort response = 0, int value = 0)
 		{
 			PacketStream stream = new PacketStream(0x0000);
 			

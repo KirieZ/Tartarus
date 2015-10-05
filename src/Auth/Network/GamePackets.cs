@@ -102,12 +102,14 @@ namespace Auth.Network
 		/// <param name="gameServer"></param>
 		/// <param name="userId"></param>
 		/// <param name="key"></param>
-		internal void UserJoin(GameServer gameServer, string userId, byte[] key)
+		internal void UserJoin(GameServer gameServer, GameClient client)
 		{
 			PacketStream stream = new PacketStream(0x1010);
 
-			stream.WriteString(userId, 61);
-			stream.WriteBytes(key);
+			stream.WriteString(client.UserId, 61);
+			stream.WriteBytes(client.Key);
+			stream.WriteByte(client.Permission);
+			stream.WriteInt32(client.AccountId);
 
 			GameManager.Instance.Send(gameServer, stream);
 		}
