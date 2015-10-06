@@ -28,12 +28,12 @@ namespace Game.Network
 
 			#region Packets
 			PacketsDb.Add(0x0032, CS_Version);
-			PacketsDb.Add(0x07D5, CS_AccountWithAuth);
-			PacketsDb.Add(0x1F40, CS_SystemSpecs);
 			PacketsDb.Add(0x07D1, CS_CharacterList);
 			PacketsDb.Add(0x07D2, CS_CreateCharacter);
 			PacketsDb.Add(0x07D3, CS_DeleteCharacter);
+			PacketsDb.Add(0x07D5, CS_AccountWithAuth);
 			PacketsDb.Add(0x07D6, CS_CheckCharacterName);
+			PacketsDb.Add(0x1F40, CS_SystemSpecs);
 			#endregion
 		}
 
@@ -98,7 +98,9 @@ namespace Game.Network
 		/// <param name="stream"></param>
 		private void CS_CharacterList(Player client, PacketStream stream)
 		{
-			string account = stream.ReadString(61);
+			//string userId = stream.ReadString(61);
+
+			client.GetCharacterList();
 		}
 
 		/// <summary>
@@ -154,12 +156,43 @@ namespace Game.Network
 			ClientManager.Instance.Send(client, stream);
 		}
 
-		public void CharacterList(Player client)
+		public void CharacterList(Player client, Players.LobbyCharacterInfo[] charList)
 		{
-			//uint currentSvTime
-			//ushort last_login_index
-			//ushort count
-			//Lobby_Character_Info[count];
+			PacketStream stream = new PacketStream(0x07D4);
+
+			stream.WriteUInt32(0); // currentSvTime
+			stream.WriteUInt16(0); // last_login_index
+			stream.WriteUInt16((ushort)charList.Length);
+			for (int i = 0; i < charList.Length; i++)
+			{
+				stream.WriteInt32(charList[i].ModelInfo.Sex);
+				stream.WriteInt32(charList[i].ModelInfo.Race);
+				for (int j = 0; j < 5; j++)
+					stream.WriteInt32(charList[i].ModelInfo.ModelId[j]);
+				stream.WriteInt32(charList[i].ModelInfo.TextureId);
+				for (int j = 0; j < 24; j++)
+					stream.WriteInt32(charList[i].ModelInfo.WearInfo[j]);
+				stream.WriteInt32(charList[i].Level);
+				stream.WriteInt32(charList[i].Job);
+				stream.WriteInt32(charList[i].JobLevel);
+				stream.WriteInt32(charList[i].ExpPercentage);
+				stream.WriteInt32(charList[i].Hp);
+				stream.WriteInt32(charList[i].Mp);
+				stream.WriteInt32(charList[i].Permission);
+				stream.WriteBool(charList[i].IsBanned);
+				stream.WriteString(charList[i].Name, 19);
+				stream.WriteUInt32(charList[i].SkinColor);
+				stream.WriteString(charList[i].CreateTime, 30);
+				stream.WriteString(charList[i].DeleteTime, 30);
+				for (int j = 0; j < 24; j++)
+					stream.WriteInt32(charList[i].WearItemEnhanceInfo[j]);
+				for (int j = 0; j < 24; j++)
+					stream.WriteInt32(charList[i].WearItemLevelInfo[j]);
+				for (int j = 0; j < 24; j++)
+					stream.WriteByte(charList[i].WearItemElementalType[j]);
+			}
+
+			ClientManager.Instance.Send(client, stream);
 		}
 		#endregion
 	}
