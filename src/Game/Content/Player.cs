@@ -49,7 +49,7 @@ namespace Game.Content
 		/// <param name="name"></param>
 		internal void CheckCharacterName(string name)
 		{
-			if (Lobby.NameExists(name))
+			if (!Lobby.CheckCharacterName(name))
 				ClientPackets.Instance.Result(this, 0x07D6, 9);
 			else
 				ClientPackets.Instance.Result(this, 0x07D6, 0);

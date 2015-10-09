@@ -46,6 +46,7 @@ namespace Game
 
 		// Other Settings
 		public static Boolean KeepDeletedCharacters;
+		public static Char[] ForbiddenCharacters;
 
 		/// <summary>
 		/// Types of Settings
@@ -107,7 +108,9 @@ namespace Game
 
 			// Other Settings
 			KeepDeletedCharacters = (Boolean)ParseSetting(ref settings, DType.Bool, "keep_deleted_characters", false);
-
+			ForbiddenCharacters = (((String)ParseSetting(ref settings, DType.String, "forbidden_characters", "", true)) + "@").ToCharArray();
+			
+			
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)
 				ConsoleHelper.Windows_ShowDebug(null);

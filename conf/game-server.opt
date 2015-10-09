@@ -45,6 +45,11 @@ min_permission: 0
 // Keep deleted characters in the database?
 keep_deleted_characters: 0
 
+// Characters that can't be used in a new character name
+// Each character in the string is checked separately
+// the @ is forbidden by default as it crashes the client
+forbidden_characters: 
+
 // Map Size
 map_length_x: 14
 map_length_y: 16

@@ -82,13 +82,17 @@ namespace Game.Players
 		}
 
 		/// <summary>
-		/// Checks if this character name exists
+		/// Checks if this character name is valid for a new character
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		internal static bool NameExists(string name)
+		internal static bool CheckCharacterName(string name)
 		{
-			bool exists = false;
+			bool valid = true;
+
+			// Check for invalid characters
+			if (name.IndexOfAny(Settings.ForbiddenCharacters) >= 0)
+				return false;
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
@@ -103,17 +107,17 @@ namespace Game.Players
 						{
 							while (reader.Read())
 							{
-								exists = true;
+								valid = false;
 							}
 						}
 					}
 					// When an error occurs, say that name exists to block creation
-					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); exists = true; }
+					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); valid = false; }
 					finally { dbCmd.Connection.Close(); }
 				}
 			}
 
-			return exists;
+			return valid;
 		}
 
 		/// <summary>
@@ -125,7 +129,7 @@ namespace Game.Players
 		internal static bool Create(Player player, LobbyCharacterInfo charInfo)
 		{
 			// Ensures the name is available
-			if (NameExists(charInfo.Name))
+			if (!CheckCharacterName(charInfo.Name))
 				return false;
 
 			bool result = true;

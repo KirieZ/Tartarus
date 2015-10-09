@@ -35,6 +35,8 @@ namespace Game.Network
 			PacketsDb.Add(0x07D5, CS_AccountWithAuth);
 			PacketsDb.Add(0x07D6, CS_CheckCharacterName);
 			PacketsDb.Add(0x1F40, CS_SystemSpecs);
+
+			PacketsDb.Add(0x270F, CA_Unknown);
 			#endregion
 		}
 
@@ -76,6 +78,13 @@ namespace Game.Network
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
 		private void CS_SystemSpecs(Player client, PacketStream stream) { }
+
+		/// <summary>
+		/// Unknown packet, maybe user to keep connection
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="stream"></param>
+		private void CA_Unknown(Player client, PacketStream stream) { }
 		#endregion
 
 		#region Lobby
