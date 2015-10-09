@@ -6,6 +6,7 @@ using Game;
 using System.Net.Sockets;
 using Game.Network;
 using Game.Players;
+using Game.Players.Structures;
 
 namespace Game.Content
 {
@@ -63,6 +64,17 @@ namespace Game.Content
 			}
 
 			ClientPackets.Instance.Result(this, 0x07D2, 7); // Unknown
+		}
+
+		internal void DeleteCharacter(string name)
+		{
+			if (Lobby.Delete(this, name))
+			{
+				ClientPackets.Instance.Result(this, 0x07D3, 0);
+				return;
+			}
+
+			ClientPackets.Instance.Result(this, 0x07D2, 8); // DB Error
 		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Game.Content;
+using Game.Players.Structures;
 
 namespace Game.Network
 {
@@ -122,7 +123,7 @@ namespace Game.Network
 		/// <param name="stream"></param>
 		private void CS_CreateCharacter(Player client, PacketStream stream)
 		{
-			Players.LobbyCharacterInfo charInfo = new Players.LobbyCharacterInfo();
+			LobbyCharacterInfo charInfo = new LobbyCharacterInfo();
 
 			charInfo.ModelInfo.Sex = stream.ReadInt32();
 			charInfo.ModelInfo.Race = stream.ReadInt32();
@@ -166,6 +167,8 @@ namespace Game.Network
 		{
 			string name = stream.ReadString(19);
 			//string securityCode = stream.ReadString(19);
+
+			client.DeleteCharacter(name);
 		}
 		#endregion
 
@@ -190,7 +193,7 @@ namespace Game.Network
 			ClientManager.Instance.Send(client, stream);
 		}
 
-		public void CharacterList(Player client, Players.LobbyCharacterInfo[] charList)
+		public void CharacterList(Player client, LobbyCharacterInfo[] charList)
 		{
 			PacketStream stream = new PacketStream(0x07D4);
 

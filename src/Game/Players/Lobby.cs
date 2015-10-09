@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Game.Content;
 using Common;
 using System.Data.Common;
+using Game.Players.Structures;
 
 namespace Game.Players
 {
@@ -91,9 +92,10 @@ namespace Game.Players
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT char_id FROM Characters WHERE name = @name"))
+				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT char_id FROM Characters WHERE name = @name AND delete_date > @now"))
 				{
 					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, name);
+					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
 					try
 					{
 						dbCmd.Connection.Open();
@@ -114,6 +116,12 @@ namespace Game.Players
 			return exists;
 		}
 
+		/// <summary>
+		/// Creates a new Character to this account
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="charInfo"></param>
+		/// <returns></returns>
 		internal static bool Create(Player player, LobbyCharacterInfo charInfo)
 		{
 			// Ensures the name is available
@@ -144,6 +152,45 @@ namespace Game.Players
 						dbCmd.Connection.Open();
 						dbCmd.ExecuteNonQuery();
 						// TODO : Retrieve character ID
+					}
+					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); result = false; }
+					finally { dbCmd.Connection.Close(); }
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Deletes a character from this account
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		internal static bool Delete(Player player, string name)
+		{
+			bool result = true;
+
+			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			{
+				string query = "";
+				// Checks if character must be kept when deleting (change delete_date instead of removing the entry)
+				if (Settings.KeepDeletedCharacters)
+					query = "UPDATE Characters SET delete_date = @now WHERE account_id = @accId AND name = @name";
+				else
+					query = "DELETE FROM Characters WHERE account_id = @accId AND name = @name";
+
+				using (DbCommand dbCmd = dbManager.CreateCommand(query))
+				{
+					if (Settings.KeepDeletedCharacters)
+						dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
+					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.Int32, player.AccountId);
+					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, name);
+
+					try
+					{
+						dbCmd.Connection.Open();
+						dbCmd.ExecuteNonQuery();
 					}
 					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); result = false; }
 					finally { dbCmd.Connection.Close(); }

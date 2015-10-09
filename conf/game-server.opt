@@ -42,6 +42,9 @@ notice_url: http://127.0.0.1/notice.htm
 // 0 = Everyone can join
 min_permission: 0
 
+// Keep deleted characters in the database?
+keep_deleted_characters: 0
+
 // Map Size
 map_length_x: 14
 map_length_y: 16

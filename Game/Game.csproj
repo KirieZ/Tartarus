@@ -199,8 +199,8 @@
     <Compile Include="..\src\Game\Players\Lobby.cs">
       <Link>Players\Lobby.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\Players\Structures.cs">
-      <Link>Players\Structures.cs</Link>
+    <Compile Include="..\src\Game\Players\Structures\Lobby.cs">
+      <Link>Players\Structures\Lobby.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>

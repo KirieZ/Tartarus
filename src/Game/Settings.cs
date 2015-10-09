@@ -44,6 +44,9 @@ namespace Game
 		public static String SqlUserUsername;
 		public static String SqlUserPassword;
 
+		// Other Settings
+		public static Boolean KeepDeletedCharacters;
+
 		/// <summary>
 		/// Types of Settings
 		/// </summary>
@@ -101,6 +104,9 @@ namespace Game
 			SqlUserUsername = (String)ParseSetting(ref settings, DType.String, "sql.user_username", defaultSqlUser, true);
 			SqlUserPassword = (String)ParseSetting(ref settings, DType.String, "sql.user_password", defaultSqlPass, true);
 			SqlUserDatabase = (String)ParseSetting(ref settings, DType.String, "sql.user_database", defaultSqlDb, true);
+
+			// Other Settings
+			KeepDeletedCharacters = (Boolean)ParseSetting(ref settings, DType.Bool, "keep_deleted_characters", false);
 
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)

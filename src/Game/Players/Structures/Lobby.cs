@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Players
+namespace Game.Players.Structures
 {
 	/// <summary>
 	/// Holds data of a model
