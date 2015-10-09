@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Player
+namespace Game.Players
 {
 	class Class1
 	{

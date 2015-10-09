@@ -111,6 +111,8 @@ namespace Game.Network
 		private void CS_CheckCharacterName(Player client, PacketStream stream)
 		{
 			string name = stream.ReadString(19);
+
+			client.CheckCharacterName(name);
 		}
 
 		/// <summary>
@@ -120,7 +122,39 @@ namespace Game.Network
 		/// <param name="stream"></param>
 		private void CS_CreateCharacter(Player client, PacketStream stream)
 		{
-			// Lobby_Character_Info
+			Players.LobbyCharacterInfo charInfo = new Players.LobbyCharacterInfo();
+
+			charInfo.ModelInfo.Sex = stream.ReadInt32();
+			charInfo.ModelInfo.Race = stream.ReadInt32();
+
+			for (int i = 0; i < 5; i++)
+				charInfo.ModelInfo.ModelId[i] = stream.ReadInt32();
+
+			charInfo.ModelInfo.TextureId = stream.ReadInt32();
+
+			for (int i = 0; i < 24; i++)
+				charInfo.ModelInfo.WearInfo[i] = stream.ReadInt32();
+
+			charInfo.Level = stream.ReadInt32();
+			charInfo.Job = stream.ReadInt32();
+			charInfo.JobLevel = stream.ReadInt32();
+			charInfo.ExpPercentage = stream.ReadInt32();
+			charInfo.Hp = stream.ReadInt32();
+			charInfo.Mp = stream.ReadInt32();
+			charInfo.Permission = stream.ReadInt32();
+			charInfo.IsBanned = stream.ReadBool();
+			charInfo.Name = stream.ReadString(19);
+			charInfo.SkinColor = stream.ReadUInt32();
+			charInfo.CreateTime = stream.ReadString(30);
+			charInfo.DeleteTime = stream.ReadString(30);
+			for (int i = 0; i < 24; i++)
+				charInfo.WearItemEnhanceInfo[i] = stream.ReadInt32();
+			for (int i = 0; i < 24; i++)
+				charInfo.WearItemLevelInfo[i] = stream.ReadInt32();
+			for (int i = 0; i < 24; i++)
+				charInfo.WearItemElementalType[i] = stream.ReadByte();
+
+			client.CreateCharacter(charInfo);
 		}
 
 		/// <summary>
