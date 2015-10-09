@@ -28,6 +28,7 @@ namespace Game.Network
 			PacketsDb = new Dictionary<ushort, PacketAction>();
 
 			#region Packets
+			PacketsDb.Add(0x0001, CS_Login);
 			PacketsDb.Add(0x0032, CS_Version);
 			PacketsDb.Add(0x07D1, CS_CharacterList);
 			PacketsDb.Add(0x07D2, CS_CreateCharacter);
@@ -40,7 +41,6 @@ namespace Game.Network
 			#endregion
 		}
 
-		
 		/// <summary>
 		/// Called whenever a packet is received from a game client
 		/// </summary>
@@ -179,6 +179,19 @@ namespace Game.Network
 
 			client.DeleteCharacter(name);
 		}
+
+		/// <summary>
+		/// Login to Game World
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="stream"></param>
+		private void CS_Login(Player client, PacketStream stream)
+		{
+			string name = stream.ReadString(19);
+			byte race = stream.ReadByte();
+
+			client.Login(name, race);
+		}
 		#endregion
 
 		#endregion
@@ -202,6 +215,11 @@ namespace Game.Network
 			ClientManager.Instance.Send(client, stream);
 		}
 
+		/// <summary>
+		/// Sends the list of characters
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="charList"></param>
 		public void CharacterList(Player client, LobbyCharacterInfo[] charList)
 		{
 			PacketStream stream = new PacketStream(0x07D4);
