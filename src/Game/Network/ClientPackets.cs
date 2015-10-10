@@ -29,6 +29,10 @@ namespace Game.Network
 
 			#region Packets
 			PacketsDb.Add(0x0001, CS_Login);
+			PacketsDb.Add(0x0017, CS_ReturnLobby);
+			PacketsDb.Add(0x0019, CS_RequestReturnLobby);
+			PacketsDb.Add(0x001A, CS_RequestLogout);
+			PacketsDb.Add(0x001B, CS_Logout);
 			PacketsDb.Add(0x0032, CS_Version);
 			PacketsDb.Add(0x07D1, CS_CharacterList);
 			PacketsDb.Add(0x07D2, CS_CreateCharacter);
@@ -194,6 +198,50 @@ namespace Game.Network
 		}
 		#endregion
 
+		#region Logout
+		/// <summary>
+		/// Checks if can logout (quit game)
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="stream"></param>
+		private void CS_RequestLogout(Player client, PacketStream stream)
+		{
+			// TODO : Proper check
+			Result(client, 0x001A, 0);
+		}
+
+		/// <summary>
+		/// Logout (quit)
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="stream"></param>
+		private void CS_Logout(Player client, PacketStream stream)
+		{ 
+			// TODO : Function call
+		}
+
+		/// <summary>
+		/// Checks if can return to lobby
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="stream"></param>
+		private void CS_RequestReturnLobby(Player client, PacketStream stream)
+		{
+			// TODO : Proper check
+			Result(client, 0x0019, 0);
+		}
+
+		/// <summary>
+		/// Return to lobby
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="stream"></param>
+		private void CS_ReturnLobby(Player client, PacketStream stream)
+		{
+			// TODO : Proper checks
+			Result(client, 0x0017, 0);
+		}
+		#endregion
 		#endregion
 
 		#region Server Packets
