@@ -9,6 +9,7 @@ using Game.Content;
 using Common;
 using System.Data.Common;
 using Game.Players.Structures;
+using Game.Network;
 
 namespace Game.Players
 {
@@ -305,6 +306,9 @@ namespace Game.Players
 					}
 					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message + " (Offset: " + off + ")"); }
 					finally { dbCmd.Connection.Close(); }
+
+					// TODO : PlaceHolder Data, must be replaced with real one
+					ClientPackets.send_Login(player);
 				}
 			}
 		}
