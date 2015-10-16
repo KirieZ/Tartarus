@@ -14,6 +14,19 @@ using Game.Content;
 namespace Game.Network
 {
 	/// <summary>
+	/// The range that this packet will be broadcasted
+	/// </summary>
+	public enum BroadcastArea
+	{
+		/// <summary>Only in target</summary>
+		Self,
+		/// <summary>Region around target</summary>
+		Region,
+		/// <summary>All currently connected users</summary>
+		World
+	}
+
+	/// <summary>
 	/// Handles the connection between Auth and Game Clients
 	/// </summary>
 	public class ClientManager
@@ -64,24 +77,56 @@ namespace Game.Network
 		}
 
 		/// <summary>
-		/// Sends a packet to a game server
+		/// Sends a packet to clients
 		/// </summary>
-		/// <param name="server"></param>
-		/// <param name="packet"></param>
-		public void Send(Player client, PacketStream packet)
+		/// <param name="target">the target from which area will be calculated</param>
+		/// <param name="packet">packet data</param>
+		/// <param name="area">the target area</param>
+		public void Send(GameObject target, PacketStream packet, BroadcastArea area)
 		{
 			byte[] data = packet.GetPacket().ToArray();
 
 			ConsoleUtils.HexDump(data, "Sent to Client");
 
-			client.NetData.ClSocket.BeginSend(
-				client.NetData.OutCipher.DoCipher(ref data),
-				0,
-				data.Length,
-				0,
-				new AsyncCallback(SendCallback),
-				client
-			);
+			List<Player> players = new List<Player>();
+			// Gets the list of players who will receive this packet
+			switch (area)
+			{
+				case BroadcastArea.Self:
+					if (target.ObjType != ObjectType.Player)
+					{
+						ConsoleUtils.ShowError("Trying to send packet to a non-player object.");
+						return;
+					}
+					players.Add((Player)target);
+					break;
+				case BroadcastArea.Region:
+					// TODO : Get players in region
+					if (target.ObjType == ObjectType.Player)
+						players.Add((Player)target);
+					break;
+				case BroadcastArea.World:
+					// TODO : Get all players in the server
+					if (target.ObjType == ObjectType.Player)
+						players.Add((Player)target);
+					break;
+				default:
+					ConsoleUtils.ShowError("Unknown Broadcast Area.");
+					return;
+			}
+
+			// Sends data to every client in the list
+			foreach (Player client in players)
+			{
+				client.NetData.ClSocket.BeginSend(
+					client.NetData.OutCipher.DoCipher(ref data),
+					0,
+					data.Length,
+					0,
+					new AsyncCallback(SendCallback),
+					client
+				);
+			}
 		}
 
 		#region Internal

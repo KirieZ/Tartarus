@@ -260,7 +260,7 @@ namespace Game.Network
 			stream.WriteUInt16(response);
 			stream.WriteInt32(value);
 
-			ClientManager.Instance.Send(client, stream);
+			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace Game.Network
 					stream.WriteByte(charList[i].WearItemElementalType[j]);
 			}
 
-			ClientManager.Instance.Send(client, stream);
+			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
 		}
 		#endregion
 
@@ -542,7 +542,7 @@ namespace Game.Network
 			byte[] buffer = new byte[arr.Length];
 			for (int i = 0; i < arr.Length; i++) buffer[i] = Convert.ToByte(arr[i], 16);
 
-			ClientManager.Instance.Send(player, new PacketStream(buffer));
+			ClientManager.Instance.Send(player, new PacketStream(buffer), BroadcastArea.Self);
 		}
 	}
 }
