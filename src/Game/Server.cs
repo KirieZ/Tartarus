@@ -94,7 +94,7 @@ namespace Game
 
             #region Content Load
 
-            Arcadia.Initialize(sqlConType, sqlConString);
+            Arcadia.Init(sqlConType, sqlConString);
 
             #endregion
         }
