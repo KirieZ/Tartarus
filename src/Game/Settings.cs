@@ -48,6 +48,16 @@ namespace Game
 		public static Boolean KeepDeletedCharacters;
 		public static Char[] ForbiddenCharacters;
 
+		// URL List
+		public static string GuildUrl { get; set; }
+		public static string GuildTestDownloadUrl { get; set; }
+		public static string WebDownload { get; set; }
+		public static string WebDownloadPort { get; set; }
+		public static string ShopUrl { get; set; }
+		public static string GHelpUrl { get; set; }
+		public static string GuildIconUploadIp { get; set; }
+		public static string GuildIconUploadPort { get; set; }
+
 		/// <summary>
 		/// Types of Settings
 		/// </summary>
@@ -110,7 +120,16 @@ namespace Game
 			KeepDeletedCharacters = (Boolean)ParseSetting(ref settings, DType.Bool, "keep_deleted_characters", false);
 			ForbiddenCharacters = (((String)ParseSetting(ref settings, DType.String, "forbidden_characters", "", true)) + "@").ToCharArray();
 			
-			
+			// URL List
+			GuildUrl = (String)ParseSetting(ref settings, DType.String, "GuildUrl", "", false);
+			GuildTestDownloadUrl = (String)ParseSetting(ref settings, DType.String, "GuildTestDownloadUrl", "", false);
+			WebDownload = (String)ParseSetting(ref settings, DType.String, "WebDownload", "", false);
+			WebDownloadPort = (String)ParseSetting(ref settings, DType.String, "WebDownloadPort", "", false);
+			ShopUrl = (String)ParseSetting(ref settings, DType.String, "ShopUrl", "", false);
+			GHelpUrl = (String)ParseSetting(ref settings, DType.String, "GHelpUrl", "", false);
+			GuildIconUploadIp = (String)ParseSetting(ref settings, DType.String, "GuildIconUploadIp", "", false);
+			GuildIconUploadPort = (String)ParseSetting(ref settings, DType.String, "GuildIconUploadPort", "", false);
+
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)
 				ConsoleHelper.Windows_ShowDebug(null);

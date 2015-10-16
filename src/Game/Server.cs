@@ -21,6 +21,7 @@ namespace Game
         static string sqlConString = string.Empty;
 
 		public static readonly Server Instance = new Server();
+		public static string UrlList;
 
 		/// <summary>
 		/// Data associated to an user that wants to join the server
@@ -104,6 +105,28 @@ namespace Game
 		public override void Start()
 		{
 			PendingUsers = new Dictionary<string, PendingUserData>();
+
+			// Pre-process the url list so it doesn't have to be generated everytime.
+			StringBuilder urlList = new StringBuilder();
+			
+			urlList.Append("guild.url|");
+			urlList.Append(Settings.GuildUrl);
+			urlList.Append("|guild_test_download.url|");
+			urlList.Append(Settings.GuildTestDownloadUrl);
+			urlList.Append("|web_download|");
+			urlList.Append(Settings.WebDownload);
+			urlList.Append("|web_download_port|");
+			urlList.Append(Settings.WebDownloadPort);
+			urlList.Append("|shop.url|");
+			urlList.Append(Settings.ShopUrl);
+			urlList.Append("|ghelp_url|");
+			urlList.Append(Settings.GHelpUrl);
+			urlList.Append("|guild_icon_upload.ip|");
+			urlList.Append(Settings.GuildIconUploadIp);
+			urlList.Append("|guild_icon_upload.port|");
+			urlList.Append(Settings.GuildIconUploadPort);
+			
+			UrlList = urlList.ToString();
 
 			AuthManager.Instance.Start();
 			ClientManager.Instance.Start();

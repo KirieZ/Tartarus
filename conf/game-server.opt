@@ -50,6 +50,16 @@ keep_deleted_characters: 0
 // the @ is forbidden by default as it crashes the client
 forbidden_characters: 
 
+// ====== URLs =======
+guild.url: http://127.0.0.1/guild/login.aspx
+guild_test_download.url: upload/
+web_download: 127.0.0.1/guild
+web_download_port:0
+shop.url: http://127.0.0.1:7766/khroos
+ghelp_url: http://127.0.0.1/help
+guild_icon_upload.ip: 127.0.0.1/guild/icons
+guild_icon_upload.port: 4617
+
 // Map Size
 map_length_x: 14
 map_length_y: 16

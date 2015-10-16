@@ -263,6 +263,7 @@ namespace Game.Network
 			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
 		}
 
+		#region Lobby
 		/// <summary>
 		/// Sends the list of characters
 		/// </summary>
@@ -306,6 +307,22 @@ namespace Game.Network
 
 			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
 		}
+		#endregion
+
+		/// <summary>
+		/// Sends a list of URLs
+		/// </summary>
+		/// <param name="client"></param>
+		public void UrlList(Player client)
+		{
+			PacketStream stream = new PacketStream(0x2329);
+
+			stream.WriteUInt16((ushort)Server.UrlList.Length);
+			stream.WriteString(Server.UrlList);
+
+			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
+		}
+
 		#endregion
 
 		// Login Result placeholder
