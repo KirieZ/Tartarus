@@ -48,7 +48,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM AuctionCategoryResource ORDER BY category_id, sub_category_id"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(0, 0))
                 {
                     try
                     {
@@ -89,7 +89,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM AutoAuctionResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(1, 0))
                 {
                     try
                     {
@@ -136,7 +136,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM CreatureLevelBonus"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(2, 0))
                 {
                     try
                     {
@@ -179,7 +179,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM DropGroupResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(3, 0))
                 {
                     try
                     {
@@ -257,7 +257,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM EventAreaResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(4, 0))
                 {
                     try
                     {
@@ -320,7 +320,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM ItemResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(5, 0))
                 {
                     try
                     {
@@ -467,7 +467,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM ItemEffectResource ORDER BY id, ordinal_id"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(6, 0))
                 {
                     try
                     {
@@ -529,7 +529,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM JobLevelBonus"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(7, 0))
                 {
                     try
                     {
@@ -595,7 +595,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM JobResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(8, 0))
                 {
                     try
                     {
@@ -645,7 +645,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM LevelResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(9, 0))
                 {
                     try
                     {
@@ -686,7 +686,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM MarketResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(10, 0))
                 {
                     try
                     {
@@ -726,7 +726,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM MonsterResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(11, 0))
                 {
                     try
                     {
@@ -839,7 +839,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM MonsterDropTableResource ORDER BY id, sub_id"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(12, 0))
                 {
                     try
                     {
@@ -938,7 +938,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM MonsterSkillResource ORDER BY id, sub_id"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(13, 0))
                 {
                     try
                     {
@@ -1018,7 +1018,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM QuestLinkResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(14, 0))
                 {
                     try
                     {
@@ -1063,7 +1063,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM QuestResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(15, 0))
                 {
                     try
                     {
@@ -1175,7 +1175,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM RandomPoolResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(16, 0))
                 {
                     try
                     {
@@ -1213,7 +1213,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SetItemEffectResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(17, 0))
                 {
                     try
                     {
@@ -1279,7 +1279,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SkillResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(18, 0))
                 {
                     try
                     {
@@ -1441,7 +1441,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SkillJPResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(19, 0))
                 {
                     try
                     {
@@ -1519,7 +1519,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SkillTreeResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(20, 0))
                 {
                     try
                     {
@@ -1569,7 +1569,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM StatResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(21, 0))
                 {
                     try
                     {
@@ -1614,7 +1614,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SummonDefaultNameResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(22, 0))
                 {
                     try
                     {
@@ -1652,7 +1652,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SummonLevelResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(23, 0))
                 {
                     try
                     {
@@ -1691,7 +1691,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SummonUniqueNameResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(24, 0))
                 {
                     try
                     {
@@ -1729,7 +1729,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM StringResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(25, 0))
                 {
                     try
                     {
@@ -1768,7 +1768,7 @@ namespace Game.Content
 
             using (DBManager dbManager = new DBManager(conType, conString))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM SummonResource"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(26, 0))
                 {
                     try
                     {
@@ -1852,7 +1852,7 @@ namespace Game.Content
 
         #endregion
 
-        public static void Initialize(int _conType, string _conString)
+        public static void Init(int _conType, string _conString)
         {
             conType = _conType;
             conString = _conString;

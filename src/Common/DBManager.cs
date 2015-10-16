@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Threading.Tasks;
+using Game.Database;
 
 namespace Common
 {
@@ -18,17 +18,19 @@ namespace Common
         /// 1 = MySQL
         /// </summary>
         readonly string dbConString;
+        readonly int dbConType;
         internal DbProviderFactory dbFactory;
         internal DbCommandBuilder dbBuilder;
         internal string dbParameterMarkerFormat;
 		
 		void dbProcess() { }
 
-        public DBManager(int type, string conString)
+        public DBManager(int conType, string conString)
         {
             dbConString = conString;
+            dbConType = conType;
 
-            switch (type)
+            switch (conType)
             {
                 case 0:
                     dbFactory = DbProviderFactories.GetFactory("System.Data.SqlClient");
@@ -75,6 +77,29 @@ namespace Common
             DbCommand _dbCmd = dbFactory.CreateCommand();
             _dbCmd.Connection = _dbCon;
             _dbCmd.CommandText = text;
+            return _dbCmd;
+        }
+
+        public DbCommand CreateCommand(int idx, int type)
+        {
+            DbConnection _dbCon = dbFactory.CreateConnection();
+            _dbCon.ConnectionString = dbConString;
+            DbCommand _dbCmd = dbFactory.CreateCommand();
+            _dbCmd.Connection = _dbCon;
+            try
+            {
+                switch (type)
+                {
+                    case 0:
+                        _dbCmd.CommandText = Statements.Arcadia[idx];
+                        break;
+
+                    case 1:
+                        _dbCmd.CommandText = Statements.Player[idx];
+                        break;
+                }
+            }
+            catch (Exception ex) { ConsoleUtils.ShowSQL(ex.Message); }
             return _dbCmd;
         }
 
