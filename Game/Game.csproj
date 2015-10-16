@@ -103,12 +103,6 @@
     <Compile Include="..\src\Game\Content\Arcadia.cs">
       <Link>Content\Arcadia.cs</Link>
     </Compile>
-    <Compile Include="..\src\Game\Content\CreatureInfo.cs">
-      <Link>Content\CreatureInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\src\Game\Content\GameObject.cs">
-      <Link>Content\GameObject.cs</Link>
-    </Compile>
     <Compile Include="..\src\Game\Content\Player.cs">
       <Link>Content\Player.cs</Link>
     </Compile>
@@ -220,6 +214,7 @@
     <Compile Include="..\src\Game\Settings.cs">
       <Link>Game\Settings.cs</Link>
     </Compile>
+    <Compile Include="Database\Statements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="..\src\Common\GUI\consoleGUI.resx">
       <Link>Common\GUI\consoleGUI.resx</Link>
