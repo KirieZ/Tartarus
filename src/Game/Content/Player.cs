@@ -10,7 +10,7 @@ using Game.Players.Structures;
 
 namespace Game.Content
 {
-	public partial class Player
+	public class Player : CreatureInfo
 	{
 		static int sqlConType = Settings.SqlEngine;
 		static string sqlConString = "Server=" + Settings.SqlUserIp + ";Database=" + Settings.SqlUserDatabase + ";UID=" + Settings.SqlUserUsername + ";PWD=" + Settings.SqlUserPassword + ";Connection Timeout=5;";
@@ -40,8 +40,6 @@ namespace Game.Content
 
 		public Position Position { get; set; }
 
-		public int Race { get; set; }
-
 		public int Sex { get; set; }
 
 		public int Level { get; set; }
@@ -51,10 +49,6 @@ namespace Game.Content
 		public long Exp { get; set; }
 
 		public long LastDecreasedExp { get; set; }
-
-		public int Hp { get; set; }
-
-		public int Mp { get; set; }
 
 		public int Stamina { get; set; }
 
@@ -86,8 +80,6 @@ namespace Game.Content
 
 		public int Chaos { get; set; }
 
-		public uint SkinColor { get; set; }
-
 		public int HairId { get; set; }
 
 		public int FaceId { get; set; }
@@ -107,9 +99,24 @@ namespace Game.Content
 		public int MainSummon { get; set; }
 
 		public int SubSummon { get; set; }
+
+		public int RemainSummonTime { get; set; }
+
+		public int Pet { get; set; }
+
+		public int ChatBlockTime { get; set; }
+
+		public int AdvChatCount { get; set; }
+
+		public int GuildBlockTime { get; set; }
+
+		public byte PkMode { get; set; }
+
+		public string ClientInfo { get; set; }
 		#endregion
 
 		public Player(Socket socket)
+			: base(ObjectType.Player)
 		{
 			this.NetData = new NetworkData(socket);
 
@@ -184,23 +191,5 @@ namespace Game.Content
 		}
 
 		#endregion
-
-
-
-
-
-		public int RemainSummonTime { get; set; }
-
-		public int Pet { get; set; }
-
-		public int ChatBlockTime { get; set; }
-
-		public int AdvChatCount { get; set; }
-
-		public int GuildBlockTime { get; set; }
-
-		public byte PkMode { get; set; }
-
-		public string ClientInfo { get; set; }
 	}
 }

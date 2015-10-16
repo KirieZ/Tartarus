@@ -103,6 +103,12 @@
     <Compile Include="..\src\Game\Content\Arcadia.cs">
       <Link>Content\Arcadia.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\CreatureInfo.cs">
+      <Link>Content\CreatureInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Content\GameObject.cs">
+      <Link>Content\GameObject.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Content\Player.cs">
       <Link>Content\Player.cs</Link>
     </Compile>

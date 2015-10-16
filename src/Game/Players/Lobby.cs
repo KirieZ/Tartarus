@@ -47,7 +47,7 @@ namespace Game.Players
 								// Reads the character data
 								LobbyCharacterInfo chara = new LobbyCharacterInfo();
 								chara.Name = (string)reader[3];
-								chara.ModelInfo.Race = (int)reader[11];
+								chara.ModelInfo.Race = (byte)reader[11];
 								chara.ModelInfo.Sex = (int)reader[12];
 								chara.ModelInfo.TextureId = (int)reader[46];
 								for (int i = 0; i < 5; i++)
@@ -141,7 +141,7 @@ namespace Game.Players
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.Int32, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, charInfo.Name);
-					dbManager.CreateInParameter(dbCmd, "race", System.Data.DbType.Int32, charInfo.ModelInfo.Race);
+					dbManager.CreateInParameter(dbCmd, "race", System.Data.DbType.Byte, (byte)charInfo.ModelInfo.Race);
 					dbManager.CreateInParameter(dbCmd, "sex", System.Data.DbType.Int32, charInfo.ModelInfo.Sex);
 					dbManager.CreateInParameter(dbCmd, "textureId", System.Data.DbType.Int32, charInfo.ModelInfo.TextureId);
 					dbManager.CreateInParameter(dbCmd, "hairId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[0]);
@@ -243,7 +243,7 @@ namespace Game.Players
 								player.Position.Y = (float)(int)reader[off++]; // 8
 								player.Position.Z = (float)(int)reader[off++]; // 9
 								player.Position.Layer = (byte)reader[off++]; // 10
-								player.Race = (int)reader[off++]; // 11
+								player.Race = (byte)reader[off++]; // 11
 								player.Sex = (int)reader[off++]; // 12
 								player.Level = (int)reader[off++]; // 13
 								player.MaxReachedLevel = (int)reader[off++]; // 14

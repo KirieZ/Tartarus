@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `Characters` (
   `y` int(11) NOT NULL default '0',
   `z` int(11) NOT NULL default '0',
   `layer` tinyint(4) unsigned NOT NULL default '0',
-  `race` int(11) NOT NULL default '0',
+  `race` tinyint(4) unsigned NOT NULL default '0',
   `sex` int(11) NOT NULL default '0',
   `level` int(11) NOT NULL default '0',
   `max_reached_level` int(11) NOT NULL default '0',
