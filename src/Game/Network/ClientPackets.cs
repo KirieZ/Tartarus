@@ -313,14 +313,14 @@ namespace Game.Network
 		/// Sends a list of URLs
 		/// </summary>
 		/// <param name="client"></param>
-		public void UrlList(Player client)
+		public void UrlList(Player player)
 		{
 			PacketStream stream = new PacketStream(0x2329);
 
 			stream.WriteUInt16((ushort)Server.UrlList.Length);
 			stream.WriteString(Server.UrlList);
 
-			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
+			ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
 		}
 
 		#endregion

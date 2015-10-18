@@ -113,6 +113,13 @@ namespace Game.Content
 		public byte PkMode { get; set; }
 
 		public string ClientInfo { get; set; }
+
+		public CreatureStat Stats { get; set; }
+		public CreatureStat BonusStats { get; set; }
+
+		public CreatureAttribute Attributes { get; set; }
+		public CreatureAttribute BonusAttributes { get; set; }
+
 		#endregion
 
 		public Player(Socket socket)
@@ -125,6 +132,11 @@ namespace Game.Content
 			this.Huntaholic = new HuntaholicData();
 			this.Belt = new BeltSlotData[6] { new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData() };
 			this.Summon = new SummonData[6] { new SummonData(), new SummonData(), new SummonData(), new SummonData(), new SummonData(), new SummonData() };
+
+			this.Stats = new CreatureStat();
+			this.BonusStats = new CreatureStat();
+			this.Attributes = new CreatureAttribute();
+			this.BonusAttributes = new CreatureAttribute();
 		}
 
 		#region Lobby

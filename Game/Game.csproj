@@ -112,6 +112,9 @@
     <Compile Include="..\src\Game\Content\Player.cs">
       <Link>Content\Player.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\Stats.cs">
+      <Link>Content\Stats.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Database\Statements.cs">
       <Link>Database\Statements.cs</Link>
     </Compile>
