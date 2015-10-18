@@ -32,7 +32,7 @@ namespace Game.Players
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now LIMIT 5"))
+				using (DbCommand dbCmd = dbManager.CreateCommand(0, 1))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
@@ -97,7 +97,7 @@ namespace Game.Players
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT char_id FROM Characters WHERE name = @name AND delete_date > @now"))
+				using (DbCommand dbCmd = dbManager.CreateCommand(1, 1))
 				{
 					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, name);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
@@ -137,7 +137,7 @@ namespace Game.Players
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("INSERT INTO Characters (account_id, name, race, sex, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color, create_date) VALUES (@accId, @name, @race, @sex, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor, @createDate)"))
+				using (DbCommand dbCmd = dbManager.CreateCommand(2, 1))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.Int32, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, charInfo.Name);
@@ -178,14 +178,7 @@ namespace Game.Players
 
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
-				string query = "";
-				// Checks if character must be kept when deleting (change delete_date instead of removing the entry)
-				if (Settings.KeepDeletedCharacters)
-					query = "UPDATE Characters SET delete_date = @now WHERE account_id = @accId AND name = @name";
-				else
-					query = "DELETE FROM Characters WHERE account_id = @accId AND name = @name";
-
-				using (DbCommand dbCmd = dbManager.CreateCommand(query))
+				using (DbCommand dbCmd = dbManager.CreateCommand((Settings.KeepDeletedCharacters ? 3 : 4), 1))
 				{
 					if (Settings.KeepDeletedCharacters)
 						dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
@@ -216,7 +209,7 @@ namespace Game.Players
 		{
 			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now AND name = @name"))
+				using (DbCommand dbCmd = dbManager.CreateCommand(5, 1))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);

@@ -41,6 +41,15 @@ namespace Game.Database
             Arcadia.Add(24, "SELECT * FROM SummonUniqueNameResource");
             Arcadia.Add(25, "SELECT * FROM StringResource");
             Arcadia.Add(26, "SELECT * FROM SummonResource");
+
+			Player = new Dictionary<int, string>();
+			// Lobby
+			Player.Add(0, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now LIMIT 5");
+			Player.Add(1, "SELECT char_id FROM Characters WHERE name = @name AND delete_date > @now");
+			Player.Add(2, "INSERT INTO Characters (account_id, name, race, sex, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color, create_date) VALUES (@accId, @name, @race, @sex, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor, @createDate)");
+			Player.Add(3, "UPDATE Characters SET delete_date = @now WHERE account_id = @accId AND name = @name");
+			Player.Add(4, "DELETE FROM Characters WHERE account_id = @accId AND name = @name");
+			Player.Add(5, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now AND name = @name");
         }
     }
 }
