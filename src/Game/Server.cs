@@ -107,6 +107,7 @@ namespace Game
 
             #region Content Load
 
+            Statements.Init();
             Arcadia.Init(sqlConType, sqlConString);
 
             // Pre-process the url list so it doesn't have to be generated everytime.
