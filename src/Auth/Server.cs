@@ -64,10 +64,10 @@ namespace Auth
 			ConsoleCommands.Load(GetConsoleCommands());
 		}
 
-		/// <summary>
-		/// Server starting
-		/// </summary>
-		public override void Start()
+        /// <summary>
+        /// Server content loading and start up
+        /// </summary>
+        public override void Start()
 		{
             #region Internal StartUp
             // TODO : DB Test

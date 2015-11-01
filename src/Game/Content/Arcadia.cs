@@ -46,9 +46,9 @@ namespace Game.Content
         {
             AuctionCategoryResource = new List<DB_AuctionCategory>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(0, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(0))
                 {
                     try
                     {
@@ -87,9 +87,9 @@ namespace Game.Content
         {
             AutoAuctionResource = new List<DB_AutoAuction>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(1, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(1))
                 {
                     try
                     {
@@ -134,9 +134,9 @@ namespace Game.Content
         {
             CreatureLevelBonus = new List<DB_CreateLevelBonus>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(2, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(2))
                 {
                     try
                     {
@@ -177,9 +177,9 @@ namespace Game.Content
         {
             DropGroupResource = new List<DB_DropGroup>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(3, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(3))
                 {
                     try
                     {
@@ -255,9 +255,9 @@ namespace Game.Content
         {
             EventAreaResource = new List<DB_EventArea>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(4, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(4))
                 {
                     try
                     {
@@ -318,9 +318,9 @@ namespace Game.Content
         {
             ItemResource = new List<DB_Item>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(5, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(5))
                 {
                     try
                     {
@@ -465,9 +465,9 @@ namespace Game.Content
         {
             ItemEffectResource = new List<DB_ItemEffect>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(6, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(6))
                 {
                     try
                     {
@@ -527,9 +527,9 @@ namespace Game.Content
         {
             JobLevelBonus = new List<DB_JobLevel>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(7, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(7))
                 {
                     try
                     {
@@ -593,9 +593,9 @@ namespace Game.Content
         {
             JobResource = new List<DB_Job>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(8, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(8))
                 {
                     try
                     {
@@ -643,9 +643,9 @@ namespace Game.Content
         {
             LevelResource = new List<DB_Level>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(9, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(9))
                 {
                     try
                     {
@@ -684,9 +684,9 @@ namespace Game.Content
         {
             MarketResource = new List<DB_Market>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(10, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(10))
                 {
                     try
                     {
@@ -724,9 +724,9 @@ namespace Game.Content
         {
             MonsterResource = new List<DB_Monster>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(11, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(11))
                 {
                     try
                     {
@@ -837,9 +837,9 @@ namespace Game.Content
         {
             MonsterDropTableResource = new List<DB_MonsterDropTable>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(12, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(12))
                 {
                     try
                     {
@@ -936,9 +936,9 @@ namespace Game.Content
         {
             MonsterSkillResource = new List<DB_MonsterSkill>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(13, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(13))
                 {
                     try
                     {
@@ -1016,9 +1016,9 @@ namespace Game.Content
         {
             QuestLinkResource = new List<DB_QuestLink>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(14, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(14))
                 {
                     try
                     {
@@ -1061,9 +1061,9 @@ namespace Game.Content
         {
             QuestResource = new List<DB_Quest>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(15, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(15))
                 {
                     try
                     {
@@ -1173,9 +1173,9 @@ namespace Game.Content
         {
             RandomPoolResource = new List<DB_RandomPool>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(16, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(16))
                 {
                     try
                     {
@@ -1211,9 +1211,9 @@ namespace Game.Content
         {
             SetItemEffectResource = new List<DB_SetItemEffect>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(17, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(17))
                 {
                     try
                     {
@@ -1277,9 +1277,9 @@ namespace Game.Content
         {
             SkillResource = new List<DB_Skill>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(18, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(18))
                 {
                     try
                     {
@@ -1439,9 +1439,9 @@ namespace Game.Content
         {
             SkillJPResource = new List<DB_SkillJP>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(19, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(19))
                 {
                     try
                     {
@@ -1517,9 +1517,9 @@ namespace Game.Content
         {
             SkillTreeResource = new List<DB_SkillTree>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(20, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(20))
                 {
                     try
                     {
@@ -1567,9 +1567,9 @@ namespace Game.Content
         {
             StatResource = new List<DB_Stat>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(21, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(21))
                 {
                     try
                     {
@@ -1612,9 +1612,9 @@ namespace Game.Content
         {
             SummonDefaultNameResource = new List<DB_SummonName>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(22, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(22))
                 {
                     try
                     {
@@ -1650,9 +1650,9 @@ namespace Game.Content
         {
             SummonLevelResource = new List<DB_SummonLevel>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(23, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(23))
                 {
                     try
                     {
@@ -1689,9 +1689,9 @@ namespace Game.Content
         {
             SummonUniqueNameResource = new List<DB_SummonName>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(24, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(24))
                 {
                     try
                     {
@@ -1727,9 +1727,9 @@ namespace Game.Content
         {
             StringResource = new List<DB_String>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(25, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(25))
                 {
                     try
                     {
@@ -1766,9 +1766,9 @@ namespace Game.Content
         {
             SummonResource = new List<DB_Summon>();
 
-            using (DBManager dbManager = new DBManager(conType, conString))
+            using (DBManager dbManager = new DBManager(Databases.Game))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand(26, 0))
+                using (DbCommand dbCmd = dbManager.CreateCommand(26))
                 {
                     try
                     {

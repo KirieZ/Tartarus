@@ -84,30 +84,33 @@ namespace Game
 					ConsoleUtils.ShowError("Invalid 'console_silent' value. Defaulting to 0...");
 			}
 
-            sqlConType = Settings.SqlEngine;
-            sqlConString = "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;";
-
-			#endregion
+            #endregion
 			
 			ConsoleUtils.ShowHeader(Settings.WindowTitle);
 			ConsoleCommands.Load(GetConsoleCommands());
-
-            #region Content Load
-
-            Arcadia.Init(sqlConType, sqlConString);
-
-            #endregion
         }
 
 		/// <summary>
-		/// Server starting
+		/// Server content loading and start up
 		/// </summary>
 		public override void Start()
 		{
 			PendingUsers = new Dictionary<string, PendingUserData>();
 
-			// Pre-process the url list so it doesn't have to be generated everytime.
-			StringBuilder urlList = new StringBuilder();
+            // Sets server connection data
+            DBManager.SetConnectionData(
+                Settings.SqlEngine,
+                "",
+                "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;",
+                "Server = " + Settings.SqlUserIp + "; Database = " + Settings.SqlUserDatabase + "; UID = " + Settings.SqlUserUsername + "; PWD = " + Settings.SqlUserPassword + "; Connection Timeout = 5;"
+            );
+
+            #region Content Load
+
+            Arcadia.Init(sqlConType, sqlConString);
+
+            // Pre-process the url list so it doesn't have to be generated everytime.
+            StringBuilder urlList = new StringBuilder();
 			
 			urlList.Append("guild.url|");
 			urlList.Append(Settings.GuildUrl);
@@ -128,7 +131,9 @@ namespace Game
 			
 			UrlList = urlList.ToString();
 
-			AuthManager.Instance.Start();
+            #endregion
+
+            AuthManager.Instance.Start();
 			ClientManager.Instance.Start();
 		}
 

@@ -30,9 +30,9 @@ namespace Game.Players
 		{
 			List<LobbyCharacterInfo> charList = new List<LobbyCharacterInfo>();
 
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.User))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand(0, 1))
+				using (DbCommand dbCmd = dbManager.CreateCommand(0))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
@@ -95,9 +95,9 @@ namespace Game.Players
 			if (name.IndexOfAny(Settings.ForbiddenCharacters) >= 0)
 				return false;
 
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.User))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand(1, 1))
+				using (DbCommand dbCmd = dbManager.CreateCommand(1))
 				{
 					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, name);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
@@ -135,9 +135,9 @@ namespace Game.Players
 
 			bool result = true;
 
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.User))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand(2, 1))
+				using (DbCommand dbCmd = dbManager.CreateCommand(2))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.Int32, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, charInfo.Name);
@@ -176,9 +176,9 @@ namespace Game.Players
 		{
 			bool result = true;
 
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.User))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand((Settings.KeepDeletedCharacters ? 3 : 4), 1))
+				using (DbCommand dbCmd = dbManager.CreateCommand((Settings.KeepDeletedCharacters ? 3 : 4)))
 				{
 					if (Settings.KeepDeletedCharacters)
 						dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
@@ -207,9 +207,9 @@ namespace Game.Players
 		/// <param name="race"></param>
 		internal static void Login(Player player, string name, byte race)
 		{
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.User))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand(5, 1))
+				using (DbCommand dbCmd = dbManager.CreateCommand(5))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
