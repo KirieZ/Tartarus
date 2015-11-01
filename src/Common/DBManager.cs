@@ -3,34 +3,67 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using Game.Database;
 
 namespace Common
 {
+    public enum Database
+    {
+        Auth,
+        Game,
+        User
+    }
+
     /// <summary>
     /// Provides interactibility with MySQL/MSSQL databases
     /// </summary>
 	public class DBManager : IDisposable
 	{
+        private static Dictionary<int, string> AuthStatements;
+        private static Dictionary<int, string> GameStatements;
+        private static Dictionary<int, string> UserStatements;
+
+        private static int ConType;
+
+        private static string AuthConString;
+        private static string GameConString;
+        private static string UserConString;
+
         /// <summary>
         /// Indentifies the current connection type
         /// 0 = MSSQL
         /// 1 = MySQL
         /// </summary>
         readonly string dbConString;
-        readonly int dbConType;
+        readonly Database targetDb;
         internal DbProviderFactory dbFactory;
         internal DbCommandBuilder dbBuilder;
         internal string dbParameterMarkerFormat;
 		
 		void dbProcess() { }
 
+        internal static void SetStatements(Dictionary<int, string> auth, Dictionary<int, string> game, Dictionary<int, string> user)
+        {
+            AuthStatements = auth;
+            GameStatements = game;
+            UserStatements = user;
+        }
+
+        internal static void SetConnectionData(int engine, string authCon, string gameCon, string userCon)
+        {
+            ConType = engine;
+            AuthConString = authCon;
+            GameConString = gameCon;
+            UserConString = userCon;
+        }
+
         public DBManager(int conType, string conString)
         {
-            dbConString = conString;
-            dbConType = conType;
+            
+        }
 
-            switch (conType)
+        public DBManager(Database db)
+        {
+            switch (ConType)
             {
                 case 0:
                     dbFactory = DbProviderFactories.GetFactory("System.Data.SqlClient");
@@ -43,6 +76,24 @@ namespace Common
                 default:
                     throw new ArgumentOutOfRangeException("Database type isn't within range.");
             }
+
+            switch (db)
+            {
+                case Database.Auth:
+                    dbConString = AuthConString;
+                    break;
+                case Database.Game:
+                    dbConString = GameConString;
+                    break;
+                case Database.User:
+                    dbConString = UserConString;
+                    break;
+                default:
+                    ConsoleUtils.ShowError("Invalid database type.");
+                    break;
+            }
+
+            targetDb = db;
 
             if (dbFactory != null)
             {
@@ -88,14 +139,19 @@ namespace Common
             _dbCmd.Connection = _dbCon;
             try
             {
-                switch (type)
+                switch (targetDb)
                 {
-                    case 0:
-                        _dbCmd.CommandText = Statements.Arcadia[idx];
+                    case Database.Auth:
+                        _dbCmd.CommandText = AuthStatements[idx];
                         break;
-
-                    case 1:
-                        _dbCmd.CommandText = Statements.Player[idx];
+                    case Database.Game:
+                        _dbCmd.CommandText = GameStatements[idx];
+                        break;
+                    case Database.User:
+                        _dbCmd.CommandText = UserStatements[idx];
+                        break;
+                    default:
+                        ConsoleUtils.ShowError("Invalid statement type.");
                         break;
                 }
             }

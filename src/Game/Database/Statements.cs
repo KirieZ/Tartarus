@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 
 namespace Game.Database
 {
@@ -50,6 +51,8 @@ namespace Game.Database
 			Player.Add(3, "UPDATE Characters SET delete_date = @now WHERE account_id = @accId AND name = @name");
 			Player.Add(4, "DELETE FROM Characters WHERE account_id = @accId AND name = @name");
 			Player.Add(5, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now AND name = @name");
+
+            DBManager.SetStatements(null, Arcadia, Player);
         }
     }
 }
