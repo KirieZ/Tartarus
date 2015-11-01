@@ -56,12 +56,6 @@ namespace Common
             UserConString = userCon;
         }
 
-        // deprecated
-        public DBManager(int conType, string conString)
-        {
-            
-        }
-
         public DBManager(Databases db)
         {
             switch (ConType)
@@ -121,47 +115,7 @@ namespace Common
                 }
             }
         }
-
-        // Deprecated
-        public DbCommand CreateCommand(string text)
-        {
-            DbConnection _dbCon = dbFactory.CreateConnection();
-            _dbCon.ConnectionString = dbConString;
-            DbCommand _dbCmd = dbFactory.CreateCommand();
-            _dbCmd.Connection = _dbCon;
-            _dbCmd.CommandText = text;
-            return _dbCmd;
-        }
-
-        // Deprecated
-        public DbCommand CreateCommand(int idx, int type)
-        {
-            DbConnection _dbCon = dbFactory.CreateConnection();
-            _dbCon.ConnectionString = dbConString;
-            DbCommand _dbCmd = dbFactory.CreateCommand();
-            _dbCmd.Connection = _dbCon;
-            try
-            {
-                switch (targetDb)
-                {
-                    case Databases.Auth:
-                        _dbCmd.CommandText = AuthStatements[idx];
-                        break;
-                    case Databases.Game:
-                        _dbCmd.CommandText = GameStatements[idx];
-                        break;
-                    case Databases.User:
-                        _dbCmd.CommandText = UserStatements[idx];
-                        break;
-                    default:
-                        ConsoleUtils.ShowError("Invalid statement type.");
-                        break;
-                }
-            }
-            catch (Exception ex) { ConsoleUtils.ShowSQL(ex.Message); }
-            return _dbCmd;
-        }
-
+        
         public DbCommand CreateCommand(int idx)
         {
             DbConnection _dbCon = dbFactory.CreateConnection();
