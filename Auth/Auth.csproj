@@ -50,6 +50,9 @@
     <Compile Include="..\src\Auth\ConsoleHelper.cs">
       <Link>Auth\ConsoleHelper.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\Database\Statements.cs">
+      <Link>Database\Statements.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\GameClient.cs">
       <Link>Auth\GameClient.cs</Link>
     </Compile>

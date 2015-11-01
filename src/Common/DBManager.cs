@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace Common
 {
-    public enum Database
+    public enum Databases
     {
         Auth,
         Game,
@@ -34,7 +34,7 @@ namespace Common
         /// 1 = MySQL
         /// </summary>
         readonly string dbConString;
-        readonly Database targetDb;
+        readonly Databases targetDb;
         internal DbProviderFactory dbFactory;
         internal DbCommandBuilder dbBuilder;
         internal string dbParameterMarkerFormat;
@@ -56,12 +56,13 @@ namespace Common
             UserConString = userCon;
         }
 
+        // deprecated
         public DBManager(int conType, string conString)
         {
             
         }
 
-        public DBManager(Database db)
+        public DBManager(Databases db)
         {
             switch (ConType)
             {
@@ -79,13 +80,13 @@ namespace Common
 
             switch (db)
             {
-                case Database.Auth:
+                case Databases.Auth:
                     dbConString = AuthConString;
                     break;
-                case Database.Game:
+                case Databases.Game:
                     dbConString = GameConString;
                     break;
-                case Database.User:
+                case Databases.User:
                     dbConString = UserConString;
                     break;
                 default:
@@ -121,6 +122,7 @@ namespace Common
             }
         }
 
+        // Deprecated
         public DbCommand CreateCommand(string text)
         {
             DbConnection _dbCon = dbFactory.CreateConnection();
@@ -131,6 +133,7 @@ namespace Common
             return _dbCmd;
         }
 
+        // Deprecated
         public DbCommand CreateCommand(int idx, int type)
         {
             DbConnection _dbCon = dbFactory.CreateConnection();
@@ -141,13 +144,41 @@ namespace Common
             {
                 switch (targetDb)
                 {
-                    case Database.Auth:
+                    case Databases.Auth:
                         _dbCmd.CommandText = AuthStatements[idx];
                         break;
-                    case Database.Game:
+                    case Databases.Game:
                         _dbCmd.CommandText = GameStatements[idx];
                         break;
-                    case Database.User:
+                    case Databases.User:
+                        _dbCmd.CommandText = UserStatements[idx];
+                        break;
+                    default:
+                        ConsoleUtils.ShowError("Invalid statement type.");
+                        break;
+                }
+            }
+            catch (Exception ex) { ConsoleUtils.ShowSQL(ex.Message); }
+            return _dbCmd;
+        }
+
+        public DbCommand CreateCommand(int idx)
+        {
+            DbConnection _dbCon = dbFactory.CreateConnection();
+            _dbCon.ConnectionString = dbConString;
+            DbCommand _dbCmd = dbFactory.CreateCommand();
+            _dbCmd.Connection = _dbCon;
+            try
+            {
+                switch (targetDb)
+                {
+                    case Databases.Auth:
+                        _dbCmd.CommandText = AuthStatements[idx];
+                        break;
+                    case Databases.Game:
+                        _dbCmd.CommandText = GameStatements[idx];
+                        break;
+                    case Databases.User:
                         _dbCmd.CommandText = UserStatements[idx];
                         break;
                     default:
