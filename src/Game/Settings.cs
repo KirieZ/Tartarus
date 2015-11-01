@@ -121,14 +121,14 @@ namespace Game
 			ForbiddenCharacters = (((String)ParseSetting(ref settings, DType.String, "forbidden_characters", "", true)) + "@").ToCharArray();
 			
 			// URL List
-			GuildUrl = (String)ParseSetting(ref settings, DType.String, "GuildUrl", "", false);
-			GuildTestDownloadUrl = (String)ParseSetting(ref settings, DType.String, "GuildTestDownloadUrl", "", false);
-			WebDownload = (String)ParseSetting(ref settings, DType.String, "WebDownload", "", false);
-			WebDownloadPort = (String)ParseSetting(ref settings, DType.String, "WebDownloadPort", "", false);
-			ShopUrl = (String)ParseSetting(ref settings, DType.String, "ShopUrl", "", false);
-			GHelpUrl = (String)ParseSetting(ref settings, DType.String, "GHelpUrl", "", false);
-			GuildIconUploadIp = (String)ParseSetting(ref settings, DType.String, "GuildIconUploadIp", "", false);
-			GuildIconUploadPort = (String)ParseSetting(ref settings, DType.String, "GuildIconUploadPort", "", false);
+			GuildUrl = (String)ParseSetting(ref settings, DType.String, "guild.url", "", false);
+			GuildTestDownloadUrl = (String)ParseSetting(ref settings, DType.String, "guild_test_download.url", "", false);
+			WebDownload = (String)ParseSetting(ref settings, DType.String, "web_download", "", false);
+			WebDownloadPort = (String)ParseSetting(ref settings, DType.String, "web_download_port", "", false);
+			ShopUrl = (String)ParseSetting(ref settings, DType.String, "shop.url", "", false);
+			GHelpUrl = (String)ParseSetting(ref settings, DType.String, "ghelp_url", "", false);
+			GuildIconUploadIp = (String)ParseSetting(ref settings, DType.String, "guild_icon_upload.ip", "", false);
+			GuildIconUploadPort = (String)ParseSetting(ref settings, DType.String, "guild_icon_upload.port", "", false);
 
 			Boolean DebugOnStart = (Boolean)ParseSetting(ref settings, DType.Bool, "debug_onstart", false, true);
 			if (DebugOnStart)
