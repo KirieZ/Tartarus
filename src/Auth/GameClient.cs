@@ -1,6 +1,6 @@
-using Auth.Network;
 // Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
+using Auth.Network;
 using Common;
 using Common.Utilities;
 using System;
@@ -16,8 +16,6 @@ namespace Auth
 	/// </summary>
 	public class GameClient
 	{
-		static int sqlConType = Settings.SqlEngine;
-		static string sqlConString = "Server="+Settings.SqlIp+";Database="+Settings.SqlDatabase+";UID="+Settings.SqlUsername+";PWD="+Settings.SqlPassword+";Connection Timeout=5;";
 		static XDes Des = new XDes(Globals.DESKey);
 
 		public NetworkData NetData { get; set; }
@@ -64,9 +62,9 @@ namespace Auth
 				}
 			}
 
-            using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+            using (DBManager dbManager = new DBManager(Databases.Auth))
             {
-                using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM login WHERE userid = @id AND password = @pass"))
+                using (DbCommand dbCmd = dbManager.CreateCommand(0))
                 {
                     dbManager.CreateInParameter(dbCmd, "id", System.Data.DbType.String, userId);
                     dbManager.CreateInParameter(dbCmd, "pass", System.Data.DbType.String, userPass);
@@ -79,9 +77,9 @@ namespace Auth
                             while (reader.Read())
                             {
                                 this.AccountId = (int)reader[0];
-								this.UserId = (string)reader[1];
+                                this.UserId = (string)reader[1];
                                 this.Permission = (byte)reader[3];
-								this.LastServerId = Convert.ToUInt16((int)reader[4]);
+                                this.LastServerId = Convert.ToUInt16((int)reader[4]);
                             }
                         }
                     }
@@ -111,9 +109,9 @@ namespace Auth
 			byte perm = 0;
 			ushort svId = 0;
 
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.Auth))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM login WHERE userid = @id"))
+				using (DbCommand dbCmd = dbManager.CreateCommand(1))
 				{
 					dbManager.CreateInParameter(dbCmd, "id", System.Data.DbType.String, userId);
 					try
@@ -139,9 +137,9 @@ namespace Auth
 			{ // Account exists, lets check otp
 				string dbOtp = "";
 
-				using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+				using (DBManager dbManager = new DBManager(Databases.Auth))
 				{
-					using (DbCommand dbCmd = dbManager.CreateCommand("SELECT * FROM otp WHERE account_id = @acc"))
+					using (DbCommand dbCmd = dbManager.CreateCommand(2))
 					{
 						dbManager.CreateInParameter(dbCmd, "acc", System.Data.DbType.String, accId);
 						try
@@ -163,9 +161,9 @@ namespace Auth
 
 				if (dbOtp.Length > 0 && dbOtp.Equals(otp))
 				{ // Valid otp, remove entry
-					using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+					using (DBManager dbManager = new DBManager(Databases.Auth))
 					{
-						using (DbCommand dbCmd = dbManager.CreateCommand("DELETE FROM otp WHERE account_id = @acc"))
+						using (DbCommand dbCmd = dbManager.CreateCommand(3))
 						{
 							dbManager.CreateInParameter(dbCmd, "acc", System.Data.DbType.String, accId);
 							try
@@ -202,9 +200,9 @@ namespace Auth
 			}
 
 			// Updates last_serverid
-			using (DBManager dbManager = new DBManager(sqlConType, sqlConString))
+			using (DBManager dbManager = new DBManager(Databases.Auth))
 			{
-				using (DbCommand dbCmd = dbManager.CreateCommand("UPDATE login SET last_serverid = @sid WHERE account_id = @acc"))
+				using (DbCommand dbCmd = dbManager.CreateCommand(4))
 				{
 					dbManager.CreateInParameter(dbCmd, "sid", System.Data.DbType.Int32, (int)index);
 					dbManager.CreateInParameter(dbCmd, "acc", System.Data.DbType.Int32, this.AccountId);

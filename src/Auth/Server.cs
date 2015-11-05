@@ -64,13 +64,19 @@ namespace Auth
 			ConsoleCommands.Load(GetConsoleCommands());
 		}
 
-		/// <summary>
-		/// Server starting
-		/// </summary>
-		public override void Start()
+        /// <summary>
+        /// Server content loading and start up
+        /// </summary>
+        public override void Start()
 		{
-			#region Internal StartUp
-			// TODO : DB Test
+            #region Internal StartUp
+            // TODO : DB Test
+            DBManager.SetConnectionData(
+                Settings.SqlEngine,
+                "Server=" + Settings.SqlIp + ";Database=" + Settings.SqlDatabase + ";UID=" + Settings.SqlUsername + ";PWD=" + Settings.SqlPassword + ";Connection Timeout=5;",
+                "",
+                ""
+            );
 			this.GameServers = new Dictionary<ushort, GameServer>();
 			#endregion
 
