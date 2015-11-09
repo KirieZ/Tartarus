@@ -29,7 +29,7 @@ namespace Game.Content
 	public class CreatureAttribute
 	{
 		public short Critical { get; set; }
-		public short CritialPower { get; set; }
+		public short CriticalPower { get; set; }
 		public short PAttackRight { get; set; }
 		public short PAttackLeft { get; set; }
 		public short Defense { get; set; }

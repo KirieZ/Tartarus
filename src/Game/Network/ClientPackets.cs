@@ -11,318 +11,400 @@ using Game.Players.Structures;
 
 namespace Game.Network
 {
-	/// <summary>
-	/// Packets exchanged between Client and Auth
-	/// </summary>
-	public class ClientPackets
-	{
-		public static readonly ClientPackets Instance = new ClientPackets();
-		
-		private delegate void PacketAction(Player client, PacketStream stream);
+    /// <summary>
+    /// Packets exchanged between Client and Auth
+    /// </summary>
+    public class ClientPackets
+    {
+        public static readonly ClientPackets Instance = new ClientPackets();
 
-		private Dictionary<ushort, PacketAction> PacketsDb;
+        private delegate void PacketAction(Player client, PacketStream stream);
 
-		public ClientPackets()
-		{
-			// Loads PacketsDb
-			PacketsDb = new Dictionary<ushort, PacketAction>();
+        private Dictionary<ushort, PacketAction> PacketsDb;
 
-			#region Packets
-			PacketsDb.Add(0x0001, CS_Login);
-			PacketsDb.Add(0x0017, CS_ReturnLobby);
-			PacketsDb.Add(0x0019, CS_RequestReturnLobby);
-			PacketsDb.Add(0x001A, CS_RequestLogout);
-			PacketsDb.Add(0x001B, CS_Logout);
-			PacketsDb.Add(0x0032, CS_Version);
-			PacketsDb.Add(0x07D1, CS_CharacterList);
-			PacketsDb.Add(0x07D2, CS_CreateCharacter);
-			PacketsDb.Add(0x07D3, CS_DeleteCharacter);
-			PacketsDb.Add(0x07D5, CS_AccountWithAuth);
-			PacketsDb.Add(0x07D6, CS_CheckCharacterName);
-			PacketsDb.Add(0x1F40, CS_SystemSpecs);
+        public ClientPackets()
+        {
+            // Loads PacketsDb
+            PacketsDb = new Dictionary<ushort, PacketAction>();
 
-			PacketsDb.Add(0x270F, CA_Unknown);
-			#endregion
-		}
+            #region Packets
+            PacketsDb.Add(0x0001, CS_Login);
+            PacketsDb.Add(0x0017, CS_ReturnLobby);
+            PacketsDb.Add(0x0019, CS_RequestReturnLobby);
+            PacketsDb.Add(0x001A, CS_RequestLogout);
+            PacketsDb.Add(0x001B, CS_Logout);
+            PacketsDb.Add(0x0032, CS_Version);
+            PacketsDb.Add(0x07D1, CS_CharacterList);
+            PacketsDb.Add(0x07D2, CS_CreateCharacter);
+            PacketsDb.Add(0x07D3, CS_DeleteCharacter);
+            PacketsDb.Add(0x07D5, CS_AccountWithAuth);
+            PacketsDb.Add(0x07D6, CS_CheckCharacterName);
+            PacketsDb.Add(0x1F40, CS_SystemSpecs);
 
-		/// <summary>
-		/// Called whenever a packet is received from a game client
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		public void PacketReceived(Player client, PacketStream stream)
-		{
-			// Is it a known packet ID
-			if (!PacketsDb.ContainsKey(stream.GetId()))
-			{
-				ConsoleUtils.ShowWarning("Unknown packet Id: {0}", stream.GetId());
-				return;
-			}
+            PacketsDb.Add(0x270F, CA_Unknown);
+            #endregion
+        }
 
-			// Calls this packet parsing function
-			Task.Factory.StartNew(() => { PacketsDb[stream.GetId()].Invoke(client, stream); });
-		}
+        /// <summary>
+        /// Called whenever a packet is received from a game client
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        public void PacketReceived(Player client, PacketStream stream)
+        {
+            // Is it a known packet ID
+            if (!PacketsDb.ContainsKey(stream.GetId()))
+            {
+                ConsoleUtils.ShowWarning("Unknown packet Id: {0}", stream.GetId());
+                return;
+            }
 
-		#region Client Packets
-		#region Unused Packets
-		/// <summary>
-		/// SFrame version (not used officially)
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_Version(Player client, PacketStream stream)
-		{
-			//string version = stream.ReadString(20);
-		}
+            // Calls this packet parsing function
+            Task.Factory.StartNew(() => { PacketsDb[stream.GetId()].Invoke(client, stream); });
+        }
 
-		/// <summary>
-		/// System specs (official name not found)
-		/// not used
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_SystemSpecs(Player client, PacketStream stream) { }
+        #region Client Packets
+        #region Unused Packets
+        /// <summary>
+        /// SFrame version (not used officially)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_Version(Player client, PacketStream stream)
+        {
+            //string version = stream.ReadString(20);
+        }
 
-		/// <summary>
-		/// Unknown packet, maybe user to keep connection
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CA_Unknown(Player client, PacketStream stream) { }
-		#endregion
+        /// <summary>
+        /// System specs (official name not found)
+        /// not used
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_SystemSpecs(Player client, PacketStream stream) { }
 
-		#region Lobby
-		/// <summary>
-		/// Connection from auth
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_AccountWithAuth(Player client, PacketStream stream)
-		{
-			string userId = stream.ReadString(61);
-			ulong key = stream.ReadUInt64();
+        /// <summary>
+        /// Unknown packet, maybe user to keep connection
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CA_Unknown(Player client, PacketStream stream) { }
+        #endregion
 
-			Server.Instance.OnUserJoin(client, userId, key);
-		}
+        #region Lobby
+        /// <summary>
+        /// Connection from auth
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_AccountWithAuth(Player client, PacketStream stream)
+        {
+            string userId = stream.ReadString(61);
+            ulong key = stream.ReadUInt64();
 
-		/// <summary>
-		/// Request the character list
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_CharacterList(Player client, PacketStream stream)
-		{
-			//string userId = stream.ReadString(61);
+            Server.Instance.OnUserJoin(client, userId, key);
+        }
 
-			client.GetCharacterList();
-		}
+        /// <summary>
+        /// Request the character list
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_CharacterList(Player client, PacketStream stream)
+        {
+            //string userId = stream.ReadString(61);
 
-		/// <summary>
-		/// Checks if character name is in use
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_CheckCharacterName(Player client, PacketStream stream)
-		{
-			string name = stream.ReadString(19);
+            client.GetCharacterList();
+        }
 
-			client.CheckCharacterName(name);
-		}
+        /// <summary>
+        /// Checks if character name is in use
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_CheckCharacterName(Player client, PacketStream stream)
+        {
+            string name = stream.ReadString(19);
 
-		/// <summary>
-		/// Request to create a character
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_CreateCharacter(Player client, PacketStream stream)
-		{
-			LobbyCharacterInfo charInfo = new LobbyCharacterInfo();
+            client.CheckCharacterName(name);
+        }
 
-			charInfo.ModelInfo.Sex = stream.ReadInt32();
-			charInfo.ModelInfo.Race = stream.ReadInt32();
+        /// <summary>
+        /// Request to create a character
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_CreateCharacter(Player client, PacketStream stream)
+        {
+            LobbyCharacterInfo charInfo = new LobbyCharacterInfo();
 
-			for (int i = 0; i < 5; i++)
-				charInfo.ModelInfo.ModelId[i] = stream.ReadInt32();
+            charInfo.ModelInfo.Sex = stream.ReadInt32();
+            charInfo.ModelInfo.Race = stream.ReadInt32();
 
-			charInfo.ModelInfo.TextureId = stream.ReadInt32();
+            for (int i = 0; i < 5; i++)
+                charInfo.ModelInfo.ModelId[i] = stream.ReadInt32();
 
-			for (int i = 0; i < 24; i++)
-				charInfo.ModelInfo.WearInfo[i] = stream.ReadInt32();
+            charInfo.ModelInfo.TextureId = stream.ReadInt32();
 
-			charInfo.Level = stream.ReadInt32();
-			charInfo.Job = stream.ReadInt32();
-			charInfo.JobLevel = stream.ReadInt32();
-			charInfo.ExpPercentage = stream.ReadInt32();
-			charInfo.Hp = stream.ReadInt32();
-			charInfo.Mp = stream.ReadInt32();
-			charInfo.Permission = stream.ReadInt32();
-			charInfo.IsBanned = stream.ReadBool();
-			charInfo.Name = stream.ReadString(19);
-			charInfo.SkinColor = stream.ReadUInt32();
-			charInfo.CreateTime = stream.ReadString(30);
-			charInfo.DeleteTime = stream.ReadString(30);
-			for (int i = 0; i < 24; i++)
-				charInfo.WearItemEnhanceInfo[i] = stream.ReadInt32();
-			for (int i = 0; i < 24; i++)
-				charInfo.WearItemLevelInfo[i] = stream.ReadInt32();
-			for (int i = 0; i < 24; i++)
-				charInfo.WearItemElementalType[i] = stream.ReadByte();
+            for (int i = 0; i < 24; i++)
+                charInfo.ModelInfo.WearInfo[i] = stream.ReadInt32();
 
-			client.CreateCharacter(charInfo);
-		}
+            charInfo.Level = stream.ReadInt32();
+            charInfo.Job = stream.ReadInt32();
+            charInfo.JobLevel = stream.ReadInt32();
+            charInfo.ExpPercentage = stream.ReadInt32();
+            charInfo.Hp = stream.ReadInt32();
+            charInfo.Mp = stream.ReadInt32();
+            charInfo.Permission = stream.ReadInt32();
+            charInfo.IsBanned = stream.ReadBool();
+            charInfo.Name = stream.ReadString(19);
+            charInfo.SkinColor = stream.ReadUInt32();
+            charInfo.CreateTime = stream.ReadString(30);
+            charInfo.DeleteTime = stream.ReadString(30);
+            for (int i = 0; i < 24; i++)
+                charInfo.WearItemEnhanceInfo[i] = stream.ReadInt32();
+            for (int i = 0; i < 24; i++)
+                charInfo.WearItemLevelInfo[i] = stream.ReadInt32();
+            for (int i = 0; i < 24; i++)
+                charInfo.WearItemElementalType[i] = stream.ReadByte();
 
-		/// <summary>
-		/// Requests to delete a character
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_DeleteCharacter(Player client, PacketStream stream)
-		{
-			string name = stream.ReadString(19);
-			//string securityCode = stream.ReadString(19);
+            client.CreateCharacter(charInfo);
+        }
 
-			client.DeleteCharacter(name);
-		}
+        /// <summary>
+        /// Requests to delete a character
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_DeleteCharacter(Player client, PacketStream stream)
+        {
+            string name = stream.ReadString(19);
+            //string securityCode = stream.ReadString(19);
 
-		/// <summary>
-		/// Login to Game World
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_Login(Player client, PacketStream stream)
-		{
-			string name = stream.ReadString(19);
-			byte race = stream.ReadByte();
+            client.DeleteCharacter(name);
+        }
 
-			client.Login(name, race);
-		}
-		#endregion
+        /// <summary>
+        /// Login to Game World
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_Login(Player client, PacketStream stream)
+        {
+            string name = stream.ReadString(19);
+            byte race = stream.ReadByte();
 
-		#region Logout
-		/// <summary>
-		/// Checks if can logout (quit game)
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_RequestLogout(Player client, PacketStream stream)
-		{
-			// TODO : Proper check
-			Result(client, 0x001A, 0);
-		}
+            client.Login(name, race);
+        }
+        #endregion
 
-		/// <summary>
-		/// Logout (quit)
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_Logout(Player client, PacketStream stream)
-		{ 
-			// TODO : Function call
-		}
+        #region Logout
+        /// <summary>
+        /// Checks if can logout (quit game)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_RequestLogout(Player client, PacketStream stream)
+        {
+            // TODO : Proper check
+            Result(client, 0x001A, 0);
+        }
 
-		/// <summary>
-		/// Checks if can return to lobby
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_RequestReturnLobby(Player client, PacketStream stream)
-		{
-			// TODO : Proper check
-			Result(client, 0x0019, 0);
-		}
+        /// <summary>
+        /// Logout (quit)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_Logout(Player client, PacketStream stream)
+        {
+            // TODO : Function call
+        }
 
-		/// <summary>
-		/// Return to lobby
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		private void CS_ReturnLobby(Player client, PacketStream stream)
-		{
-			// TODO : Proper checks
-			Result(client, 0x0017, 0);
-		}
-		#endregion
-		#endregion
+        /// <summary>
+        /// Checks if can return to lobby
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_RequestReturnLobby(Player client, PacketStream stream)
+        {
+            // TODO : Proper check
+            Result(client, 0x0019, 0);
+        }
 
-		#region Server Packets
-		/// <summary>
-		/// Sends the result of a packet
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="packetId"></param>
-		/// <param name="response"></param>
-		/// <param name="value"></param>
-		public void Result(Player client, ushort packetId, ushort response = 0, int value = 0)
-		{
-			PacketStream stream = new PacketStream(0x0000);
-			
-			stream.WriteUInt16(packetId);
-			stream.WriteUInt16(response);
-			stream.WriteInt32(value);
+        /// <summary>
+        /// Return to lobby
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_ReturnLobby(Player client, PacketStream stream)
+        {
+            // TODO : Proper checks
+            Result(client, 0x0017, 0);
+        }
+        #endregion
+        
+        #endregion
 
-			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
-		}
+        #region Server Packets
+        /// <summary>
+        /// Sends the result of a packet
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="packetId"></param>
+        /// <param name="response"></param>
+        /// <param name="value"></param>
+        public void Result(Player client, ushort packetId, ushort response = 0, int value = 0)
+        {
+            PacketStream stream = new PacketStream(0x0000);
 
-		#region Lobby
-		/// <summary>
-		/// Sends the list of characters
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="charList"></param>
-		public void CharacterList(Player client, LobbyCharacterInfo[] charList)
-		{
-			PacketStream stream = new PacketStream(0x07D4);
+            stream.WriteUInt16(packetId);
+            stream.WriteUInt16(response);
+            stream.WriteInt32(value);
 
-			stream.WriteUInt32(0); // currentSvTime
-			stream.WriteUInt16(0); // last_login_index
-			stream.WriteUInt16((ushort)charList.Length);
-			for (int i = 0; i < charList.Length; i++)
-			{
-				stream.WriteInt32(charList[i].ModelInfo.Sex);
-				stream.WriteInt32(charList[i].ModelInfo.Race);
-				for (int j = 0; j < 5; j++)
-					stream.WriteInt32(charList[i].ModelInfo.ModelId[j]);
-				stream.WriteInt32(charList[i].ModelInfo.TextureId);
-				for (int j = 0; j < 24; j++)
-					stream.WriteInt32(charList[i].ModelInfo.WearInfo[j]);
-				stream.WriteInt32(charList[i].Level);
-				stream.WriteInt32(charList[i].Job);
-				stream.WriteInt32(charList[i].JobLevel);
-				stream.WriteInt32(charList[i].ExpPercentage);
-				stream.WriteInt32(charList[i].Hp);
-				stream.WriteInt32(charList[i].Mp);
-				stream.WriteInt32(charList[i].Permission);
-				stream.WriteBool(charList[i].IsBanned);
-				stream.WriteString(charList[i].Name, 19);
-				stream.WriteUInt32(charList[i].SkinColor);
-				stream.WriteString(charList[i].CreateTime, 30);
-				stream.WriteString(charList[i].DeleteTime, 30);
-				for (int j = 0; j < 24; j++)
-					stream.WriteInt32(charList[i].WearItemEnhanceInfo[j]);
-				for (int j = 0; j < 24; j++)
-					stream.WriteInt32(charList[i].WearItemLevelInfo[j]);
-				for (int j = 0; j < 24; j++)
-					stream.WriteByte(charList[i].WearItemElementalType[j]);
-			}
+            ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
+        }
 
-			ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
-		}
-		#endregion
+        #region Lobby
+        /// <summary>
+        /// Sends the list of characters
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="charList"></param>
+        public void CharacterList(Player client, LobbyCharacterInfo[] charList)
+        {
+            PacketStream stream = new PacketStream(0x07D4);
 
-		/// <summary>
-		/// Sends a list of URLs
-		/// </summary>
-		/// <param name="client"></param>
-		public void UrlList(Player player)
-		{
-			PacketStream stream = new PacketStream(0x2329);
+            stream.WriteUInt32(0); // currentSvTime
+            stream.WriteUInt16(0); // last_login_index
+            stream.WriteUInt16((ushort)charList.Length);
+            for (int i = 0; i < charList.Length; i++)
+            {
+                stream.WriteInt32(charList[i].ModelInfo.Sex);
+                stream.WriteInt32(charList[i].ModelInfo.Race);
+                for (int j = 0; j < 5; j++)
+                    stream.WriteInt32(charList[i].ModelInfo.ModelId[j]);
+                stream.WriteInt32(charList[i].ModelInfo.TextureId);
+                for (int j = 0; j < 24; j++)
+                    stream.WriteInt32(charList[i].ModelInfo.WearInfo[j]);
+                stream.WriteInt32(charList[i].Level);
+                stream.WriteInt32(charList[i].Job);
+                stream.WriteInt32(charList[i].JobLevel);
+                stream.WriteInt32(charList[i].ExpPercentage);
+                stream.WriteInt32(charList[i].Hp);
+                stream.WriteInt32(charList[i].Mp);
+                stream.WriteInt32(charList[i].Permission);
+                stream.WriteBool(charList[i].IsBanned);
+                stream.WriteString(charList[i].Name, 19);
+                stream.WriteUInt32(charList[i].SkinColor);
+                stream.WriteString(charList[i].CreateTime, 30);
+                stream.WriteString(charList[i].DeleteTime, 30);
+                for (int j = 0; j < 24; j++)
+                    stream.WriteInt32(charList[i].WearItemEnhanceInfo[j]);
+                for (int j = 0; j < 24; j++)
+                    stream.WriteInt32(charList[i].WearItemLevelInfo[j]);
+                for (int j = 0; j < 24; j++)
+                    stream.WriteByte(charList[i].WearItemElementalType[j]);
+            }
 
-			stream.WriteUInt16((ushort)Server.UrlList.Length);
-			stream.WriteString(Server.UrlList);
+            ClientManager.Instance.Send(client, stream, BroadcastArea.Self);
+        }
+        #endregion
 
-			ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
-		}
+        /// <summary>
+        /// Sends a list of URLs
+        /// </summary>
+        /// <param name="client"></param>
+        public void UrlList(Player player)
+        {
+            PacketStream stream = new PacketStream(0x2329);
 
+            stream.WriteUInt16((ushort)Server.UrlList.Length);
+            stream.WriteString(Server.UrlList);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        /// <summary>
+        /// Updates game object stats and attributes
+        /// </summary>
+        /// <param name="player">the target</param>
+        /// <param name="stat">stats</param>
+        /// <param name="attribute">attributes</param>
+        /// <param name="isBonus">are these bonus stats (green)</param>
+        internal void StatInfo(Player player, CreatureStat stat, CreatureAttribute attribute, bool isBonus)
+        {
+            PacketStream stream = new PacketStream(0x03E8);
+
+            stream.WriteUInt32(player.Handle);
+
+            // Creature Stat
+            stream.WriteInt16(stat.STR);
+            stream.WriteInt16(stat.VIT);
+            stream.WriteInt16(stat.DEX);
+            stream.WriteInt16(stat.AGI);
+            stream.WriteInt16(stat.INT);
+            stream.WriteInt16(stat.MEN);
+            stream.WriteInt16(stat.LUK);
+
+            // Creature Attributes
+            stream.WriteInt16(attribute.Critical);
+            stream.WriteInt16(attribute.CriticalPower);
+            stream.WriteInt16(attribute.PAttackRight);
+            stream.WriteInt16(attribute.PAttackLeft);
+            stream.WriteInt16(attribute.Defense);
+            stream.WriteInt16(attribute.BlockDefense);
+            stream.WriteInt16(attribute.MAttack);
+            stream.WriteInt16(attribute.MDefense);
+            stream.WriteInt16(attribute.AccuracyRight);
+            stream.WriteInt16(attribute.AccuracyLeft);
+            stream.WriteInt16(attribute.MagicAccuracy);
+            stream.WriteInt16(attribute.Evasion);
+            stream.WriteInt16(attribute.MagicEvasion);
+            stream.WriteInt16(attribute.BlockChance);
+            stream.WriteInt16(attribute.MoveSpeed);
+            stream.WriteInt16(attribute.AttackSpeed);
+            stream.WriteInt16(attribute.AttackRange);
+            stream.WriteInt16(attribute.MaxWeight);
+            stream.WriteInt16(attribute.CastingSpeed);
+            stream.WriteInt16(attribute.CoolTimeSpeed);
+            stream.WriteInt16(attribute.ItemChance);
+            stream.WriteInt16(attribute.HPRegenPercentage);
+            stream.WriteInt16(attribute.HPRegenPoint);
+            stream.WriteInt16(attribute.MPRegenPercentage);
+            stream.WriteInt16(attribute.MPRegenPoint);
+
+            stream.WriteBool(isBonus);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        /// <summary>
+        /// Sets a property
+        /// </summary>
+        /// <param name="player">target player</param>
+        /// <param name="name">property name</param>
+        /// <param name="value">value</param>
+        /// <param name="isInt">send as int?</param>
+        internal void Property(Player player, string name, object value, bool isInt)
+        {
+            PacketStream stream = new PacketStream(0x01FB);
+
+            stream.WriteUInt32(player.Handle);
+            stream.WriteBool(isInt);
+            stream.WriteString(name, 16);
+            if (isInt)
+            {
+                stream.WriteInt64((long)value);
+            }
+            else
+            {
+                stream.WriteInt64(0);
+                stream.WriteString((string)value);
+            }
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+        
 		#endregion
 
 		// Login Result placeholder
