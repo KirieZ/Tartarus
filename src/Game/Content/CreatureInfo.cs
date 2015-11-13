@@ -14,8 +14,8 @@ namespace Game.Content
 		public float FaceDirection { get; set; }
 		public int Hp { get; set; }
 		public int MaxHp { get; set; }
-		public int Mp { get; set; }
-		public int MaxMp { get; set; }
+		public short Mp { get; set; }
+		public short MaxMp { get; set; }
 		public byte Race { get; set; }
 		public uint SkinColor { get; set; }
 

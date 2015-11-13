@@ -10,14 +10,18 @@ namespace Game.Content
 {
 	public static class GObjectManager
 	{
+        private static uint ItemHandleCount = 0x0000; // TODO : Define the right start
         private static uint PlayerHandleCount = 0x8006;
 
+        private static List<uint> ItemHandlePool = new List<uint>();
         private static List<uint> PlayerHandlePool = new List<uint>();
 
+        private static Dictionary<uint, Item> Items { get; set; }
         private static Dictionary<uint, Player> Players { get; set; }
 
         public static void Init()
         {
+            Items = new Dictionary<uint, Item>();
             Players = new Dictionary<uint, Player>();
         }
 
@@ -49,6 +53,19 @@ namespace Game.Content
                 case ObjectType.Npc:
                     break;
                 case ObjectType.Item:
+                    lock(ItemHandlePool)
+                    {
+                        if (ItemHandlePool.Count > 0)
+                        {
+                            handle = ItemHandlePool[0];
+                            ItemHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = ItemHandleCount++;
+                        }
+                        Items.Add(handle, (Item)gameObject);
+                    }
                     break;
                 case ObjectType.Mob:
                     break;
@@ -89,7 +106,12 @@ namespace Game.Content
                 case ObjectType.Npc:
                     break;
                 case ObjectType.Item:
-                    break;
+                    {
+                        Item result;
+                        if (Items.TryGetValue(handle, out result))
+                            return result;
+                        return null;
+                    }
                 case ObjectType.Mob:
                     break;
                 case ObjectType.Summon:

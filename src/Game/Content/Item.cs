@@ -13,13 +13,37 @@ namespace Game.Content
     /// </summary>
 	public class Item : GameObject
 	{
-        public int Code { get; private set; }
-        public long UId { get; private set; }
+        public int Code { get; set; }
+        public long UId { get; set; }
+        public long Count { get; set; }
+        public int Level { get; set; }
+        public int Enhance { get; set; }
+        public int Durability { get; set; }
+        public int Endurance { get; set; }
+        public int Flag { get; set; }
+        public int GCode { get; set; }
+        public int WearInfo { get; set; }
+        public int[] Socket { get; set; }
+        public int RemainTime { get; set; }
 
-        public Item(int code, long uid) : base(ObjectType.Item)
+        public short ElementalEffectType { get; set; }
+        public DateTime ElementalEffectExpireTime { get; set; }
+        public int ElementalEffectAttackPoint { get; set; }
+        public int ElementalEffectMagicPoint { get; set; }
+
+        //public DateTime CreateTime { get; set; }
+        //public DateTime DeleteTime { get; set; }
+
+        public Item(long uid) : base(ObjectType.Item)
+        {
+            this.UId = uid;
+
+            this.Socket = new int[4];
+        }
+
+        public Item(long uid, int code) : this(uid)
         {
             this.Code = code;
-            this.UId = uid;
         }
 	}
 }

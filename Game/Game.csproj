@@ -108,6 +108,12 @@
     <Compile Include="..\src\Game\Content\GameObject.cs">
       <Link>Content\GameObject.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\GObjectManager.cs">
+      <Link>Content\GObjectManager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Content\Item.cs">
+      <Link>Content\Item.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Content\Player.cs">
       <Link>Content\Player.cs</Link>
     </Compile>
@@ -215,6 +221,9 @@
     </Compile>
     <Compile Include="..\src\Game\Players\Structures\Lobby.cs">
       <Link>Players\Structures\Lobby.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Players\Structures\Stats.cs">
+      <Link>Players\Structures\Stats.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Program.cs">
       <Link>Game\Program.cs</Link>
