@@ -16,6 +16,11 @@ namespace Game.Content
 
         private static Dictionary<uint, Player> Players { get; set; }
 
+        public static void Init()
+        {
+            Players = new Dictionary<uint, Player>();
+        }
+
         /// <summary>
         /// Allocates a new handle
         /// </summary>

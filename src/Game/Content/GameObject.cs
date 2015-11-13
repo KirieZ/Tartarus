@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 
 namespace Game.Content
 {
@@ -39,6 +40,11 @@ namespace Game.Content
 		public GameObject(ObjectType objType)
 		{
 			this.ObjType = objType;
+
+            if (!GObjectManager.Create(this))
+            {
+                ConsoleUtils.ShowError("Failed to get a handle to game object. Type: {0}", objType);
+            }
 		}
 	}
 }

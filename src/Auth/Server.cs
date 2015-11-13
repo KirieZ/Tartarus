@@ -77,6 +77,8 @@ namespace Auth
                 "",
                 ""
             );
+
+            Database.Statements.Init();
 			this.GameServers = new Dictionary<ushort, GameServer>();
 			#endregion
 
