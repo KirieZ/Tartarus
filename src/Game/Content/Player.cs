@@ -220,50 +220,12 @@ namespace Game.Content
         #region Item
         public void Equip(Item item, bool sendUpdate = true)
         {
-            uint equippedHandle;
-            int position = Arcadia.ItemResource.Find(obj=>obj.id == item.Code).wear_type;
-
-            if (this.WearInfo.TryGetValue(position, out equippedHandle))
-            {
-                if (equippedHandle > 0)
-                {
-                    // Has an item equipped in this slot, unequip it!
-                    this.Unequip(position, false);
-                }
-
-                // Equip the item (if key exists)
-                this.WearInfo[position] = item.Handle;
-            }
-            else
-            {
-                // Equip the item (if key doesn't exists);
-                this.WearInfo.Add(position, item.Handle);
-            }
-
-            item.WearInfo = position;
-
-            this.Attributes.Add(item);
-
-            if (sendUpdate)
-            {
-                ClientPackets.Instance.StatInfo(this, this.Stats, this.Attributes, false);
-                ClientPackets.Instance.StatInfo(this, this.BonusStats, this.BonusAttributes, true);
-            }
+            Players.Inventory.Equip(this, item, sendUpdate);
         }
 
         public void Unequip(int position, bool sendUpdate = true)
         {
-            Item item = (Item)GObjectManager.Get(ObjectType.Item, this.WearInfo[position]);
-
-            this.Attributes.Remove(item);
-            item.WearInfo = -1;
-            this.WearInfo[position] = 0;
-
-            if (sendUpdate)
-            {
-                ClientPackets.Instance.StatInfo(this, this.Stats, this.Attributes, false);
-                ClientPackets.Instance.StatInfo(this, this.BonusStats, this.BonusAttributes, true);
-            }
+            Players.Inventory.Unequip(this, position, sendUpdate);
         }
         #endregion
     }

@@ -213,6 +213,9 @@
     <Compile Include="..\src\Game\Network\ClientPackets.cs">
       <Link>Network\ClientPackets.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Players\Inventory.cs">
+      <Link>Players\Inventory.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Players\Lobby.cs">
       <Link>Players\Lobby.cs</Link>
     </Compile>
