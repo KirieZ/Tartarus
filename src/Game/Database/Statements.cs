@@ -48,7 +48,10 @@ namespace Game.Database
             User.Add(3, "UPDATE Characters SET delete_date = @now WHERE account_id = @accId AND name = @name");
             User.Add(4, "DELETE FROM Characters WHERE account_id = @accId AND name = @name");
             User.Add(5, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now AND name = @name");
-            User.Add(6, "SELECT * FROM Item WHERE owner_id = @charId");
+            User.Add(6, "SELECT code, wear_info FROM Item WHERE owner_id = @charId AND wear_info >=  0");
+
+            // Item
+            User.Add(20, "SELECT * FROM Item WHERE owner_id = @charId");
             DBManager.SetStatements(null, Game, User);
         }
     }

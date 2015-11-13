@@ -40,21 +40,49 @@ namespace Game.Players
 					{
 						dbCmd.Connection.Open();
 
-						using (DbDataReader reader = dbCmd.ExecuteReader())
+                        using (DbDataReader reader = dbCmd.ExecuteReader())
 						{
 							while (reader.Read())
 							{
 								// Reads the character data
 								LobbyCharacterInfo chara = new LobbyCharacterInfo();
+                                int charId = (int)reader[0];
 								chara.Name = (string)reader[3];
 								chara.ModelInfo.Race = (byte)reader[11];
 								chara.ModelInfo.Sex = (int)reader[12];
 								chara.ModelInfo.TextureId = (int)reader[46];
 								for (int i = 0; i < 5; i++)
 									chara.ModelInfo.ModelId[i] = (int)reader[41 + i];
-								// TODO : chara.ModelInfo.Wear
 
-								chara.Level = (int)reader[13];
+                                using (DBManager dbManager2 = new DBManager(Databases.User))
+                                {
+                                    using (DbCommand dbCmd2 = dbManager2.CreateCommand(6))
+                                    {
+                                        dbManager2.CreateInParameter(dbCmd2, "charId", System.Data.DbType.Int32, charId);
+
+                                        try
+                                        {
+                                            dbCmd2.Connection.Open();
+
+                                            using (DbDataReader reader2 = dbCmd2.ExecuteReader())
+                                            {
+                                                while (reader2.Read())
+                                                {
+                                                    chara.ModelInfo.WearInfo[(int)reader2[1]] = (int)reader2[0];
+                                                }
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            ConsoleUtils.ShowError("Failed to load character inventory. (Error: {0})", e.Message);
+                                        }
+                                        finally
+                                        {
+                                            dbCmd2.Connection.Close();
+                                        }
+                                    }
+                                }
+                                chara.Level = (int)reader[13];
 								chara.Job = (short)reader[21];
 								chara.JobLevel = (int)reader[23];
 								// TODO : chara.ExpPercentage = (int)
@@ -69,7 +97,7 @@ namespace Game.Players
 								// TODO : chara.WearItemLevelInfo =
 								// TODO : chara.WearItemElementalType =
 
-								// Add data to char List
+								// Adds data to char List
 								charList.Add(chara);
 							}
 						}
