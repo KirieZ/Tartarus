@@ -207,8 +207,9 @@ namespace Game.Players
 		/// <param name="race"></param>
 		internal static void Login(Player player, string name, byte race)
 		{
-			using (DBManager dbManager = new DBManager(Databases.User))
+            using (DBManager dbManager = new DBManager(Databases.User))
 			{
+                // Loads Character Info
 				using (DbCommand dbCmd = dbManager.CreateCommand(5))
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
@@ -217,7 +218,9 @@ namespace Game.Players
 
 					int off = 0;
 
-					try
+                    #region Character Info load
+
+                    try
 					{
 						dbCmd.Connection.Open();
 
@@ -243,7 +246,7 @@ namespace Game.Players
 								player.Exp = (long)reader[off++]; // 15
 								player.LastDecreasedExp = (long)reader[off++]; // 16
 								player.Hp = (int)reader[off++]; // 17
-								player.Mp = (int)reader[off++]; // 18
+								player.Mp = (short)(int)reader[off++]; // 18 // TODO :FIX
 								player.Stamina = (int)reader[off++]; // 19
 								player.Havoc = (int)reader[off++]; // 20
 								player.Job = (short)reader[off++]; // 21
@@ -299,11 +302,91 @@ namespace Game.Players
 					}
 					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message + " (Offset: " + off + ")"); }
 					finally { dbCmd.Connection.Close(); }
+                    
+                    #endregion
+                }
 
-					// TODO : PlaceHolder Data, must be replaced with real one
-					ClientPackets.send_Login(player);
-				}
-			}
-		}
+                player.Stats.Load(player);
+                ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
+                ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
+
+                ClientPackets.send_Login_pre1(player);
+
+                // Load Inventory
+                using (DbCommand dbCmd = dbManager.CreateCommand(6))
+                {
+                    dbManager.CreateInParameter(dbCmd, "charId", System.Data.DbType.Int64, player.CharacterId);
+
+                    #region Character Inventory load
+
+                    //try
+                    //{
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader reader = dbCmd.ExecuteReader())
+                        {
+                            int off = 0;
+                            if (reader.Read())
+                            {
+                                Item item = new Item((long)reader[off++]);
+                                off += 6;
+                                item.Code = (int)reader[off++];
+                                item.Count = (long)reader[off++];
+                                item.Level = (int)reader[off++];
+                                item.Enhance = (int)reader[off++];
+                                item.Durability = (int)reader[off++];
+                                item.Endurance = (int)reader[off++];
+                                item.Flag = (int)reader[off++];
+                                item.GCode = (int)reader[off++];
+                                item.WearInfo = (int)reader[off++];
+                                item.Socket[0] = (int)reader[off++];
+                                item.Socket[1] = (int)reader[off++];
+                                item.Socket[2] = (int)reader[off++];
+                                item.Socket[3] = (int)reader[off++];
+                                item.RemainTime = (int)reader[off++];
+                            // TODO : Elemental data
+
+                            if (item.WearInfo >= 0)
+                                player.Equip(item, false);
+                                
+                                player.Inventory.Add(item.Handle);
+                            }
+                        }
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    ConsoleUtils.ShowError("Failed to load inventory. Error: {0}", e.Message);
+                    //}
+
+                    ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
+                    ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
+
+                    ClientPackets.send_Login_pre1(player);
+
+                    ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
+                    ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
+
+                    ClientPackets.send_Login_pre1(player);
+
+                    ClientPackets.send_Login_pre2(player);
+
+                    ClientPackets.Instance.LoginResult(player);
+
+                    ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
+                    ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
+
+                    ClientPackets.send_Login_pre1(player);
+
+                    ClientPackets.send_Login(player);
+
+                    #endregion
+                }
+                
+
+            }
+
+            // TODO : PlaceHolder Data, must be replaced with real one
+            ClientPackets.send_Login(player);
+        }
 	}
 }

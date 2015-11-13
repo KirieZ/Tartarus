@@ -17,10 +17,11 @@ namespace Common
 		public const int AcceptorKeyLength = 20;
 		// Maximum buffer size
 		public const int MaxBuffer = 1024;
-
-		//===== Game
-		// The Epic version, used for source formulas
-		public const int ServerEpic = 62;
+        // Region Size
+        public const int RegionSize = 180;
+        //===== Game
+        // The Epic version, used for source formulas
+        public const int ServerEpic = 62;
 		// The Client Epic version, used to send correct packets
 		public const int ClientEpic = 62;
 		
@@ -59,5 +60,6 @@ namespace Common
 		public static int[] NullIntArray = new int[0];
 		public static byte[] NullByteArray = new byte[0];
 
-	}
+        
+    }
 }

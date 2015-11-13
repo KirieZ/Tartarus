@@ -10,6 +10,13 @@ using Game.Players.Structures;
 
 namespace Game.Content
 {
+    public enum JobDepth : byte
+    {
+        Basic = 1,
+        First = 2,
+        Second = 4,
+    }
+
 	public class Player : CreatureInfo
 	{
 		static int sqlConType = Settings.SqlEngine;
@@ -114,11 +121,14 @@ namespace Game.Content
 
 		public string ClientInfo { get; set; }
 
-		public CreatureStat Stats { get; set; }
-		public CreatureStat BonusStats { get; set; }
+		public PlayerStat Stats { get; set; }
+		public PlayerStat BonusStats { get; set; }
 
-		public CreatureAttribute Attributes { get; set; }
-		public CreatureAttribute BonusAttributes { get; set; }
+		public PlayerAttribute Attributes { get; set; }
+		public PlayerAttribute BonusAttributes { get; set; }
+
+        public List<uint> Inventory { get; set; }
+        public Dictionary<int, uint> WearInfo { get; set; }
 
 		#endregion
 
@@ -133,10 +143,13 @@ namespace Game.Content
 			this.Belt = new BeltSlotData[6] { new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData() };
 			this.Summon = new SummonData[6] { new SummonData(), new SummonData(), new SummonData(), new SummonData(), new SummonData(), new SummonData() };
 
-			this.Stats = new CreatureStat();
-			this.BonusStats = new CreatureStat();
-			this.Attributes = new CreatureAttribute();
-			this.BonusAttributes = new CreatureAttribute();
+			this.Stats = new PlayerStat();
+			this.BonusStats = new PlayerStat();
+            this.Attributes = new PlayerAttribute();
+            this.BonusAttributes = new PlayerAttribute();
+
+            this.Inventory = new List<uint>();
+            this.WearInfo = new Dictionary<int, uint>();
 		}
 
 		#region Lobby
@@ -202,6 +215,56 @@ namespace Game.Content
 			Lobby.Login(this, name, race);
 		}
 
-		#endregion
-	}
+        #endregion
+
+        #region Item
+        public void Equip(Item item, bool sendUpdate = true)
+        {
+            uint equippedHandle;
+            int position = Arcadia.ItemResource.Find(obj=>obj.id == item.Code).wear_type;
+
+            if (this.WearInfo.TryGetValue(position, out equippedHandle))
+            {
+                if (equippedHandle > 0)
+                {
+                    // Has an item equipped in this slot, unequip it!
+                    this.Unequip(position, false);
+                }
+
+                // Equip the item (if key exists)
+                this.WearInfo[position] = item.Handle;
+            }
+            else
+            {
+                // Equip the item (if key doesn't exists);
+                this.WearInfo.Add(position, item.Handle);
+            }
+
+            item.WearInfo = position;
+
+            this.Attributes.Add(item);
+
+            if (sendUpdate)
+            {
+                ClientPackets.Instance.StatInfo(this, this.Stats, this.Attributes, false);
+                ClientPackets.Instance.StatInfo(this, this.BonusStats, this.BonusAttributes, true);
+            }
+        }
+
+        public void Unequip(int position, bool sendUpdate = true)
+        {
+            Item item = (Item)GObjectManager.Get(ObjectType.Item, this.WearInfo[position]);
+
+            this.Attributes.Remove(item);
+            item.WearInfo = -1;
+            this.WearInfo[position] = 0;
+
+            if (sendUpdate)
+            {
+                ClientPackets.Instance.StatInfo(this, this.Stats, this.Attributes, false);
+                ClientPackets.Instance.StatInfo(this, this.BonusStats, this.BonusAttributes, true);
+            }
+        }
+        #endregion
+    }
 }

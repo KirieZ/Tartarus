@@ -79,3 +79,36 @@ CREATE TABLE IF NOT EXISTS `Characters` (
   `client_info` varchar(4096) NOT NULL default '0',
   PRIMARY KEY (`char_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+
+CREATE TABLE IF NOT EXISTS `Item` (
+	`sid` bigint(20) NOT NULL  AUTO_INCREMENT,
+	`owner_id` int(11) NOT NULL,
+	`account_id` int(11) NOT NULL,
+	`summon_id` int(11) NOT NULL,
+	`auction_id` int(11) NOT NULL,
+	`keeping_id` int(11) NOT NULL,
+	`idx` int(11) NOT NULL,
+	`code` int(11) NOT NULL,
+	`cnt` bigint(20) NOT NULL,
+	`level` int(11) NOT NULL,
+	`enhance` int(11) NOT NULL,
+	`ethereal_durability` int(11) NOT NULL,
+	`endurance` int(11) NOT NULL,
+	`flag` int(11) NOT NULL,
+	`gcode` int(11) NOT NULL,
+	`wear_info` int(11) NULL,
+	`socket_0` int(11) NOT NULL,
+	`socket_1` int(11) NOT NULL,
+	`socket_2` int(11) NOT NULL,
+	`socket_3` int(11) NOT NULL,
+	`remain_time` int(11) NOT NULL,
+	`elemental_effect_type` tinyint(4) NOT NULL,
+	`elemental_effect_expire_time` datetime NOT NULL,
+	`elemental_effect_attack_point` int(11) NOT NULL,
+	`elemental_effect_magic_point` int(11) NOT NULL,
+	`create_time` datetime NOT NULL,
+	`update_time` datetime NOT NULL,
+	PRIMARY KEY (`sid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
