@@ -319,8 +319,8 @@ namespace Game.Players
 
                     #region Character Inventory load
 
-                    //try
-                    //{
+                    try
+                    {
                         dbCmd.Connection.Open();
 
                         using (DbDataReader reader = dbCmd.ExecuteReader())
@@ -344,19 +344,19 @@ namespace Game.Players
                                 item.Socket[2] = (int)reader[off++];
                                 item.Socket[3] = (int)reader[off++];
                                 item.RemainTime = (int)reader[off++];
-                            // TODO : Elemental data
+                                // TODO : Elemental data
 
-                            if (item.WearInfo >= 0)
-                                player.Equip(item, false);
-                                
+                                if (item.WearInfo >= 0)
+                                    player.Equip(item, false);
+
                                 player.Inventory.Add(item.Handle);
                             }
                         }
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    ConsoleUtils.ShowError("Failed to load inventory. Error: {0}", e.Message);
-                    //}
+                    }
+                    catch (Exception e)
+                    {
+                        ConsoleUtils.ShowError("Failed to load inventory. Error: {0}", e.Message);
+                    }
 
                     ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
                     ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
