@@ -134,7 +134,7 @@ namespace Game.Content
 		public PlayerAttribute BonusAttributes { get; set; }
 
         public List<uint> Inventory { get; set; }
-        public Dictionary<int, uint> WearInfo { get; set; }
+        public uint[] WearInfo { get; set; }
 
 		#endregion
 
@@ -155,7 +155,7 @@ namespace Game.Content
             this.BonusAttributes = new PlayerAttribute();
 
             this.Inventory = new List<uint>();
-            this.WearInfo = new Dictionary<int, uint>();
+            this.WearInfo = new uint[Globals.WearInfoMax];
 		}
 
 		#region Lobby

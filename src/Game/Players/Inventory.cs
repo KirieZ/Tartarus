@@ -67,26 +67,16 @@ namespace Game.Players
 
         internal static void Equip(Player player, Item item, bool sendUpdate)
         {
-            uint equippedHandle;
             int position = Arcadia.ItemResource.Find(obj => obj.id == item.Code).wear_type;
 
-            if (player.WearInfo.TryGetValue(position, out equippedHandle))
+            if (player.WearInfo[position] > 0)
             {
-                if (equippedHandle > 0)
-                {
-                    // Has an item equipped in this slot, unequip it!
-                    Unequip(player, position, false);
-                }
-
-                // Equip the item (if key exists)
-                player.WearInfo[position] = item.Handle;
+                // Has an item equipped in this slot, unequip it!
+                Unequip(player, position, false);
             }
-            else
-            {
-                // Equip the item (if key doesn't exists);
-                player.WearInfo.Add(position, item.Handle);
-            }
-
+            
+            // Equip the item (if key exists)
+            player.WearInfo[position] = item.Handle;
             item.WearInfo = position;
 
             player.Attributes.Add(item);

@@ -353,7 +353,9 @@ namespace Game.Players
                 ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
 
                 ClientPackets.Instance.InventoryList(player, player.Inventory);
+                ClientPackets.Instance.EquipSummon(player, player.Summon, false);
 
+                ClientPackets.Instance.WearInfo(player, player.WearInfo);
                 //ClientPackets.send_Login_pre1(player);
             }
 

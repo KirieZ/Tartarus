@@ -31,6 +31,7 @@ namespace Game.Players.Structures
 	/// </summary>
 	public class SummonData
 	{
+        public uint CardHandle { get; set; }
 		public int Id { get; set; }
 	}
 

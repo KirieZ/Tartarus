@@ -19,6 +19,8 @@ namespace Common
 		public const int MaxBuffer = 1024;
         // Region Size
         public const int RegionSize = 180;
+        // The number of equipment slots (WearType)
+        public const int WearInfoMax = 24;
         //===== Game
         // The Epic version, used for source formulas
         public const int ServerEpic = 62;

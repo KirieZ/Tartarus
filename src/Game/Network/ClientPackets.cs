@@ -436,6 +436,46 @@ namespace Game.Network
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
         }
 
+        internal void WearInfo(Player player, uint[] wearInfo)
+        {
+            PacketStream stream = new PacketStream(0x00CA);
+
+            List<int> enhance = new List<int>(24);
+            List<int> level = new List<int>(24);
+            List<byte> type = new List<byte>(24);
+
+            stream.WriteUInt32(player.Handle);
+            // TODO : Code can be body parts ID
+            for (int i = 0; i < Globals.WearInfoMax; i++)
+            {
+                Item item = (Item)GObjectManager.Get(ObjectType.Item, wearInfo[i]);
+
+                if (item != null)
+                {
+                    enhance.Add(item.Enhance);
+                    level.Add(item.Level);
+                    type.Add((byte)item.ElementalEffectType);
+                    stream.WriteInt32(item.Code);
+                }
+                else
+                {
+                    enhance.Add(0);
+                    level.Add(0);
+                    type.Add(0);
+                    stream.WriteInt32(0);
+                }
+            }
+
+            for (int i = 0; i < Globals.WearInfoMax; i++)
+                stream.WriteInt32(enhance[i]);
+            for (int i = 0; i < Globals.WearInfoMax; i++)
+                stream.WriteInt32(level[i]);
+            for (int i = 0; i < Globals.WearInfoMax; i++)
+                stream.WriteByte(type[i]);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
         internal void InventoryList(Player player, List<uint> inventory)
         {
             PacketStream stream = new PacketStream(0x00CF);
@@ -469,6 +509,19 @@ namespace Game.Network
                 stream.WriteInt16((short)item.WearInfo);
                 stream.WriteUInt32(0); // TODO : own_summon_handle
                 stream.WriteInt32(i); // TODO : index
+            }
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        internal void EquipSummon(Player player, SummonData[] summon, bool openDialog)
+        {
+            PacketStream stream = new PacketStream(0x012F);
+
+            stream.WriteBool(openDialog);
+            for (int i = 0; i < 6; i++)
+            {
+                stream.WriteUInt32(summon[i].CardHandle);
             }
 
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
@@ -522,9 +575,9 @@ namespace Game.Network
 			// Inventory List - 0x00CF
 			//Send(player, "FC 00 00 00 CF 00 00 03 00 03 40 06 00 BC 92 01 00 12 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 04 40 06 00 DD 82 03 00 13 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 02 00 00 00 05 40 06 00 11 7A 07 00 14 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 17 00 00 00 00 00 03 00 00 00 ");
 			// Equip Summon - 0x012F
-			Send(player, "20 00 00 00 2F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			// Char View - 0x00CA
-			Send(player, "43 01 00 00 CA 00 00 00 06 00 80 BC 92 01 00 00 00 00 00 DD 82 03 00 00 00 00 00 91 01 00 00 F5 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 11 7A 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+			//Send(player, "20 00 00 00 2F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+			// Wear Info - 0x00CA
+			//Send(player, "43 01 00 00 CA 00 00 00 06 00 80 BC 92 01 00 00 00 00 00 DD 82 03 00 00 00 00 00 91 01 00 00 F5 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 11 7A 07 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
 			// Update gold Chaos - 0x03E9
 			Send(player, "13 00 00 00 E9 03 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
 			// Property - chaos
