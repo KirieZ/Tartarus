@@ -10,7 +10,7 @@ namespace Game.Content
 {
 	public static class GObjectManager
 	{
-        private static uint ItemHandleCount = 0x00000000; // TODO : Define the right start
+        private static uint ItemHandleCount = 0x00000001; // TODO : Define the right start
         private static uint PlayerHandleCount = 0x80000600;
 
         private static List<uint> ItemHandlePool = new List<uint>();
