@@ -435,19 +435,48 @@ namespace Game.Network
 
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
         }
-        
-		#endregion
 
-		// Login Result placeholder
-        internal static void send_Login_pre1(Player player)
+        internal void InventoryList(Player player, List<uint> inventory)
         {
-            // Property
-            Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 68 61 76 6F 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-            Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 63 68 61 6F 73 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-            Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 73 74 61 6D 69 6E 61 00 00 00 00 00 20 A1 07 00 00 00 00 00 ");
+            PacketStream stream = new PacketStream(0x00CF);
 
+            stream.WriteUInt16((ushort)inventory.Count);
+            for (int i = 0; i < inventory.Count; i++)
+            {
+                Item item = (Item) GObjectManager.Get(ObjectType.Item, inventory[i]);
+
+                // TS_ITEM_BASE_INFO
+                stream.WriteUInt32(item.Handle);
+                stream.WriteInt32(item.Code);
+                stream.WriteInt64(item.UId);
+                stream.WriteInt64(item.Count);
+                stream.WriteInt32(item.Durability);
+                stream.WriteUInt32(item.Endurance);
+                stream.WriteByte((byte)item.Enhance);
+                stream.WriteByte((byte)item.Level);
+                stream.WriteInt32(item.Flag);
+                stream.WriteInt32(item.Socket[0]);
+                stream.WriteInt32(item.Socket[1]);
+                stream.WriteInt32(item.Socket[2]);
+                stream.WriteInt32(item.Socket[3]);
+                stream.WriteInt32(item.RemainTime);
+                stream.WriteByte((byte)item.ElementalEffectType);
+                stream.WriteInt32(0); // TODO : elemental_effect_remain_time
+                stream.WriteInt32(item.ElementalEffectAttackPoint);
+                stream.WriteInt32(item.ElementalEffectMagicPoint);
+
+                // TS_ITEM_INFO
+                stream.WriteInt16((short)item.WearInfo);
+                stream.WriteUInt32(0); // TODO : own_summon_handle
+                stream.WriteInt32(i); // TODO : index
+            }
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
         }
 
+        #endregion
+
+        // Login Result placeholder
         internal static void send_Login_pre2(Player player)
         { // x0002
             Send(player, "0B 00 00 00 02 00 00 2E 3A 01 00 ");
@@ -486,12 +515,12 @@ namespace Game.Network
 			//Send(player, "4E 00 00 00 E8 03 00 00 06 00 80 2C 01 0A 00 0A 00 0A 00 0A 00 0A 00 0A 00 0A 00 05 00 50 00 2A 00 00 00 1E 00 00 00 2C 00 1F 00 06 00 00 00 02 00 06 00 06 00 00 00 78 00 69 00 2C 00 3E 08 64 00 64 00 02 00 05 00 32 00 05 00 32 00 00 ");
 			//Send(player, "4E 00 00 00 E8 03 00 00 06 00 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 ");
 
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 68 61 76 6F 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 63 68 61 6F 73 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 73 74 61 6D 69 6E 61 00 00 00 00 00 20 A1 07 00 00 00 00 00 ");
+			//Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 68 61 76 6F 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+			//Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 63 68 61 6F 73 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+			//Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 73 74 61 6D 69 6E 61 00 00 00 00 00 20 A1 07 00 00 00 00 00 ");
 
 			// Inventory List - 0x00CF
-			Send(player, "FC 00 00 00 CF 00 00 03 00 03 40 06 00 BC 92 01 00 12 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 04 40 06 00 DD 82 03 00 13 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 02 00 00 00 05 40 06 00 11 7A 07 00 14 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 17 00 00 00 00 00 03 00 00 00 ");
+			//Send(player, "FC 00 00 00 CF 00 00 03 00 03 40 06 00 BC 92 01 00 12 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 04 40 06 00 DD 82 03 00 13 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 02 00 00 00 05 40 06 00 11 7A 07 00 14 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 17 00 00 00 00 00 03 00 00 00 ");
 			// Equip Summon - 0x012F
 			Send(player, "20 00 00 00 2F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
 			// Char View - 0x00CA

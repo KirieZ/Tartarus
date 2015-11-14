@@ -52,6 +52,7 @@ namespace Game.Database
 
             // Item
             User.Add(20, "SELECT * FROM Item WHERE owner_id = @charId");
+
             DBManager.SetStatements(null, Game, User);
         }
     }

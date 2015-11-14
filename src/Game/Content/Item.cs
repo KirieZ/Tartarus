@@ -19,7 +19,7 @@ namespace Game.Content
         public int Level { get; set; }
         public int Enhance { get; set; }
         public int Durability { get; set; }
-        public int Endurance { get; set; }
+        public uint Endurance { get; set; }
         public int Flag { get; set; }
         public int GCode { get; set; }
         public int WearInfo { get; set; }

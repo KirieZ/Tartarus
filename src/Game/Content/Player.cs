@@ -59,7 +59,11 @@ namespace Game.Content
 
 		public int Stamina { get; set; }
 
+        public int MaxStamina { get; set; }
+
 		public int Havoc { get; set; }
+
+        public int MaxHavoc { get; set; }
 
 		public short Job { get; set; }
 
@@ -86,6 +90,8 @@ namespace Game.Content
 		public long Gold { get; set; }
 
 		public int Chaos { get; set; }
+
+        public int MaxChaos { get; set; }
 
 		public int HairId { get; set; }
 
