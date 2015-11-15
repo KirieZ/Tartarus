@@ -142,5 +142,7 @@ namespace Common.GUI
 		{
 			this.Invoke(new MethodInvoker(delegate { this.Text = windowTitle; }));
 		}
+
+        private void console_textChanged(object sender, EventArgs e) { console.ScrollToCaret(); }
 	}
 }

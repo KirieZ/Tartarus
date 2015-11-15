@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.9.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3rdparty\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -237,6 +241,7 @@
     <Compile Include="..\src\Game\Settings.cs">
       <Link>Game\Settings.cs</Link>
     </Compile>
+    <Compile Include="Database\Structures\DB_State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="..\src\Common\GUI\consoleGUI.resx">
       <Link>Common\GUI\consoleGUI.resx</Link>

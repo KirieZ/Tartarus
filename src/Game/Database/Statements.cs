@@ -39,6 +39,7 @@ namespace Game.Database
             Game.Add(24, "SELECT * FROM SummonUniqueNameResource");
             Game.Add(25, "SELECT * FROM StringResource");
             Game.Add(26, "SELECT * FROM SummonResource");
+            Game.Add(27, "SELECT * FROM StateResource");
 
             Dictionary<int, string>  User = new Dictionary<int, string>();
             // Lobby

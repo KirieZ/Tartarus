@@ -38,6 +38,7 @@ namespace Game.Content
         public static List<DB_SummonLevel> SummonLevelResource;
         public static List<DB_SummonName> SummonUniqueNameResource;
         public static List<DB_Summon> SummonResource;
+        public static List<DB_State> StateResource;
         public static List<DB_String> StringResource;
 
         #region Load Methods
@@ -1762,6 +1763,96 @@ namespace Game.Content
             ConsoleUtils.ShowNotice("{0} entries loaded from StringResource", StringResource.Count);
         }
 
+        internal static void LoadState()
+        {
+            StateResource = new List<DB_State>();
+
+            using (DBManager dbManager = new DBManager(Databases.Game))
+            {
+                using (DbCommand dbCmd = dbManager.CreateCommand(27))
+                {
+                    try
+                    {
+                        dbCmd.Connection.Open();
+
+                        using (DbDataReader dbReader = dbCmd.ExecuteReader())
+                        {
+                            while (dbReader.Read())
+                            {
+                                int off = 0;
+
+                                StateResource.Add(new DB_State
+                                {
+                                    state_id = (int)dbReader[off++],
+                                    text_id = (int)dbReader[off++],
+                                    tooltip_id = (int)dbReader[off++],
+                                    is_harmful = Convert.ToChar(dbReader[off++]),
+                                    state_time_type = (int)dbReader[off++],
+                                    state_group = (int)dbReader[off++],
+                                    duplicate_group_1 = (int)dbReader[off++],
+                                    duplicate_group_2 = (int)dbReader[off++],
+                                    duplicate_group_3 = (int)dbReader[off++],
+                                    uf_avatar = Convert.ToChar(dbReader[off++]),
+                                    uf_summon = Convert.ToChar(dbReader[off++]),
+                                    uf_monster = Convert.ToChar(dbReader[off++]),
+                                    base_effect_id = (int)dbReader[off++],
+                                    fire_interval = (int)dbReader[off++],
+                                    elemental_type = (int)dbReader[off++],
+                                    amplify_base = (decimal)dbReader[off++],
+                                    amplify_per_skl = (decimal)dbReader[off++],
+                                    add_damage_base = (int)dbReader[off++],
+                                    add_damage_per_skl = (int)dbReader[off++],
+                                    effect_type = (int)dbReader[off++],
+                                    value_0 = (decimal)dbReader[off++],
+                                    value_1 = (decimal)dbReader[off++],
+                                    value_2 = (decimal)dbReader[off++],
+                                    value_3 = (decimal)dbReader[off++],
+                                    value_4 = (decimal)dbReader[off++],
+                                    value_5 = (decimal)dbReader[off++],
+                                    value_6 = (decimal)dbReader[off++],
+                                    value_7 = (decimal)dbReader[off++],
+                                    value_8 = (decimal)dbReader[off++],
+                                    value_9 = (decimal)dbReader[off++],
+                                    value_10 = (decimal)dbReader[off++],
+                                    value_11 = (decimal)dbReader[off++],
+                                    value_12 = (decimal)dbReader[off++],
+                                    value_13 = (decimal)dbReader[off++],
+                                    value_14 = (decimal)dbReader[off++],
+                                    value_15 = (decimal)dbReader[off++],
+                                    value_16 = (decimal)dbReader[off++],
+                                    value_17 = (decimal)dbReader[off++],
+                                    value_18 = (decimal)dbReader[off++],
+                                    value_19 = (decimal)dbReader[off++],
+                                    icon_id = (int)dbReader[off++],
+                                    icon_file_name = (string)dbReader[off++],
+                                    fx_id = (int)dbReader[off++],
+                                    pos_id = (int)dbReader[off++],
+                                    cast_skill_id = (int)dbReader[off++],
+                                    cast_fx_id = (int)dbReader[off++],
+                                    cast_fx_pos_id = (int)dbReader[off++],
+                                    hit_fx_id = (int)dbReader[off++],
+                                    hit_fx_pos_id = (int)dbReader[off++],
+                                    special_output_timining_id = (int)dbReader[off++],
+                                    special_output_fx_pos_id = (int)dbReader[off++],
+                                    special_output_fx_delay = (int)dbReader[off++],
+                                    state_fx_id = (int)dbReader[off++],
+                                    state_fx_pos_id = (int)dbReader[off++]
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleUtils.ShowSQL(ex.Message);
+                        return;
+                    }
+                    finally { dbCmd.Connection.Close(); }
+                }
+            }
+
+            ConsoleUtils.ShowNotice("{0} entries loaded from StateResource", StateResource.Count);          
+        }
+
         internal static void LoadSummon()
         {
             SummonResource = new List<DB_Summon>();
@@ -1855,6 +1946,7 @@ namespace Game.Content
         public static void Init(int _conType, string _conString)
         {
             conType = _conType;
+
             conString = _conString;
 
             LoadAuctionCategory();
@@ -1883,6 +1975,7 @@ namespace Game.Content
             LoadSummonLevel();
             LoadSummonUniqueName();
             LoadString();
+            LoadState();
             LoadSummon();
         }
     }
