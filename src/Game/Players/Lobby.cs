@@ -70,7 +70,10 @@ namespace Game.Players
                                             {
                                                 while (reader2.Read())
                                                 {
-                                                    chara.ModelInfo.WearInfo[(int)reader2[1]] = (int)reader2[0];
+                                                    chara.ModelInfo.WearInfo[(int)reader2[0]] = (int)reader2[1];
+                                                    chara.WearItemEnhanceInfo[(int)reader2[0]] = (int)reader2[2];
+                                                    chara.WearItemLevelInfo[(int)reader2[0]] = (int)reader2[3];
+                                                    chara.WearItemElementalType[(int)reader2[0]] = (byte)(sbyte)reader2[4];
                                                 }
                                             }
                                         }
@@ -95,9 +98,6 @@ namespace Game.Players
 								chara.SkinColor = (uint)reader[40];
 								chara.CreateTime = ((DateTime)reader[64]).ToString("yyyy/MM/dd");
 								chara.DeleteTime = "9999/12/31";
-								// TODO : chara.WearItemEnhanceInfo
-								// TODO : chara.WearItemLevelInfo =
-								// TODO : chara.WearItemElementalType =
 
 								// Adds data to char List
 								charList.Add(chara);
@@ -221,6 +221,7 @@ namespace Game.Players
                         dbManager.CreateInParameter(dbCmd, "race", System.Data.DbType.Byte, (byte)charInfo.ModelInfo.Race);
                         dbManager.CreateInParameter(dbCmd, "sex", System.Data.DbType.Int32, charInfo.ModelInfo.Sex);
                         dbManager.CreateInParameter(dbCmd, "job", System.Data.DbType.Int16, job);
+                        dbManager.CreateInParameter(dbCmd, "level", System.Data.DbType.Int32, 1);
                         dbManager.CreateInParameter(dbCmd, "x", System.Data.DbType.Single, startPos.X);
                         dbManager.CreateInParameter(dbCmd, "y", System.Data.DbType.Single, startPos.Y);
                         dbManager.CreateInParameter(dbCmd, "textureId", System.Data.DbType.Int32, charInfo.ModelInfo.TextureId);
