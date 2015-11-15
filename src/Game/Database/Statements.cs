@@ -55,6 +55,7 @@ namespace Game.Database
 
             // Item
             User.Add(20, "SELECT * FROM Item WHERE owner_id = @charId");
+            User.Add(21, "INSERT INTO Item (owner_id, idx, code, cnt, level, enhance, durability, endurance, flag, gcode, wear_info, socket_0, socket_1, socket_2, socket_3, remain_time, elemental_effect_type, elemental_effect_expire_time, elemental_effect_attack_point, elemental_effect_magic_point, create_time) VALUES (@owner_id, @idx, @code, @cnt, @level, @enhance, @durability, @endurance, @flag, @gcode, @wear_info, @socket_0, @socket_1, @socket_2, @socket_3, @remain_time, @elemental_effect_type, @elemental_effect_expire_time, @elemental_effect_attack_point, @elemental_effect_magic_point, @create_time)");
 
             DBManager.SetStatements(null, Game, User);
         }

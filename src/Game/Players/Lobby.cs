@@ -18,7 +18,7 @@ namespace Game.Players
 	/// </summary>
 	public static class Lobby
 	{
-        private static object CreateLock;
+        private static object CreateLock = new object();
 
 		static int sqlConType = Settings.SqlEngine;
 		static string sqlConString = "Server=" + Settings.SqlUserIp + ";Database=" + Settings.SqlUserDatabase + ";UID=" + Settings.SqlUserUsername + ";PWD=" + Settings.SqlUserPassword + ";Connection Timeout=5;";
@@ -174,6 +174,7 @@ namespace Game.Players
                         short job = 0;
                         int startWeapon = 0;
                         int startClothes = 0;
+                        int startBag = 480001;
                         Position startPos = new Position();
 
                         switch (charInfo.ModelInfo.Race)
@@ -235,7 +236,10 @@ namespace Game.Players
                         {
                             dbCmd.Connection.Open();
                             charId = Convert.ToInt32(dbCmd.ExecuteScalar());
-                            // TODO : Retrieve character ID
+
+                            Inventory.InsertItem(charId, startWeapon, true);
+                            Inventory.InsertItem(charId, startClothes, true);
+                            Inventory.InsertItem(charId, startBag, true);
                         }
                         catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); result = false; }
                         finally { dbCmd.Connection.Close(); }
