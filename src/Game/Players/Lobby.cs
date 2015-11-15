@@ -18,6 +18,8 @@ namespace Game.Players
 	/// </summary>
 	public static class Lobby
 	{
+        private static object CreateLock;
+
 		static int sqlConType = Settings.SqlEngine;
 		static string sqlConString = "Server=" + Settings.SqlUserIp + ";Database=" + Settings.SqlUserDatabase + ";UID=" + Settings.SqlUserUsername + ";PWD=" + Settings.SqlUserPassword + ";Connection Timeout=5;";
 
@@ -157,42 +159,91 @@ namespace Game.Players
 		/// <returns></returns>
 		internal static bool Create(Player player, LobbyCharacterInfo charInfo)
 		{
-			// Ensures the name is available
-			if (!CheckCharacterName(charInfo.Name))
+            // Ensures the name is available
+            if (!CheckCharacterName(charInfo.Name))
 				return false;
 
-			bool result = true;
+            lock (CreateLock)
+            {
+                bool result = true;
+                using (DBManager dbManager = new DBManager(Databases.User))
+                {
+                    using (DbCommand dbCmd = dbManager.CreateCommand(2))
+                    {
+                        int charId;
+                        short job = 0;
+                        int startWeapon = 0;
+                        int startClothes = 0;
+                        Position startPos = new Position();
 
-			using (DBManager dbManager = new DBManager(Databases.User))
-			{
-				using (DbCommand dbCmd = dbManager.CreateCommand(2))
-				{
-					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.Int32, player.AccountId);
-					dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, charInfo.Name);
-					dbManager.CreateInParameter(dbCmd, "race", System.Data.DbType.Byte, (byte)charInfo.ModelInfo.Race);
-					dbManager.CreateInParameter(dbCmd, "sex", System.Data.DbType.Int32, charInfo.ModelInfo.Sex);
-					dbManager.CreateInParameter(dbCmd, "textureId", System.Data.DbType.Int32, charInfo.ModelInfo.TextureId);
-					dbManager.CreateInParameter(dbCmd, "hairId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[0]);
-					dbManager.CreateInParameter(dbCmd, "faceId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[1]);
-					dbManager.CreateInParameter(dbCmd, "bodyId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[2]);
-					dbManager.CreateInParameter(dbCmd, "handsId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[3]);
-					dbManager.CreateInParameter(dbCmd, "feetId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[4]);
-					dbManager.CreateInParameter(dbCmd, "skinColor", System.Data.DbType.UInt32, charInfo.SkinColor);
-					dbManager.CreateInParameter(dbCmd, "createDate", System.Data.DbType.DateTime, DateTime.UtcNow);
-					
-					try
-					{
-						dbCmd.Connection.Open();
-						dbCmd.ExecuteNonQuery();
-						// TODO : Retrieve character ID
-					}
-					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); result = false; }
-					finally { dbCmd.Connection.Close(); }
-				}
-			}
+                        switch (charInfo.ModelInfo.Race)
+                        {
+                            case 3: // Gaia
+                                job = 100;
+                                startPos.X = 164474;
+                                startPos.Y = 52932;
 
-			return result;
-		}
+                                startWeapon = 112100; //Trainee's Small Axe
+                                if (charInfo.ModelInfo.WearInfo[2] == 601)
+                                    startClothes = 220100;
+                                else
+                                    startClothes = 220109;
+                                break;
+
+                            case 4: // Deva
+                                job = 200;
+                                startPos.X = 164335;
+                                startPos.Y = 49510;
+
+                                startWeapon = 106100; // Beginner's Mace
+                                if (charInfo.ModelInfo.WearInfo[2] == 601)
+                                    startClothes = 240100;
+                                else
+                                    startClothes = 240109;
+                                break;
+
+                            case 5: // Asura
+                                job = 300;
+                                startPos.X = 168356;
+                                startPos.Y = 55399;
+
+                                startWeapon = 103100; // Beginner's Dirk
+                                if (charInfo.ModelInfo.WearInfo[2] == 601)
+                                    startClothes = 230100;
+                                else
+                                    startClothes = 230109;
+                                break;
+                        }
+
+                        dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.Int32, player.AccountId);
+                        dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, charInfo.Name);
+                        dbManager.CreateInParameter(dbCmd, "race", System.Data.DbType.Byte, (byte)charInfo.ModelInfo.Race);
+                        dbManager.CreateInParameter(dbCmd, "sex", System.Data.DbType.Int32, charInfo.ModelInfo.Sex);
+                        dbManager.CreateInParameter(dbCmd, "job", System.Data.DbType.Int16, job);
+                        dbManager.CreateInParameter(dbCmd, "x", System.Data.DbType.Single, startPos.X);
+                        dbManager.CreateInParameter(dbCmd, "y", System.Data.DbType.Single, startPos.Y);
+                        dbManager.CreateInParameter(dbCmd, "textureId", System.Data.DbType.Int32, charInfo.ModelInfo.TextureId);
+                        dbManager.CreateInParameter(dbCmd, "hairId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[0]);
+                        dbManager.CreateInParameter(dbCmd, "faceId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[1]);
+                        dbManager.CreateInParameter(dbCmd, "bodyId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[2]);
+                        dbManager.CreateInParameter(dbCmd, "handsId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[3]);
+                        dbManager.CreateInParameter(dbCmd, "feetId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[4]);
+                        dbManager.CreateInParameter(dbCmd, "skinColor", System.Data.DbType.UInt32, charInfo.SkinColor);
+                        dbManager.CreateInParameter(dbCmd, "createDate", System.Data.DbType.DateTime, DateTime.UtcNow);
+
+                        try
+                        {
+                            dbCmd.Connection.Open();
+                            charId = Convert.ToInt32(dbCmd.ExecuteScalar());
+                            // TODO : Retrieve character ID
+                        }
+                        catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); result = false; }
+                        finally { dbCmd.Connection.Close(); }
+                    }
+                }
+                return result;
+            }
+        }
 
 		/// <summary>
 		/// Deletes a character from this account
@@ -356,7 +407,22 @@ namespace Game.Players
                 ClientPackets.Instance.EquipSummon(player, player.Summon, false);
 
                 ClientPackets.Instance.WearInfo(player, player.WearInfo);
-                //ClientPackets.send_Login_pre1(player);
+                ClientPackets.Instance.GoldUpdate(player, player.Gold, player.Chaos);
+                ClientPackets.Instance.Property(player, "chaos", (long)player.Chaos, true);
+                ClientPackets.Instance.LevelUpdate(player, player.Level, player.JobLevel);
+                ClientPackets.Instance.ExpUpdate(player, player.Exp, player.Jp);
+
+                ClientPackets.Instance.Property(player, "job", (long)player.Job, true);
+                ClientPackets.Instance.Property(player, "job_level", (long)player.JobLevel, true);
+                ClientPackets.Instance.Property(player, "job_0", (long)player.PrevJobs[0].Id, true);
+                ClientPackets.Instance.Property(player, "jlv_0", (long)player.PrevJobs[0].Level, true);
+                ClientPackets.Instance.Property(player, "job_1", (long)player.PrevJobs[1].Id, true);
+                ClientPackets.Instance.Property(player, "jlv_1", (long)player.PrevJobs[1].Level, true);
+                ClientPackets.Instance.Property(player, "job_2", (long)player.PrevJobs[2].Id, true);
+                ClientPackets.Instance.Property(player, "jlv_2", (long)player.PrevJobs[2].Level, true);
+
+
+
             }
 
             // TODO : PlaceHolder Data, must be replaced with real one

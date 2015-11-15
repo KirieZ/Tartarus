@@ -44,7 +44,10 @@ namespace Game.Database
             // Lobby
             User.Add(0, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now LIMIT 5");
             User.Add(1, "SELECT char_id FROM Characters WHERE name = @name AND delete_date > @now");
-            User.Add(2, "INSERT INTO Characters (account_id, name, race, sex, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color, create_date) VALUES (@accId, @name, @race, @sex, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor, @createDate)");
+            if (Settings.SqlEngine == 1) // MySQL
+                User.Add(2, "INSERT INTO Characters (account_id, name, race, sex, job, x, y, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color, create_date) VALUES (@accId, @name, @race, @sex, @job, @x, @y, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor, @createDate); SELECT last_insert_id()");
+            else // SqlSrv
+                User.Add(2, "INSERT INTO Characters (account_id, name, race, sex, job, x, y, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color, create_date) VALUES (@accId, @name, @race, @sex, @job, @x, @y, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor, @createDate)");
             User.Add(3, "UPDATE Characters SET delete_date = @now WHERE account_id = @accId AND name = @name");
             User.Add(4, "DELETE FROM Characters WHERE account_id = @accId AND name = @name");
             User.Add(5, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now AND name = @name");
