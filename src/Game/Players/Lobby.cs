@@ -174,7 +174,7 @@ namespace Game.Players
                         short job = 0;
                         int startWeapon = 0;
                         int startClothes = 0;
-                        int startBag = 480001;
+                        int startBag = 490001;
                         Position startPos = new Position();
 
                         switch (charInfo.ModelInfo.Race)

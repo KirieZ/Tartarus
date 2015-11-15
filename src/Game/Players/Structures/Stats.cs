@@ -41,6 +41,8 @@ namespace Game.Players.Structures
             {
                 AddStats(player.JobLevel, player.JobLevel, 1);
             }
+
+            player.Attributes.Calculate(player.Stats, player.Level);
         }
 
         private void AddStats(int jobId, int level, byte group)
@@ -82,27 +84,27 @@ namespace Game.Players.Structures
 
     public class PlayerAttribute : CreatureAttribute
     {
-        internal void ChangeAttribute(int attribute, short value)
+        internal void ChangeAttribute(int attribute, short value1 = 0, short value2 = 0)
         {
             switch (attribute)
             {
-                case 11: this.PAttackRight += value; break; // TODO : Left Hand
-                case 12: this.MAttack += value; break;
-                case 13: this.AccuracyRight += value; break; // TODO : Left Hand
-                case 14: this.AttackSpeed += value; break;
-                case 15: this.Defense += value; break;
-                case 16:  this.MDefense += value; break;
-                case 17: this.Evasion += value; break;
-                case 18: this.MoveSpeed += value; break;
-                case 19: this.BlockChance += value; break;
-                case 20: this.MaxWeight += value; break;
-                case 21: this.BlockDefense += value; break;
-                case 22: this.CastingSpeed += value; break;  // This might be wrong
-                case 23: this.MagicAccuracy += value; break;
-                case 24: this.MDefense += value; break;
-                case 25: this.CoolTimeSpeed += value; break;
-                case 33: this.MPRegenPoint += value; break; // This might be wrong
-                case 34: this.AttackRange += value; break; // This might be wrong
+                case 11: this.PAttackRight += value1; break; // TODO : Left Hand
+                case 12: this.MAttack += value1; break;
+                case 13: this.AccuracyRight += value1; break; // TODO : Left Hand
+                case 14: this.AttackSpeed += value1; break;
+                case 15: this.Defense += value1; break;
+                case 16:  this.MDefense += value1; break;
+                case 17: this.Evasion += value1; break;
+                case 18: this.MoveSpeed += value1; break;
+                case 19: this.BlockChance += value1; break;
+                case 20: this.MaxWeight += value1; break;
+                case 21: this.BlockDefense += value1; break;
+                case 22: this.CastingSpeed += value1; break;  // This might be wrong
+                case 23: this.MagicAccuracy += value1; break;
+                case 24: this.MDefense += value1; break;
+                case 25: this.CoolTimeSpeed += value1; break;
+                case 33: this.MPRegenPoint += value1; break; // This might be wrong
+                case 34: this.AttackRange += value1; break; // This might be wrong
             }
         }
 
@@ -113,6 +115,11 @@ namespace Game.Players.Structures
             this.ChangeAttribute(dbItem.base_type_0, (short)(dbItem.base_var1_0 + item.Level * dbItem.base_var2_0));
             this.ChangeAttribute(dbItem.base_type_1, (short)(dbItem.base_var1_1 + item.Level * dbItem.base_var2_1));
             this.ChangeAttribute(dbItem.base_type_2, (short)(dbItem.base_var1_2 + item.Level * dbItem.base_var2_2));
+
+            this.ChangeAttribute(dbItem.opt_type_0, (short)dbItem.opt_var1_0, (short)dbItem.opt_var2_0);
+            this.ChangeAttribute(dbItem.opt_type_1, (short)dbItem.opt_var1_1, (short)dbItem.opt_var2_1);
+            this.ChangeAttribute(dbItem.opt_type_2, (short)dbItem.opt_var1_2, (short)dbItem.opt_var2_2);
+            this.ChangeAttribute(dbItem.opt_type_3, (short)dbItem.opt_var1_3, (short)dbItem.opt_var2_3);
         }
 
         internal void Remove(Item item)
@@ -122,6 +129,11 @@ namespace Game.Players.Structures
             this.ChangeAttribute(dbItem.base_type_0, (short)(-1*(dbItem.base_var1_0 + item.Level * dbItem.base_var2_0)));
             this.ChangeAttribute(dbItem.base_type_1, (short)(-1*(dbItem.base_var1_1 + item.Level * dbItem.base_var2_1)));
             this.ChangeAttribute(dbItem.base_type_2, (short)(-1*(dbItem.base_var1_2 + item.Level * dbItem.base_var2_2)));
+
+            this.ChangeAttribute(dbItem.opt_type_0, (short)-dbItem.opt_var1_0, (short)-dbItem.opt_var2_0);
+            this.ChangeAttribute(dbItem.opt_type_1, (short)-dbItem.opt_var1_1, (short)-dbItem.opt_var2_1);
+            this.ChangeAttribute(dbItem.opt_type_2, (short)-dbItem.opt_var1_2, (short)-dbItem.opt_var2_2);
+            this.ChangeAttribute(dbItem.opt_type_3, (short)-dbItem.opt_var1_3, (short)-dbItem.opt_var2_3);
         }
     }
 }
