@@ -110,7 +110,8 @@ namespace Game.Players.Structures
 
         internal void Add(Item item)
         {
-            DB_Item dbItem = Arcadia.ItemResource.Find(obj => obj.id == item.Code);
+            // TODO : DB_Item dbItem = Arcadia.ItemResource.Find(obj => obj.id == item.Code);
+			DB_Item dbItem = new DB_Item();
 
             this.ChangeAttribute(dbItem.base_type_0, (short)(dbItem.base_var1_0 + item.Level * dbItem.base_var2_0));
             this.ChangeAttribute(dbItem.base_type_1, (short)(dbItem.base_var1_1 + item.Level * dbItem.base_var2_1));
@@ -124,7 +125,8 @@ namespace Game.Players.Structures
 
         internal void Remove(Item item)
         {
-            DB_Item dbItem = Arcadia.ItemResource.Find(obj => obj.id == item.Code);
+            //DB_Item dbItem = Arcadia.ItemResource.Find(obj => obj.id == item.Code);
+			DB_Item dbItem = new DB_Item();
 
             this.ChangeAttribute(dbItem.base_type_0, (short)(-1*(dbItem.base_var1_0 + item.Level * dbItem.base_var2_0)));
             this.ChangeAttribute(dbItem.base_type_1, (short)(-1*(dbItem.base_var1_1 + item.Level * dbItem.base_var2_1)));
