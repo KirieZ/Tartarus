@@ -23,6 +23,7 @@ namespace Game.Players.Structures
 	/// </summary>
 	public class BeltSlotData
 	{
+        public uint Handle { get; set; }
 		public long Id { get; set; }
 	}
 

@@ -135,10 +135,11 @@ namespace Game.Content
 
         public List<uint> Inventory { get; set; }
         public uint[] WearInfo { get; set; }
+        public object StaminaRegen { get; internal set; }
 
-		#endregion
+        #endregion
 
-		public Player(Socket socket)
+        public Player(Socket socket)
 			: base(ObjectType.Player)
 		{
 			this.NetData = new NetworkData(socket);

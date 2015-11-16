@@ -430,7 +430,8 @@ namespace Game.Network
             else
             {
                 stream.WriteInt64(0);
-                stream.WriteString((string)value);
+                string val = (string)value;
+                stream.WriteString(val, val.Length + 1);
             }
 
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
@@ -559,6 +560,118 @@ namespace Game.Network
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
         }
 
+        internal void BeltSlotInfo(Player player, BeltSlotData[] belt)
+        {
+            PacketStream stream = new PacketStream(0x00D8);
+
+            for (int i = 0; i < 6; i++)
+            {
+                stream.WriteUInt32(belt[i].Handle);
+            }
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        internal void StatusChange(Player player, uint handle, uint status)
+        {
+            PacketStream stream = new PacketStream(0x01F4);
+
+            stream.WriteUInt32(handle);
+            stream.WriteUInt32(status);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        public void QuestList(Player player)
+        {
+            PacketStream stream = new PacketStream(0x0258);
+
+            stream.WriteUInt16(0); // count_active
+            stream.WriteUInt16(0); // count_pending
+
+            for (int i = 0; i < 1; i++) // count_active
+            {
+                stream.WriteInt32(0); // code
+                for (int j = 0; i < 6; i++) // nRandomValue
+                {
+                    stream.WriteInt32(0);
+                }
+                for (int j = 0; i < 6; i++) // nStatus
+                {
+                    stream.WriteInt32(0);
+                }
+                stream.WriteByte(0); // nProgress
+                stream.WriteUInt32(0); // nTimeLimit
+            }
+
+            for (int i = 0; i < 1; i++) // count_pending
+            {
+                stream.WriteInt32(0); // code
+                stream.WriteInt32(0); // nStartID
+            }
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        /* TODO : add struct
+// 0x0258
+struct TS_SC_QUEST_LIST
+{
+TS_MESSAGE baseclass_0;
+unsigned __int16 count_active;
+unsigned __int16 count_pending;
+//TS_SC_QUEST_LIST::TS_QUEST_INFO actives[count_active];
+//TS_SC_QUEST_LIST::TS_PENDING_QUEST_INFO pendings[count_pending];
+};
+
+struct TS_SC_QUEST_LIST::TS_QUEST_INFO
+{
+int code;
+int nStartID;
+int nRandomValue[6];
+int nStatus[6];
+char nProgress;
+unsigned int nTimeLimit;
+};
+
+struct TS_SC_QUEST_LIST::TS_PENDING_QUEST_INFO
+{
+int code;
+int nStartID;
+};*/
+
+        internal void Chat(Player player, string sender, byte type, string message)
+        {
+            PacketStream stream = new PacketStream(0x0016);
+
+            stream.WriteString(sender, 21);
+            stream.WriteUInt16((ushort)message.Length);
+            stream.WriteByte(type);
+            stream.WriteString(message, message.Length+1);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        public void ChangeLocation(Player player, int prevLocation, int newLocation)
+        {
+            PacketStream stream = new PacketStream(0x0385);
+
+            stream.WriteInt32(prevLocation);
+            stream.WriteInt32(newLocation);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        public void WeatherInfo(Player player, uint regionId, ushort weatherId)
+        {
+            PacketStream stream = new PacketStream(0x0386);
+
+            stream.WriteUInt32(regionId);
+            stream.WriteUInt16(weatherId);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+    
         #endregion
 
         // Login Result placeholder
@@ -567,7 +680,17 @@ namespace Game.Network
             Send(player, "0B 00 00 00 02 00 00 2E 3A 01 00 ");
         }
 
-		internal static void send_Login(Player player)
+        internal static void send_Login_pre3(Player player)
+        {
+            Send(player, "13 00 00 00 4D 04 00 3E 3A 01 00 14 3C 21 56 00 00 00 00 ");
+        }
+
+        internal static void send_Login_pre4(Player player)
+        {
+            Send(player, "0B 00 00 00 13 27 00 00 00 00 00 ");
+        }
+
+        internal static void send_Login(Player player)
 		{
             // URL List - 0x2329
             //Send(player, "2A 01 00 00 29 23 00 21 01 67 75 69 6C 64 2E 75 72 6C 7C 68 74 74 70 3A 2F 2F 67 75 69 6C 64 2E 74 65 61 6C 73 6B 69 65 73 2E 75 73 2F 63 6C 69 65 6E 74 2F 67 75 69 6C 64 2F 6C 6F 67 69 6E 2E 61 73 70 78 7C 67 75 69 6C 64 5F 74 65 73 74 5F 64 6F 77 6E 6C 6F 61 64 2E 75 72 6C 7C 75 70 6C 6F 61 64 2F 7C 77 65 62 5F 64 6F 77 6E 6C 6F 61 64 7C 67 75 69 6C 64 2E 74 65 61 6C 73 6B 69 65 73 2E 75 73 7C 77 65 62 5F 64 6F 77 6E 6C 6F 61 64 5F 70 6F 72 74 7C 30 7C 73 68 6F 70 2E 75 72 6C 7C 68 74 74 70 3A 2F 2F 36 37 2E 32 30 35 2E 31 31 32 2E 31 35 32 3A 37 37 36 36 2F 6B 68 72 6F 6F 73 7C 67 68 65 6C 70 5F 75 72 6C 7C 68 74 74 70 3A 2F 2F 72 61 70 70 65 6C 7A 2E 77 69 6B 69 61 2E 63 6F 6D 7C 67 75 69 6C 64 5F 69 63 6F 6E 5F 75 70 6C 6F 61 64 2E 69 70 7C 67 75 69 6C 64 2E 74 65 61 6C 73 6B 69 65 73 2E 75 73 7C 67 75 69 6C 64 5F 69 63 6F 6E 5F 75 70 6C 6F 61 64 2E 70 6F 72 74 7C 34 36 31 37 ");
@@ -628,43 +751,43 @@ namespace Game.Network
             //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6A 6F 62 5F 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
             //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6A 6C 76 5F 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
             // Belt Slot Info - 0x00D8
-            Send(player, "1F 00 00 00 D8 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			// gAME tIME - 0X044D
-			Send(player, "13 00 00 00 4D 04 00 3E 3A 01 00 14 3C 21 56 00 00 00 00 ");
-			// PROPERTY
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 68 75 6E 74 61 68 6F 6C 69 63 5F 65 6E 74 00 00 0C 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 64 6B 5F 63 6F 75 6E 74 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6B 5F 63 6F 75 6E 74 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 69 6D 6D 6F 72 61 6C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 73 74 61 6D 69 6E 61 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 73 74 61 6D 69 6E 61 00 00 00 00 00 20 A1 07 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 63 68 61 6E 6E 65 6C 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 ");
-			
-			// Entity State
-			Send(player, "0F 00 00 00 F4 01 00 00 06 00 80 00 00 00 00 ");
+            //Send(player, "1F 00 00 00 D8 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+            // gAME tIME - 0X044D
+            //Send(player, "13 00 00 00 4D 04 00 3E 3A 01 00 14 3C 21 56 00 00 00 00 ");
+            // PROPERTY
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 68 75 6E 74 61 68 6F 6C 69 63 5F 65 6E 74 00 00 0C 00 00 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 64 6B 5F 63 6F 75 6E 74 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6B 5F 63 6F 75 6E 74 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 69 6D 6D 6F 72 61 6C 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 73 74 61 6D 69 6E 61 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 6D 61 78 5F 73 74 61 6D 69 6E 61 00 00 00 00 00 20 A1 07 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 63 68 61 6E 6E 65 6C 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 ");
 
-			// QUEST LIST - 0X258
-			Send(player, "0B 00 00 00 58 02 00 00 00 00 00 ");
-			// SCRIPTS - 0X0016
-			Send(player, "26 00 00 00 16 00 00 40 46 52 49 45 4E 44 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07 00 8C 46 4C 49 53 54 7C 00 ");
-			Send(player, "26 00 00 00 16 00 00 40 46 52 49 45 4E 44 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07 00 8C 44 4C 49 53 54 7C 00 ");
-			// PROPERTY
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 5F 6C 69 6D 69 74 31 00 C0 7A 10 00 00 00 00 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 5F 6C 69 6D 69 74 32 00 40 77 1B 00 00 00 00 00 ");
-			// LOCATION INFO - 0X0385
-			Send(player, "0F 00 00 00 85 03 00 00 00 00 00 CE 87 01 00 ");
+            // TS_SC_STATUS_CHANGE
+            //Send(player, "0F 00 00 00 F4 01 00 00 06 00 80 00 00 00 00 ");
+
+            // QUEST LIST - 0X258
+            //Send(player, "0B 00 00 00 58 02 00 00 00 00 00 ");
+            // SCRIPTS - 0X0016
+            //Send(player, "26 00 00 00 16 00 00 40 46 52 49 45 4E 44 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07 00 8C 46 4C 49 53 54 7C 00 ");
+            //Send(player, "26 00 00 00 16 00 00 40 46 52 49 45 4E 44 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07 00 8C 44 4C 49 53 54 7C 00 ");
+            // PROPERTY
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 5F 6C 69 6D 69 74 31 00 C0 7A 10 00 00 00 00 00 ");
+            //Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 5F 6C 69 6D 69 74 32 00 40 77 1B 00 00 00 00 00 ");
+            // TS_SC_CHANGE_LOCATION - 0X0385
+            //Send(player, "0F 00 00 00 85 03 00 00 00 00 00 CE 87 01 00 ");
 			// WEATHER INFO - 0X0386
-			Send(player, "0D 00 00 00 86 03 00 CE 87 01 00 01 00 ");
-			// PROPERTY
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
+			//Send(player, "0D 00 00 00 86 03 00 CE 87 01 00 01 00 ");
+			// PROPERTY - ??
+			//Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 70 6C 61 79 74 69 6D 65 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ");
 			// UNKNOWN - 0X2713
-			Send(player, "0B 00 00 00 13 27 00 00 00 00 00 ");
+//			Send(player, "0B 00 00 00 13 27 00 00 00 00 00 ");
 			// PROPERTY
-			Send(player, "47 00 00 00 FB 01 00 00 06 00 80 00 63 6C 69 65 6E 74 5F 69 6E 66 6F 00 00 00 00 00 00 00 00 00 00 00 00 00 51 53 3D 30 2C 30 2C 32 2C 30 7C 51 53 3D 30 2C 31 2C 32 2C 32 7C 51 53 3D 30 2C 31 31 2C 32 2C 31 7C 00 ");
-			Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 73 74 61 6D 69 6E 61 5F 72 65 67 65 6E 00 00 00 1E 00 00 00 00 00 00 00 ");
+			//Send(player, "47 00 00 00 FB 01 00 00 06 00 80 00 63 6C 69 65 6E 74 5F 69 6E 66 6F 00 00 00 00 00 00 00 00 00 00 00 00 00 51 53 3D 30 2C 30 2C 32 2C 30 7C 51 53 3D 30 2C 31 2C 32 2C 32 7C 51 53 3D 30 2C 31 31 2C 32 2C 31 7C 00 ");
+			//Send(player, "24 00 00 00 FB 01 00 00 06 00 80 01 73 74 61 6D 69 6E 61 5F 72 65 67 65 6E 00 00 00 1E 00 00 00 00 00 00 00 ");
 			// 0X0002
-			Send(player, "0B 00 00 00 02 00 00 11 3B 01 00 ");
+			//Send(player, "0B 00 00 00 02 00 00 11 3B 01 00 ");
 
 		}
 

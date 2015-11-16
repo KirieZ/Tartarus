@@ -426,12 +426,43 @@ namespace Game.Players
                 ClientPackets.Instance.Property(player, "job_2", (long)player.PrevJobs[2].Id, true);
                 ClientPackets.Instance.Property(player, "jlv_2", (long)player.PrevJobs[2].Level, true);
 
+                ClientPackets.Instance.BeltSlotInfo(player, player.Belt);
 
+                ClientPackets.send_Login_pre3(player);
 
+                ClientPackets.Instance.Property(player, "huntaholic_ent", (long)player.Huntaholic.EnterCount, true);
+                ClientPackets.Instance.Property(player, "dk_count", (long)player.Dkc, true);
+                ClientPackets.Instance.Property(player, "pk_count", (long)player.Pkc, true);
+                ClientPackets.Instance.Property(player, "immoral", (long)player.ImmoralPoints, true);
+                ClientPackets.Instance.Property(player, "stamina", (long)player.Stamina, true);
+                ClientPackets.Instance.Property(player, "max_stamina", (long)player.MaxStamina, true);
+                ClientPackets.Instance.Property(player, "channel", (long)player.Cha, true);
+
+                ClientPackets.Instance.StatusChange(player, player.Handle, 0);
+
+                ClientPackets.Instance.QuestList(player); // TODO : Incomplete packet
+
+                ClientPackets.Instance.Chat(player, "@FRIEND", 0x8C, "FLIST|");
+                ClientPackets.Instance.Chat(player, "@FRIEND", 0x8C, "DLIST|");
+
+                // TODO : what is this used for?
+                ClientPackets.Instance.Property(player, "playtime", (long)0, true);
+                ClientPackets.Instance.Property(player, "playtime_limit1", (long)0, true);
+                ClientPackets.Instance.Property(player, "playtime_limit2", (long)0, true);
+
+                // TODO : Get new location by position
+                ClientPackets.Instance.ChangeLocation(player, 0, 100302);
+                // TODO : Get proper weather info and region
+                ClientPackets.Instance.WeatherInfo(player, 100302, 1);
+
+                ClientPackets.send_Login_pre4(player);
+
+                ClientPackets.Instance.Property(player, "client_info", player.ClientInfo, false);
+                ClientPackets.Instance.Property(player, "stamina_regen", (long)30, true);//player.StaminaRegen, true);
             }
 
             // TODO : PlaceHolder Data, must be replaced with real one
-            ClientPackets.send_Login(player);
+            //ClientPackets.send_Login(player);
         }
 	}
 }
