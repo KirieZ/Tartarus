@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS `Characters` (
   `char_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL default '0',
-  `slot` int(11) NOT NULL default '0',
   `name` varchar(20) NOT NULL default '0',
   `party_id` int(11) NOT NULL default '0',
   `guild_id` int(11) NOT NULL default '0',
@@ -62,11 +61,11 @@ CREATE TABLE IF NOT EXISTS `Characters` (
   `sub_summon` int(11) NOT NULL default '0',
   `remain_summon_time` int(11) NOT NULL default '0',
   `pet` int(11) NOT NULL default '0',
-  `create_date` datetime NOT NULL default 0,
+  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `delete_date` datetime NOT NULL default '9999-12-31 00:00:00',
-  `login_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `login_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `login_count` int(11) NOT NULL default '0',
-  `logout_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `logout_time` datetime NOT NULL default '2000-01-01 00:00:00',
   `play_time` int(11) NOT NULL default '0',
   `chat_block_time` int(11) NOT NULL default '0',
   `adv_chat_count` int(11) NOT NULL default '0',
@@ -75,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `Characters` (
   `guild_block_time` int(11) NOT NULL default '0',
   `pkmode` tinyint(4) unsigned NOT NULL default '0',
   `otp_value` int(11) NOT NULL default '0',
-  `otp_date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `otp_date` datetime NOT NULL default '2000-01-01 00:00:00',
   `client_info` varchar(4096) NOT NULL default '0',
   PRIMARY KEY (`char_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

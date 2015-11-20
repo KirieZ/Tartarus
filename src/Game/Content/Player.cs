@@ -170,7 +170,7 @@ namespace Game.Content
 		/// </summary>
 		internal void GetCharacterList()
 		{
-			ClientPackets.Instance.CharacterList(this, Lobby.GetCharacterList(this));
+			Lobby.GetCharacterList(this);
 		}
 
 		/// <summary>

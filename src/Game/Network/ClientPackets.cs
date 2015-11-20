@@ -270,12 +270,12 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="charList"></param>
-        public void CharacterList(Player client, LobbyCharacterInfo[] charList)
+        public void CharacterList(Player client, LobbyCharacterInfo[] charList, ushort lastLoginIndex)
         {
             PacketStream stream = new PacketStream(0x07D4);
 
             stream.WriteUInt32(0); // currentSvTime
-            stream.WriteUInt16(0); // last_login_index
+            stream.WriteUInt16(lastLoginIndex);
             stream.WriteUInt16((ushort)charList.Length);
             for (int i = 0; i < charList.Length; i++)
             {

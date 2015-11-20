@@ -28,9 +28,11 @@ namespace Game.Players
 		/// </summary>
 		/// <param name="player"></param>
 		/// <returns></returns>
-		internal static LobbyCharacterInfo[] GetCharacterList(Player player)
+		internal static void GetCharacterList(Player player)
 		{
 			List<LobbyCharacterInfo> charList = new List<LobbyCharacterInfo>();
+
+            ushort lastLoginIndex = 0;
 
 			using (DBManager dbManager = new DBManager(Databases.User))
 			{
@@ -38,23 +40,26 @@ namespace Game.Players
 				{
 					dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
 					dbManager.CreateInParameter(dbCmd, "now", System.Data.DbType.DateTime, DateTime.UtcNow);
-					try
-					{
-						dbCmd.Connection.Open();
+                    try
+                    {
+                        dbCmd.Connection.Open();
 
                         using (DbDataReader reader = dbCmd.ExecuteReader())
-						{
-							while (reader.Read())
-							{
-								// Reads the character data
-								LobbyCharacterInfo chara = new LobbyCharacterInfo();
+                        {
+                            ushort count = 0;
+                            DateTime lastLoginTime = new DateTime(0);
+
+                            while (reader.Read())
+                            {
+                                // Reads the character data
+                                LobbyCharacterInfo chara = new LobbyCharacterInfo();
                                 int charId = (int)reader[0];
-								chara.Name = (string)reader[3];
-								chara.ModelInfo.Race = (byte)reader[11];
-								chara.ModelInfo.Sex = (int)reader[12];
-								chara.ModelInfo.TextureId = (int)reader[46];
-								for (int i = 0; i < 5; i++)
-									chara.ModelInfo.ModelId[i] = (int)reader[41 + i];
+                                chara.Name = (string)reader[2];
+                                chara.ModelInfo.Race = (byte)reader[10];
+                                chara.ModelInfo.Sex = (int)reader[11];
+                                chara.ModelInfo.TextureId = (int)reader[45];
+                                for (int i = 0; i < 5; i++)
+                                    chara.ModelInfo.ModelId[i] = (int)reader[40 + i];
 
                                 using (DBManager dbManager2 = new DBManager(Databases.User))
                                 {
@@ -87,29 +92,37 @@ namespace Game.Players
                                         }
                                     }
                                 }
-                                chara.Level = (int)reader[13];
-								chara.Job = (short)reader[21];
-								chara.JobLevel = (int)reader[23];
-								// TODO : chara.ExpPercentage = (int)
-								chara.Hp = (int)reader[17];
-								chara.Mp = (int)reader[18];
-								chara.Permission = player.Permission;
-								chara.IsBanned = false;
-								chara.SkinColor = (uint)reader[40];
-								chara.CreateTime = ((DateTime)reader[64]).ToString("yyyy/MM/dd");
-								chara.DeleteTime = "9999/12/31";
+                                chara.Level = (int)reader[12];
+                                chara.Job = (short)reader[20];
+                                chara.JobLevel = (int)reader[22];
+                                // TODO : chara.ExpPercentage = (int)
+                                chara.Hp = (int)reader[16];
+                                chara.Mp = (int)reader[17];
+                                chara.Permission = player.Permission;
+                                chara.IsBanned = false;
+                                chara.SkinColor = (uint)reader[39];
+                                chara.CreateTime = ((DateTime)reader[62]).ToString("yyyy/MM/dd");
+                                chara.DeleteTime = "9999/12/31";
+                                DateTime loginTime = (DateTime)reader[64];
+                                if (loginTime > lastLoginTime)
+                                {
+                                    lastLoginTime = loginTime;
+                                    lastLoginIndex = count;
+                                }
 
-								// Adds data to char List
-								charList.Add(chara);
-							}
-						}
-					}
-					catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
-					finally { dbCmd.Connection.Close(); }
+                                // Adds data to char List
+                                charList.Add(chara);
+
+                                count++;
+                            }
+                        }
+                    }
+                    catch (Exception ex) { ConsoleUtils.ShowError(ex.Message); }
+                    finally { dbCmd.Connection.Close(); }
 				}
-			}
+            }
 
-			return charList.ToArray();
+            ClientPackets.Instance.CharacterList(player, charList.ToArray(), lastLoginIndex);
 		}
 
 		/// <summary>
@@ -231,7 +244,6 @@ namespace Game.Players
                         dbManager.CreateInParameter(dbCmd, "handsId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[3]);
                         dbManager.CreateInParameter(dbCmd, "feetId", System.Data.DbType.Int32, charInfo.ModelInfo.ModelId[4]);
                         dbManager.CreateInParameter(dbCmd, "skinColor", System.Data.DbType.UInt32, charInfo.SkinColor);
-                        dbManager.CreateInParameter(dbCmd, "createDate", System.Data.DbType.DateTime, DateTime.UtcNow);
 
                         try
                         {
@@ -293,7 +305,7 @@ namespace Game.Players
 		{
             using (DBManager dbManager = new DBManager(Databases.User))
             {
-                // Loads Character Info
+                #region Character Info load
                 using (DbCommand dbCmd = dbManager.CreateCommand(5))
                 {
                     dbManager.CreateInParameter(dbCmd, "accId", System.Data.DbType.String, player.AccountId);
@@ -301,8 +313,6 @@ namespace Game.Players
                     dbManager.CreateInParameter(dbCmd, "name", System.Data.DbType.String, name);
 
                     int off = 0;
-
-                    #region Character Info load
 
                     try
                     {
@@ -314,14 +324,13 @@ namespace Game.Players
                             {
                                 player.CharacterId = (int)reader[off++]; // 0
                                 off++; // AccountId // 1
-                                off++; // slot // 2
                                 player.Name = (string)reader[off++]; // 3
                                 player.PartyId = (int)reader[off++]; // 4
                                 player.GuildId = (int)reader[off++]; // 5
                                 off++; // PrevGuildId // 6
-                                player.Position.X = (float)(int)reader[off++]; // 7
-                                player.Position.Y = (float)(int)reader[off++]; // 8
-                                player.Position.Z = (float)(int)reader[off++]; // 9
+                                player.Position.X = (int)reader[off++]; // 7
+                                player.Position.Y = (int)reader[off++]; // 8
+                                player.Position.Z = (int)reader[off++]; // 9
                                 player.Position.Layer = (byte)reader[off++]; // 10
                                 player.Race = (byte)reader[off++]; // 11
                                 player.Sex = (int)reader[off++]; // 12
@@ -386,9 +395,23 @@ namespace Game.Players
                     }
                     catch (Exception ex) { ConsoleUtils.ShowError(ex.Message + " (Offset: " + off + ")"); }
                     finally { dbCmd.Connection.Close(); }
-
-                    #endregion
                 }
+
+                #endregion
+
+                #region Update login_time
+                using (DbCommand dbCmd = dbManager.CreateCommand(7))
+                {
+                    dbManager.CreateInParameter(dbCmd, "cid", System.Data.DbType.Int32, player.CharacterId);
+                    try
+                    {
+                        dbCmd.Connection.Open();
+                        dbCmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex) { ConsoleUtils.ShowError("Failed to Update LoginTime. Error {0}", ex.Message); }
+                    finally { dbCmd.Connection.Close(); }
+                }
+                #endregion
 
                 player.Stats.Load(player);
                 ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);

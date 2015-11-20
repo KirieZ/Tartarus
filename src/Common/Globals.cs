@@ -57,6 +57,8 @@ namespace Common
         public const int RegionSize = 180;
         /// <summary>The maximum number of items in the inventory</summary>
 		public const short MaxInventory = short.MaxValue;
+        /// <summary>Maximum number of characters in an account</summary>
+        public const int MaxCharacters = 6;
 
 		// Nulls
 		public static object[] NullObjArray = new object[0];
