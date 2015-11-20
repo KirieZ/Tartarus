@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `Item` (
 	`endurance` int(11) NOT NULL default '0',
 	`flag` int(11) NOT NULL default '0',
 	`gcode` int(11) NOT NULL default '0',
-	`wear_info` int(11) NULL default '0',
+	`wear_info` smallint(5) NULL default '0',
 	`socket_0` int(11) NOT NULL default '0',
 	`socket_1` int(11) NOT NULL default '0',
 	`socket_2` int(11) NOT NULL default '0',

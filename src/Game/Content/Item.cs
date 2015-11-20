@@ -1,14 +1,10 @@
 // Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Game.Content
 {
-    public enum Wear : int
+    public enum Wear : short
     {
         None = -1,
         Weapon = 0,
@@ -56,7 +52,7 @@ namespace Game.Content
         public uint Endurance { get; set; }
         public int Flag { get; set; }
         public int GCode { get; set; }
-        public int WearInfo { get; set; }
+        public Wear WearInfo { get; set; }
         public int[] Socket { get; set; }
         public int RemainTime { get; set; }
 

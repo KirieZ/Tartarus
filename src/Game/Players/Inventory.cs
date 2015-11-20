@@ -41,7 +41,7 @@ namespace Game.Players
                                 item.Endurance = (uint)(int)reader[off++];
                                 item.Flag = (int)reader[off++];
                                 item.GCode = (int)reader[off++];
-                                item.WearInfo = (int)reader[off++];
+                                item.WearInfo = (Wear)reader[off++];
                                 item.Socket[0] = (int)reader[off++];
                                 item.Socket[1] = (int)reader[off++];
                                 item.Socket[2] = (int)reader[off++];
@@ -68,8 +68,8 @@ namespace Game.Players
 
         internal static void Equip(Player player, Item item, bool sendUpdate)
         {
-            // TODO : int position = Arcadia.ItemResource.Find(obj => obj.id == item.Code).wear_type;
-            int position = 0;
+            //short position = (short)Arcadia.ItemResource.Find(obj => obj.id == item.Code).wear_type;
+            short position = 0;
 
             if (player.WearInfo[position] > 0)
             {
@@ -79,7 +79,7 @@ namespace Game.Players
             
             // Equip the item (if key exists)
             player.WearInfo[position] = item.Handle;
-            item.WearInfo = position;
+            item.WearInfo = (Wear)position;
 
             player.Attributes.Add(item);
 
@@ -99,7 +99,7 @@ namespace Game.Players
             Item item = (Item)GObjectManager.Get(ObjectType.Item, player.WearInfo[position]);
 
             player.Attributes.Remove(item);
-            item.WearInfo = -1;
+            item.WearInfo = Wear.None;
             player.WearInfo[position] = 0;
 
             if (sendUpdate)
@@ -115,7 +115,7 @@ namespace Game.Players
 
         internal static void InsertItem(int charId, int itemCode, bool equip)
         {
-            // TODO : DB_Item item = Arcadia.ItemResource.Find(obj => obj.id == itemCode);
+            //DB_Item item = Arcadia.ItemResource.Find(obj => obj.id == itemCode);
             DB_Item item = new DB_Item();
             using (DBManager dbManager = new DBManager(Databases.User))
             {

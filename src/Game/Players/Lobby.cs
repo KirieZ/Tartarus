@@ -70,10 +70,10 @@ namespace Game.Players
                                             {
                                                 while (reader2.Read())
                                                 {
-                                                    chara.ModelInfo.WearInfo[(int)reader2[0]] = (int)reader2[1];
-                                                    chara.WearItemEnhanceInfo[(int)reader2[0]] = (int)reader2[2];
-                                                    chara.WearItemLevelInfo[(int)reader2[0]] = (int)reader2[3];
-                                                    chara.WearItemElementalType[(int)reader2[0]] = (byte)(sbyte)reader2[4];
+                                                    chara.ModelInfo.WearInfo[(short)reader2[0]] = (int)reader2[1];
+                                                    chara.WearItemEnhanceInfo[(short)reader2[0]] = (int)reader2[2];
+                                                    chara.WearItemLevelInfo[(short)reader2[0]] = (int)reader2[3];
+                                                    chara.WearItemElementalType[(short)reader2[0]] = (byte)(sbyte)reader2[4];
                                                 }
                                             }
                                         }
