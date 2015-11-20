@@ -446,13 +446,14 @@ namespace Game.Network
             List<byte> type = new List<byte>(24);
 
             stream.WriteUInt32(player.Handle);
-            // TODO : Code can be body parts ID
+            
             for (int i = 0; i < Globals.WearInfoMax; i++)
             {
                 Item item = (Item)GObjectManager.Get(ObjectType.Item, wearInfo[i]);
 
                 if (item != null)
                 {
+                    // If there's an item equipped in this slot
                     enhance.Add(item.Enhance);
                     level.Add(item.Level);
                     type.Add((byte)item.ElementalEffectType);
@@ -463,7 +464,15 @@ namespace Game.Network
                     enhance.Add(0);
                     level.Add(0);
                     type.Add(0);
-                    stream.WriteInt32(0);
+                    // If nothing is equipped in the slot, and slot is armor, 
+                    // hands or feet, sends body part id
+                    switch (i)
+                    {
+                        case 2: stream.WriteInt32(player.BodyId); break;
+                        case 3: stream.WriteInt32(player.HandsId); break;
+                        case 4: stream.WriteInt32(player.FeetId); break;
+                        default: stream.WriteInt32(0); break;
+                    }
                 }
             }
 

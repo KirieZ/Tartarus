@@ -94,6 +94,8 @@ namespace Game.Content
         /// <returns></returns>
         public static GameObject Get(ObjectType type, uint handle)
         {
+            if (handle == 0) return null;
+
             switch (type)
             {
                 case ObjectType.Player:
