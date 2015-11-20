@@ -52,8 +52,13 @@ namespace Common
 		// UNLESS YOU KNOW WHAT YOU'RE DOING
 		public const int MaxHavoc = 0;
 		public const int MaxChaos = 0;
-		public const int MaxStamina = 500000;
+        /// <summary>Start stamina (the one that a new character has)</summary>
+		public const int StartStamina = 500000;
+        /// <summary>Start Stamina Recovery (the one that a new character has)</summary>
+        public const int StartStaminaRec = 30;
+        /// <summary>The size of a cell</summary>
 		public const int CellSize = 6;
+        /// <summary>The maximum number of items in the inventory</summary>
 		public const short MaxInventory = short.MaxValue;
 
 		// Nulls

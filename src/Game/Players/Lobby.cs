@@ -413,30 +413,30 @@ namespace Game.Players
 
                 ClientPackets.Instance.WearInfo(player, player.WearInfo);
                 ClientPackets.Instance.GoldUpdate(player, player.Gold, player.Chaos);
-                ClientPackets.Instance.Property(player, "chaos", (long)player.Chaos, true);
+                ClientPackets.Instance.Property(player, "chaos", player.Chaos, true);
                 ClientPackets.Instance.LevelUpdate(player, player.Level, player.JobLevel);
                 ClientPackets.Instance.ExpUpdate(player, player.Exp, player.Jp);
 
-                ClientPackets.Instance.Property(player, "job", (long)player.Job, true);
-                ClientPackets.Instance.Property(player, "job_level", (long)player.JobLevel, true);
-                ClientPackets.Instance.Property(player, "job_0", (long)player.PrevJobs[0].Id, true);
-                ClientPackets.Instance.Property(player, "jlv_0", (long)player.PrevJobs[0].Level, true);
-                ClientPackets.Instance.Property(player, "job_1", (long)player.PrevJobs[1].Id, true);
-                ClientPackets.Instance.Property(player, "jlv_1", (long)player.PrevJobs[1].Level, true);
-                ClientPackets.Instance.Property(player, "job_2", (long)player.PrevJobs[2].Id, true);
-                ClientPackets.Instance.Property(player, "jlv_2", (long)player.PrevJobs[2].Level, true);
+                ClientPackets.Instance.Property(player, "job", player.Job, true);
+                ClientPackets.Instance.Property(player, "job_level", player.JobLevel, true);
+                ClientPackets.Instance.Property(player, "job_0", player.PrevJobs[0].Id, true);
+                ClientPackets.Instance.Property(player, "jlv_0", player.PrevJobs[0].Level, true);
+                ClientPackets.Instance.Property(player, "job_1", player.PrevJobs[1].Id, true);
+                ClientPackets.Instance.Property(player, "jlv_1", player.PrevJobs[1].Level, true);
+                ClientPackets.Instance.Property(player, "job_2", player.PrevJobs[2].Id, true);
+                ClientPackets.Instance.Property(player, "jlv_2", player.PrevJobs[2].Level, true);
 
                 ClientPackets.Instance.BeltSlotInfo(player, player.Belt);
 
                 ClientPackets.send_Login_pre3(player);
 
-                ClientPackets.Instance.Property(player, "huntaholic_ent", (long)player.Huntaholic.EnterCount, true);
-                ClientPackets.Instance.Property(player, "dk_count", (long)player.Dkc, true);
-                ClientPackets.Instance.Property(player, "pk_count", (long)player.Pkc, true);
-                ClientPackets.Instance.Property(player, "immoral", (long)player.ImmoralPoints, true);
-                ClientPackets.Instance.Property(player, "stamina", (long)player.Stamina, true);
-                ClientPackets.Instance.Property(player, "max_stamina", (long)player.MaxStamina, true);
-                ClientPackets.Instance.Property(player, "channel", (long)player.Cha, true);
+                ClientPackets.Instance.Property(player, "huntaholic_ent", player.Huntaholic.EnterCount, true);
+                ClientPackets.Instance.Property(player, "dk_count", player.Dkc, true);
+                ClientPackets.Instance.Property(player, "pk_count", player.Pkc, true);
+                ClientPackets.Instance.Property(player, "immoral", player.ImmoralPoints, true);
+                ClientPackets.Instance.Property(player, "stamina", player.Stamina, true);
+                ClientPackets.Instance.Property(player, "max_stamina", player.MaxStamina, true);
+                ClientPackets.Instance.Property(player, "channel", player.Cha, true);
 
                 ClientPackets.Instance.StatusChange(player, player.Handle, 0);
 
@@ -446,9 +446,9 @@ namespace Game.Players
                 ClientPackets.Instance.Chat(player, "@FRIEND", 0x8C, "DLIST|");
 
                 // TODO : what is this used for?
-                ClientPackets.Instance.Property(player, "playtime", (long)0, true);
-                ClientPackets.Instance.Property(player, "playtime_limit1", (long)0, true);
-                ClientPackets.Instance.Property(player, "playtime_limit2", (long)0, true);
+                ClientPackets.Instance.Property(player, "playtime", 0, true);
+                ClientPackets.Instance.Property(player, "playtime_limit1", 0, true);
+                ClientPackets.Instance.Property(player, "playtime_limit2", 0, true);
 
                 // TODO : Get new location by position
                 ClientPackets.Instance.ChangeLocation(player, 0, 100302);
@@ -458,7 +458,7 @@ namespace Game.Players
                 ClientPackets.send_Login_pre4(player);
 
                 ClientPackets.Instance.Property(player, "client_info", player.ClientInfo, false);
-                ClientPackets.Instance.Property(player, "stamina_regen", (long)30, true);//player.StaminaRegen, true);
+                ClientPackets.Instance.Property(player, "stamina_regen", player.StaminaRegen, true);
             }
 
             // TODO : PlaceHolder Data, must be replaced with real one

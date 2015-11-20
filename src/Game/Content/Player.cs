@@ -135,7 +135,7 @@ namespace Game.Content
 
         public List<uint> Inventory { get; set; }
         public uint[] WearInfo { get; set; }
-        public object StaminaRegen { get; internal set; }
+        public int StaminaRegen { get; internal set; }
 
         #endregion
 
@@ -143,6 +143,9 @@ namespace Game.Content
 			: base(ObjectType.Player)
 		{
 			this.NetData = new NetworkData(socket);
+
+            this.MaxStamina = Globals.StartStamina;
+            this.StaminaRegen = Globals.StartStaminaRec;
 
 			this.Position = new Position();
 			this.PrevJobs = new PreviousJobData[3] { new PreviousJobData(), new PreviousJobData(), new PreviousJobData() };

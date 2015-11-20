@@ -425,7 +425,7 @@ namespace Game.Network
             stream.WriteString(name, 16);
             if (isInt)
             {
-                stream.WriteInt64((long)value);
+                stream.WriteInt64(Convert.ToInt64(value));
             }
             else
             {
