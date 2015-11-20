@@ -8,6 +8,40 @@ using System.Threading.Tasks;
 
 namespace Game.Content
 {
+    public enum Wear : int
+    {
+        None = -1,
+        Weapon = 0,
+        LeftHand = 1,
+        Armor = 2,
+        Helm = 3,
+        Glove = 4,
+        Boots = 5,
+        Belt = 6,
+        Mantle = 7,
+        Armulet = 8,
+        Ring1 = 9,
+        Ring2 = 10,
+        Ear = 11,
+        Face = 12,
+        Hair = 13,
+        DecoWeapon = 14,
+        DecoLeftHand = 15,
+        DecoArmor = 16,
+        DecoHelm = 17,
+        DecoGlove = 18,
+        DecoBoots = 19,
+        DecoMantle = 20,
+        DecoShoulder = 21,
+        Ride = 22,
+        Bag = 23,
+
+        Max, // This must always be after the last equip slot
+
+        // TwoFingerRing = 94,
+        TwoHand = 99,
+        Skill = 100,
+    }
     /// <summary>
     /// A game item
     /// </summary>

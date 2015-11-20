@@ -10,30 +10,23 @@ namespace Common
 {
 	public static class Globals
 	{
-		//===== Internal
-		// Packet Header Length (Size + Id + 1 byte)
-		public const int HeaderLength = 7;
-		// Inter-Server Acceptor Key Max Size
-		public const int AcceptorKeyLength = 20;
-		// Maximum buffer size
+        //===== Network
+        /// <summary>Packet Header Length (Size + Id + 1 byte)</summary>
+        public const int HeaderLength = 7;
+        /// <summary>Inter-Server Acceptor Key Max Size</summary>
+        public const int AcceptorKeyLength = 20;
+		/// <summary>Maximum size of a buffer</summary>
 		public const int MaxBuffer = 1024;
-        // Region Size
-        public const int RegionSize = 180;
-        // The number of equipment slots (WearType)
-        public const int WearInfoMax = 24;
         //===== Game
-        // The Epic version, used for source formulas
+        /// <summary>The Epic version, used for source formulas</summary>
         public const int ServerEpic = 62;
-		// The Client Epic version, used to send correct packets
+        /// <summary>The Client Epic version, used to send correct packets</summary>
 		public const int ClientEpic = 62;
-		
-		//===== Keys
-		// The key used to decrypt passwords sent by the client
-		// this is defined at "static Globals"
-		public static string DESKey = "";
-		// The key used to encrypt and decrypt packets sent and
-		// received by the server to a client.
-		// this is defined at "stati Globals"
+
+        //===== Keys
+        /// <summary>The key used to decrypt passwords sent by the client</summary>
+        public static string DESKey = "";
+        /// <summary>The key used to encrypt and decrypt packets exchanged between client and server</summary>
 		public static string RC4Key = "";
 		
 		static Globals()
@@ -52,12 +45,16 @@ namespace Common
 		// UNLESS YOU KNOW WHAT YOU'RE DOING
 		public const int MaxHavoc = 0;
 		public const int MaxChaos = 0;
+
+
         /// <summary>Start stamina (the one that a new character has)</summary>
 		public const int StartStamina = 500000;
         /// <summary>Start Stamina Recovery (the one that a new character has)</summary>
         public const int StartStaminaRec = 30;
         /// <summary>The size of a cell</summary>
 		public const int CellSize = 6;
+        /// <summary>Size of a region</summary>
+        public const int RegionSize = 180;
         /// <summary>The maximum number of items in the inventory</summary>
 		public const short MaxInventory = short.MaxValue;
 

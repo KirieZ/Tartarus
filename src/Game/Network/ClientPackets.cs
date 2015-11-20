@@ -441,13 +441,14 @@ namespace Game.Network
         {
             PacketStream stream = new PacketStream(0x00CA);
 
-            List<int> enhance = new List<int>(24);
-            List<int> level = new List<int>(24);
-            List<byte> type = new List<byte>(24);
+            int maxWear = (int)Wear.Max;
+            List<int> enhance = new List<int>(maxWear);
+            List<int> level = new List<int>(maxWear);
+            List<byte> type = new List<byte>(maxWear);
 
             stream.WriteUInt32(player.Handle);
-            
-            for (int i = 0; i < Globals.WearInfoMax; i++)
+
+            for (int i = 0; i < maxWear; i++)
             {
                 Item item = (Item)GObjectManager.Get(ObjectType.Item, wearInfo[i]);
 
@@ -476,11 +477,11 @@ namespace Game.Network
                 }
             }
 
-            for (int i = 0; i < Globals.WearInfoMax; i++)
+            for (int i = 0; i < maxWear; i++)
                 stream.WriteInt32(enhance[i]);
-            for (int i = 0; i < Globals.WearInfoMax; i++)
+            for (int i = 0; i < maxWear; i++)
                 stream.WriteInt32(level[i]);
-            for (int i = 0; i < Globals.WearInfoMax; i++)
+            for (int i = 0; i < maxWear; i++)
                 stream.WriteByte(type[i]);
 
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
@@ -593,6 +594,7 @@ namespace Game.Network
 
         public void QuestList(Player player)
         {
+            // TODO  : Quest List
             PacketStream stream = new PacketStream(0x0258);
 
             stream.WriteUInt16(0); // count_active

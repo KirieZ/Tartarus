@@ -159,7 +159,7 @@ namespace Game.Content
             this.BonusAttributes = new PlayerAttribute();
 
             this.Inventory = new List<uint>();
-            this.WearInfo = new uint[Globals.WearInfoMax];
+            this.WearInfo = new uint[(int)Wear.Max];
 		}
 
 		#region Lobby
