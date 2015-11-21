@@ -116,6 +116,29 @@ namespace Common
             }
         }
         
+        public bool TestConnection()
+        {
+            bool result = true;
+
+            DbConnection _dbCon = dbFactory.CreateConnection();
+            try
+            {
+                _dbCon.ConnectionString = dbConString;
+                _dbCon.Open();
+            }
+            catch (Exception)
+            {
+                ConsoleUtils.ShowError("Failed to connect to {0} database. Check your settings.", targetDb.ToString());
+                result = false;
+            }
+            finally
+            {
+                _dbCon.Close();
+            }
+
+            return result;
+        }
+
         public DbCommand CreateCommand(int idx)
         {
             DbConnection _dbCon = dbFactory.CreateConnection();

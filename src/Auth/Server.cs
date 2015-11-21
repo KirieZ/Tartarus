@@ -70,13 +70,20 @@ namespace Auth
         public override void Start()
 		{
             #region Internal StartUp
-            // TODO : DB Test
             DBManager.SetConnectionData(
                 Settings.SqlEngine,
                 "Server=" + Settings.SqlIp + ";Database=" + Settings.SqlDatabase + ";UID=" + Settings.SqlUsername + ";PWD=" + Settings.SqlPassword + ";Connection Timeout=5;",
                 "",
                 ""
             );
+
+            using (DBManager dbManager = new DBManager(Databases.Auth))
+            {
+                if (dbManager.TestConnection())
+                    ConsoleUtils.ShowInfo("Auth database connection test passed");
+                else
+                    return;
+            }
 
             Database.Statements.Init();
 			this.GameServers = new Dictionary<ushort, GameServer>();

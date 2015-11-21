@@ -105,6 +105,21 @@ namespace Game
                 "Server = " + Settings.SqlUserIp + "; Database = " + Settings.SqlUserDatabase + "; UID = " + Settings.SqlUserUsername + "; PWD = " + Settings.SqlUserPassword + "; Connection Timeout = 5;"
             );
 
+            using (DBManager dbManager = new DBManager(Databases.Game))
+            {
+                if (dbManager.TestConnection())
+                    ConsoleUtils.ShowInfo("Game database connection test passed");
+                else
+                    return;
+            }
+
+            using (DBManager dbManager = new DBManager(Databases.User))
+            {
+                if (dbManager.TestConnection())
+                    ConsoleUtils.ShowInfo("User database connection test passed");
+                else
+                    return;
+            }
             #region Content Load
 
             Statements.Init();
