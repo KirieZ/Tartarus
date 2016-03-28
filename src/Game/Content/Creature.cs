@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Game.Content
 {
-	public abstract class CreatureInfo : GameObject
+	public abstract class Creature : GameObject
 	{
 		public uint Status { get; set; }
 		public float FaceDirection { get; set; }
@@ -19,7 +19,7 @@ namespace Game.Content
 		public byte Race { get; set; }
 		public uint SkinColor { get; set; }
 
-		public CreatureInfo(ObjectType objType)
+		public Creature (ObjectType objType)
 			: base(objType)
 		{
 		}
