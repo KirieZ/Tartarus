@@ -109,6 +109,9 @@
     <Compile Include="..\src\Game\Content\Creature.cs">
       <Link>Content\Creature.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\FieldProp.cs">
+      <Link>Content\FieldProp.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Content\GameObject.cs">
       <Link>Content\GameObject.cs</Link>
     </Compile>
@@ -118,11 +121,26 @@
     <Compile Include="..\src\Game\Content\Item.cs">
       <Link>Content\Item.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\Monster.cs">
+      <Link>Content\Monster.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Content\Npc.cs">
+      <Link>Content\Npc.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Content\Pet.cs">
+      <Link>Content\Pet.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Content\Player.cs">
       <Link>Content\Player.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\SkillProp.cs">
+      <Link>Content\SkillProp.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Content\Stats.cs">
       <Link>Content\Stats.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Content\Summon.cs">
+      <Link>Content\Summon.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Database\Statements.cs">
       <Link>Database\Statements.cs</Link>
