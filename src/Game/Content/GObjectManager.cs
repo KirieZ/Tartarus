@@ -1,5 +1,6 @@
 // Copyright (c) Tartarus Dev Team, licensed under GNU GPL.
 // See the LICENSE file
+using Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,52 @@ using System.Threading.Tasks;
 
 namespace Game.Content
 {
-	public static class GObjectManager
+	public sealed class GObjectManager
 	{
-        private static uint ItemHandleCount = 0x00000001; // TODO : Define the right start
-        private static uint PlayerHandleCount = 0x80000600;
+        // TODO : Define the right start of these handles
+        private uint ItemHandleCount = 0x00000001;
+        private uint MonsterHandleCount = 0x10000600;
+        private uint NpcHandleCount = 0x20000600;
+        private uint PetHandleCount = 0x30000600;
+        private uint SkillPropHandleCount = 0x40000600;
+        private uint SummonHandleCount = 0x50000600;
+        private uint FieldPropHandleCount = 0x60000600;
+        private uint PlayerHandleCount = 0x80000600;
 
-        private static List<uint> ItemHandlePool = new List<uint>();
-        private static List<uint> PlayerHandlePool = new List<uint>();
+        private List<uint> ItemHandlePool = new List<uint>();
+        private List<uint> MonsterHandlePool = new List<uint>();
+        private List<uint> NpcHandlePool = new List<uint>();
+        private List<uint> PetHandlePool = new List<uint>();
+        private List<uint> SkillPropHandlePool = new List<uint>();
+        private List<uint> SummonHandlePool = new List<uint>();
+        private List<uint> FieldPropHandlePool = new List<uint>();
+        private List<uint> PlayerHandlePool = new List<uint>();
 
-        private static Dictionary<uint, Item> Items { get; set; }
-        private static Dictionary<uint, Player> Players { get; set; }
+        private Dictionary<uint, Item> Items { get; set; }
+        private Dictionary<uint, Monster> Monsters { get; set; }
+        private Dictionary<uint, Npc> Npcs { get; set; }
+        private Dictionary<uint, Pet> Pets { get; set; }
+        private Dictionary<uint, SkillProp> SkillProps { get; set; }
+        private Dictionary<uint, Summon> Summons { get; set; }
+        private Dictionary<uint, FieldProp> FieldProps { get; set; }
+        private Dictionary<uint, Player> Players { get; set; }
 
-        public static void Init()
+        private static readonly GObjectManager _Instance = new GObjectManager();
+
+        public static GObjectManager Instance
+        {
+            get { return _Instance; }
+        }
+
+        private GObjectManager()
         {
             Items = new Dictionary<uint, Item>();
+            Monsters = new Dictionary<uint, Monster>();
+            Npcs = new Dictionary<uint, Npc>();
+            Pets = new Dictionary<uint, Pet>();
+            SkillProps = new Dictionary<uint, SkillProp>();
+            Summons = new Dictionary<uint, Summon>();
+            FieldProps = new Dictionary<uint, FieldProp>();
             Players = new Dictionary<uint, Player>();
         }
 
@@ -30,7 +63,7 @@ namespace Game.Content
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool Create(GameObject gameObject)
+        public bool Create(GameObject gameObject)
         {
             uint handle = 0;
             switch (gameObject.ObjType)
@@ -51,6 +84,19 @@ namespace Game.Content
                     }
                     break;
                 case ObjectType.Npc:
+                    lock(NpcHandlePool)
+                    {
+                        if (NpcHandlePool.Count > 0)
+                        {
+                            handle = NpcHandlePool[0];
+                            NpcHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = NpcHandleCount++;
+                        }
+                        Npcs.Add(handle, (Npc)gameObject);
+                    }
                     break;
                 case ObjectType.Item:
                     lock(ItemHandlePool)
@@ -68,16 +114,82 @@ namespace Game.Content
                     }
                     break;
                 case ObjectType.Mob:
+                    lock (MonsterHandlePool)
+                    {
+                        if (MonsterHandlePool.Count > 0)
+                        {
+                            handle = MonsterHandlePool[0];
+                            MonsterHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = MonsterHandleCount++;
+                        }
+                        Monsters.Add(handle, (Monster)gameObject);
+                    }
                     break;
                 case ObjectType.Summon:
+                    lock (SummonHandlePool)
+                    {
+                        if (SummonHandlePool.Count > 0)
+                        {
+                            handle = SummonHandlePool[0];
+                            SummonHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = SummonHandleCount++;
+                        }
+                        Summons.Add(handle, (Summon)gameObject);
+                    }
                     break;
                 case ObjectType.SkillProp:
+                    lock (SkillPropHandlePool)
+                    {
+                        if (SkillPropHandlePool.Count > 0)
+                        {
+                            handle = SkillPropHandlePool[0];
+                            SkillPropHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = SkillPropHandleCount++;
+                        }
+                        SkillProps.Add(handle, (SkillProp)gameObject);
+                    }
                     break;
                 case ObjectType.FieldProp:
+                    lock (FieldPropHandlePool)
+                    {
+                        if (FieldPropHandlePool.Count > 0)
+                        {
+                            handle = FieldPropHandlePool[0];
+                            FieldPropHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = FieldPropHandleCount++;
+                        }
+                        FieldProps.Add(handle, (FieldProp)gameObject);
+                    }
                     break;
                 case ObjectType.Pet:
+                    lock (PetHandlePool)
+                    {
+                        if (PetHandlePool.Count > 0)
+                        {
+                            handle = PetHandlePool[0];
+                            PetHandlePool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            handle = PetHandleCount++;
+                        }
+                        Pets.Add(handle, (Pet)gameObject);
+                    }
                     break;
                 default:
+                    ConsoleUtils.ShowError("Trying to create invalid GameObject '{0}'.", gameObject.ObjType);
                     break;
             }
 
@@ -92,7 +204,7 @@ namespace Game.Content
         /// <param name="type"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static GameObject Get(ObjectType type, uint handle)
+        public GameObject Get(ObjectType type, uint handle)
         {
             if (handle == 0) return null;
 
@@ -106,7 +218,12 @@ namespace Game.Content
                         return null;
                     }
                 case ObjectType.Npc:
-                    break;
+                    {
+                        Npc result;
+                        if (Npcs.TryGetValue(handle, out result))
+                            return result;
+                        return null;
+                    }
                 case ObjectType.Item:
                     {
                         Item result;
@@ -115,16 +232,42 @@ namespace Game.Content
                         return null;
                     }
                 case ObjectType.Mob:
-                    break;
+                    {
+                        Monster monster;
+                        if (Monsters.TryGetValue(handle, out monster))
+                            return monster;
+                        return null;
+                    }
                 case ObjectType.Summon:
-                    break;
+                    {
+                        Summon summon;
+                        if (Summons.TryGetValue(handle, out summon))
+                            return summon;
+                        return null;
+                    }
                 case ObjectType.SkillProp:
-                    break;
+                    {
+                        SkillProp skillProp;
+                        if (SkillProps.TryGetValue(handle, out skillProp))
+                            return skillProp;
+                        return null;
+                    }
                 case ObjectType.FieldProp:
-                    break;
+                    {
+                        FieldProp fieldProp;
+                        if (FieldProps.TryGetValue(handle, out fieldProp))
+                            return fieldProp;
+                        return null;
+                    }
                 case ObjectType.Pet:
-                    break;
+                    {
+                        Pet pet;
+                        if (Pets.TryGetValue(handle, out pet))
+                            return pet;
+                        return null;
+                    }
                 default:
+                    ConsoleUtils.ShowFatalError("Trying to Get invalid GameObject type ({0})", type);
                     break;
             }
 
