@@ -450,7 +450,7 @@ namespace Game.Network
 
             for (int i = 0; i < maxWear; i++)
             {
-                Item item = (Item)GObjectManager.Get(ObjectType.Item, wearInfo[i]);
+                Item item = (Item)GObjectManager.Instance.Get(ObjectType.Item, wearInfo[i]);
 
                 if (item != null)
                 {
@@ -494,7 +494,7 @@ namespace Game.Network
             stream.WriteUInt16((ushort)inventory.Count);
             for (int i = 0; i < inventory.Count; i++)
             {
-                Item item = (Item) GObjectManager.Get(ObjectType.Item, inventory[i]);
+                Item item = (Item) GObjectManager.Instance.Get(ObjectType.Item, inventory[i]);
 
                 // TS_ITEM_BASE_INFO
                 stream.WriteUInt32(item.Handle);

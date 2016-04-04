@@ -123,7 +123,6 @@ namespace Game
             #region Content Load
 
             Statements.Init();
-            GObjectManager.Init();
             Arcadia.Init(sqlConType, sqlConString);
 
             // Pre-process the url list so it doesn't have to be generated everytime.

@@ -96,7 +96,7 @@ namespace Game.Players
 
         internal static void Unequip(Player player, int position, bool sendUpdate)
         {
-            Item item = (Item)GObjectManager.Get(ObjectType.Item, player.WearInfo[position]);
+            Item item = (Item)GObjectManager.Instance.Get(ObjectType.Item, player.WearInfo[position]);
 
             player.Attributes.Remove(item);
             item.WearInfo = Wear.None;

@@ -133,6 +133,9 @@
     <Compile Include="..\src\Game\Content\Player.cs">
       <Link>Content\Player.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Content\Region.cs">
+      <Link>Content\Region.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Content\SkillProp.cs">
       <Link>Content\SkillProp.cs</Link>
     </Compile>

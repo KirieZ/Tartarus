@@ -41,7 +41,7 @@ namespace Game.Content
 		{
 			this.ObjType = objType;
 
-            if (!GObjectManager.Create(this))
+            if (!GObjectManager.Instance.Create(this))
             {
                 ConsoleUtils.ShowError("Failed to get a handle to game object. Type: {0}", objType);
             }
