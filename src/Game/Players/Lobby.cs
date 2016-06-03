@@ -10,6 +10,7 @@ using Common;
 using System.Data.Common;
 using Game.Players.Structures;
 using Game.Network;
+using Game.Content.Structures;
 
 namespace Game.Players
 {
@@ -328,10 +329,8 @@ namespace Game.Players
                                 player.PartyId = (int)reader[off++]; // 4
                                 player.GuildId = (int)reader[off++]; // 5
                                 off++; // PrevGuildId // 6
-                                player.Position.X = (int)reader[off++]; // 7
-                                player.Position.Y = (int)reader[off++]; // 8
-                                player.Position.Z = (int)reader[off++]; // 9
-                                player.Position.Layer = (byte)reader[off++]; // 10
+                                // 7~10
+                                player.Position = new Position((int)reader[off++], (int)reader[off++], (int)reader[off++], (byte)reader[off++]);
                                 player.Race = (byte)reader[off++]; // 11
                                 player.Sex = (int)reader[off++]; // 12
                                 player.Level = (int)reader[off++]; // 13

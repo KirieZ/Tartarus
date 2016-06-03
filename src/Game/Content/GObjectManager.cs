@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Game.Content
 {
@@ -39,6 +40,8 @@ namespace Game.Content
         private Dictionary<uint, FieldProp> FieldProps { get; set; }
         private Dictionary<uint, Player> Players { get; set; }
 
+        private List<GameObject> ObjectsToUpdate = new List<GameObject>();
+
         private static readonly GObjectManager _Instance = new GObjectManager();
 
         public static GObjectManager Instance
@@ -56,6 +59,20 @@ namespace Game.Content
             Summons = new Dictionary<uint, Summon>();
             FieldProps = new Dictionary<uint, FieldProp>();
             Players = new Dictionary<uint, Player>();
+
+            Timer updateTimer = new Timer(100);
+            updateTimer.AutoReset = true;
+            updateTimer.Elapsed += UpdateObjects;
+        }
+        
+        /// <summary>
+        /// Adds an object to ObjectsToUpdate list
+        /// </summary>
+        /// <param name="gobject">the object to be added</param>
+        public void AddToUpdateList(GameObject gobject)
+        {
+            if (!ObjectsToUpdate.Contains(gobject))
+                this.ObjectsToUpdate.Add(gobject);  
         }
 
         /// <summary>
@@ -272,6 +289,19 @@ namespace Game.Content
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Updates objects in ObjectsToUpdate List
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateObjects(object sender, ElapsedEventArgs e)
+        {
+            for (int i = 0; i < this.ObjectsToUpdate.Count; ++i)
+            {
+                this.ObjectsToUpdate[i].Update();
+            }
         }
     }
 }

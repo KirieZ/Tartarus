@@ -36,6 +36,7 @@ namespace Game.Content
 		public float Z { get; set; }
 		public byte Layer { get; set; }
 		public ObjectType ObjType { get; set; }
+        public uint LastUpdate { get; set; }
 
 		public GameObject(ObjectType objType)
 		{
@@ -46,5 +47,13 @@ namespace Game.Content
                 ConsoleUtils.ShowError("Failed to get a handle to game object. Type: {0}", objType);
             }
 		}
+
+        /// <summary>
+        /// Called whenever this GameObject have to be updated.
+        /// </summary>
+        internal virtual void Update()
+        {
+            this.LastUpdate = Globals.GetTime();
+        }
 	}
 }

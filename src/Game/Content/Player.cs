@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using Game.Network;
 using Game.Players;
 using Game.Players.Structures;
+using Game.Network.Packets.CS;
+using Game.Content.Structures;
 
 namespace Game.Content
 {
@@ -44,8 +46,6 @@ namespace Game.Content
 		public int PartyId { get; set; }
 
 		public int GuildId { get; set; }
-
-		public Position Position { get; set; }
 
 		public int Sex { get; set; }
 
@@ -146,8 +146,7 @@ namespace Game.Content
 
             this.MaxStamina = Globals.StartStamina;
             this.StaminaRegen = Globals.StartStaminaRec;
-
-			this.Position = new Position();
+            
 			this.PrevJobs = new PreviousJobData[3] { new PreviousJobData(), new PreviousJobData(), new PreviousJobData() };
 			this.Huntaholic = new HuntaholicData();
 			this.Belt = new BeltSlotData[6] { new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData(), new BeltSlotData() };
@@ -160,6 +159,10 @@ namespace Game.Content
 
             this.Inventory = new List<uint>();
             this.WearInfo = new uint[(int)Wear.Max];
+
+            this.PositionsToMove = new List<Position>();
+
+            this.MoveSpeed = 11;
 		}
 
 		#region Lobby
@@ -237,6 +240,37 @@ namespace Game.Content
         {
             Players.Inventory.Unequip(this, position, sendUpdate);
         }
+        #endregion
+
+        #region Movement
+        internal void MoveRequest(MoveRequest moveRequest)
+        {
+            if (moveRequest.Handle != this.Handle)
+            { // If player is trying to move an entity owned by him and not himself
+
+            }
+            else
+            {
+                this.Move();
+                this.PositionsToMove.Clear();
+
+                for (int i = 0; i < moveRequest.Count; ++i)
+                {
+                    Position newPosition = new Position(moveRequest.Points[i].ToX, moveRequest.Points[i].ToY, this.Position.Z, this.Position.Layer);
+                    this.PositionsToMove.Add(newPosition);
+                }
+
+            }
+            ClientPackets.Instance.Move(this);
+        }
+
+        internal override void Update()
+        {
+            base.Update();
+            this.Move();
+            Console.WriteLine("UPDATE");
+        }
+
         #endregion
     }
 }

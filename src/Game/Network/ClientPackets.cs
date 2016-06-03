@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Common;
 using Game.Content;
 using Game.Players.Structures;
+using Game.Network.Packets;
 
 namespace Game.Network
 {
@@ -29,6 +30,7 @@ namespace Game.Network
 
             #region Packets
             PacketsDb.Add(0x0001, CS_Login);
+            PacketsDb.Add(0x0005, CS_MoveRequest);
             PacketsDb.Add(0x0017, CS_ReturnLobby);
             PacketsDb.Add(0x0019, CS_RequestReturnLobby);
             PacketsDb.Add(0x001A, CS_RequestLogout);
@@ -242,7 +244,35 @@ namespace Game.Network
             Result(client, 0x0017, 0);
         }
         #endregion
-        
+
+        #region Movement
+
+        private void CS_MoveRequest(Player client, PacketStream stream)
+        {
+            Packets.CS.MoveRequest moveRequest = new Packets.CS.MoveRequest();
+            List<Packets.CS.MoveRequest.MoveInfo> movePoints = new List<Packets.CS.MoveRequest.MoveInfo>();
+
+            moveRequest.Handle = stream.ReadUInt32();
+            moveRequest.X = stream.ReadSingle();
+            moveRequest.Y = stream.ReadSingle();
+            moveRequest.CurrentTime = stream.ReadUInt32();
+            moveRequest.SpeedSync = stream.ReadBool();
+            moveRequest.Count = stream.ReadUInt16();
+            for (int i = 0; i < moveRequest.Count; ++i)
+            {
+                Packets.CS.MoveRequest.MoveInfo moveInfo = new Packets.CS.MoveRequest.MoveInfo();
+                moveInfo.ToX = stream.ReadSingle();
+                moveInfo.ToY = stream.ReadSingle();
+                movePoints.Add(moveInfo);
+            }
+
+            moveRequest.Points = movePoints.ToArray();
+            client.MoveRequest(moveRequest);
+        }
+
+        #endregion
+
+
         #endregion
 
         #region Server Packets
@@ -682,7 +712,25 @@ int nStartID;
 
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
         }
-    
+
+
+        internal void Move(Player player)
+        {
+            PacketStream stream = new PacketStream(0x0008);
+
+            stream.WriteUInt32(Globals.GetTime());
+            stream.WriteUInt32(player.Handle);
+            stream.WriteByte(player.Position.Layer);
+            stream.WriteByte(11); // speed
+            stream.WriteUInt16((ushort)player.PositionsToMove.Count);
+            for (int i = 0; i < player.PositionsToMove.Count; ++i)
+            {
+                stream.WriteSingle(player.PositionsToMove[i].X);
+                stream.WriteSingle(player.PositionsToMove[i].Y);
+            }
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
         #endregion
 
         // Login Result placeholder

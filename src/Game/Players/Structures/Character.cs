@@ -44,15 +44,4 @@ namespace Game.Players.Structures
 		public int Points { get; set; }
 		public int EnterCount { get; set; }
 	}
-
-	/// <summary>
-	/// Holds position
-	/// </summary>
-	public class Position
-	{
-		public float X { get; set; }
-		public float Y { get; set; }
-		public float Z { get; set; }
-		public byte Layer { get; set; }
-	}
 }

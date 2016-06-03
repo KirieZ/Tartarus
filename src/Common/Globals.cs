@@ -66,6 +66,14 @@ namespace Common
 		public static int[] NullIntArray = new int[0];
 		public static byte[] NullByteArray = new byte[0];
 
+        /// <summary>
+        /// Returns time since server started (used for TimeSync)
+        /// </summary>
+        /// <returns>Time since server started in milisseconds/10</returns>
+        public static uint GetTime()
+        {
+            return ((uint)Environment.TickCount) / 10;
+        }
         
     }
 }
