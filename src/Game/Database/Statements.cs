@@ -45,7 +45,7 @@ namespace Game.Database
             // Lobby
             User.Add(0, "SELECT * FROM Characters WHERE account_id = @accId AND delete_date > @now ORDER BY char_id ASC LIMIT "+Globals.MaxCharacters);
             User.Add(1, "SELECT char_id FROM Characters WHERE name = @name AND delete_date > @now");
-            if (Settings.SqlEngine == 1) // MySQL
+            if (Settings.SqlEngine == SqlEngine.MySql) // MySQL
                 User.Add(2, "INSERT INTO Characters (account_id, name, race, sex, job, level, x, y, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color) VALUES (@accId, @name, @race, @sex, @job, @level, @x, @y, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor); SELECT last_insert_id()");
             else // SqlSrv
                 User.Add(2, "INSERT INTO Characters (account_id, name, race, sex, job, level, x, y, texture_id, hair_id, face_id, body_id, hands_id, feet_id, skin_color) VALUES (@accId, @name, @race, @sex, @job, @level, @x, @y, @textureId, @hairId, @faceId, @bodyId, @handsId, @feetId, @skinColor)");

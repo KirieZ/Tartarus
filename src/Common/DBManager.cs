@@ -13,6 +13,11 @@ namespace Common
         User
     }
 
+    public enum SqlEngine
+    {
+        MsSql = 0,
+        MySql = 1
+    }
     /// <summary>
     /// Provides interactibility with MySQL/MSSQL databases
     /// </summary>
@@ -22,17 +27,13 @@ namespace Common
         private static Dictionary<int, string> GameStatements;
         private static Dictionary<int, string> UserStatements;
 
-        private static int ConType;
+        /// <summary>Indentifies the current connection type</summary>
+        private static SqlEngine ConType;
 
         private static string AuthConString;
         private static string GameConString;
         private static string UserConString;
-
-        /// <summary>
-        /// Indentifies the current connection type
-        /// 0 = MSSQL
-        /// 1 = MySQL
-        /// </summary>
+        
         readonly string dbConString;
         readonly Databases targetDb;
         internal DbProviderFactory dbFactory;
@@ -48,7 +49,7 @@ namespace Common
             UserStatements = user;
         }
 
-        internal static void SetConnectionData(int engine, string authCon, string gameCon, string userCon)
+        internal static void SetConnectionData(SqlEngine engine, string authCon, string gameCon, string userCon)
         {
             ConType = engine;
             AuthConString = authCon;
@@ -60,11 +61,11 @@ namespace Common
         {
             switch (ConType)
             {
-                case 0:
+                case SqlEngine.MsSql:
                     dbFactory = DbProviderFactories.GetFactory("System.Data.SqlClient");
                     break;
 
-                case 1:
+                case SqlEngine.MySql:
                     dbFactory = DbProviderFactories.GetFactory("MySql.Data.MySqlClient");
                     break;
 

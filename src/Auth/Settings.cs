@@ -21,7 +21,7 @@ namespace Auth
 		public static Int16 GameServerPort;
 
 		// Database Settings
-		public static Int32 SqlEngine;
+		public static SqlEngine SqlEngine;
 
 		public static String SqlIp;
 		public static Int16 SqlPort;
@@ -67,7 +67,7 @@ namespace Auth
 			String defaultSqlDb = (String) ParseSetting(ref settings, DType.String, "sql.database", "rappelz");
 
 			// Database Engine
-			SqlEngine = (Int32)ParseSetting(ref settings, DType.Int32, "sql.engine", 1);
+			SqlEngine = (SqlEngine)(Int32)ParseSetting(ref settings, DType.Int32, "sql.engine", 1);
 
 			// Auth Database Settings
 			SqlIp = (String) ParseSetting(ref settings, DType.String, "sql.auth_hostname", defaultSqlHost, true);

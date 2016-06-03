@@ -30,7 +30,7 @@ namespace Game
 		public static Byte Permission;
 
 		// Database Settings
-		public static Int32 SqlEngine;
+		public static SqlEngine SqlEngine;
 
 		public static String SqlGameIp;
 		public static UInt16 SqlGamePort;
@@ -100,7 +100,7 @@ namespace Game
 			String defaultSqlDb = (String)ParseSetting(ref settings, DType.String, "sql.database", "rappelz");
 
 			// Database Engine
-			SqlEngine = (Int32)ParseSetting(ref settings, DType.Int32, "sql.engine", 1);
+			SqlEngine = (SqlEngine)(Int32)ParseSetting(ref settings, DType.Int32, "sql.engine", 1);
 
 			// Game Database Settings
 			SqlGameIp = (String)ParseSetting(ref settings, DType.String, "sql.game_hostname", defaultSqlHost, true);

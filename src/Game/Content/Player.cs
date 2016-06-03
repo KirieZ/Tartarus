@@ -21,9 +21,6 @@ namespace Game.Content
 
 	public class Player : Creature
 	{
-		static int sqlConType = Settings.SqlEngine;
-		static string sqlConString = "Server=" + Settings.SqlUserIp + ";Database=" + Settings.SqlUserDatabase + ";UID=" + Settings.SqlUserUsername + ";PWD=" + Settings.SqlUserPassword + ";Connection Timeout=5;";
-
 		/// <summary>
 		/// Connection data
 		/// </summary>

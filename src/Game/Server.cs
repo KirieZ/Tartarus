@@ -99,7 +99,7 @@ namespace Game
 
             // Sets server connection data
             DBManager.SetConnectionData(
-                Settings.SqlEngine,
+                (SqlEngine)Settings.SqlEngine,
                 "",
                 "Server=" + Settings.SqlGameIp + ";Database=" + Settings.SqlGameDatabase + ";UID=" + Settings.SqlGameUsername + ";PWD=" + Settings.SqlGamePassword + ";Connection Timeout=5;",
                 "Server = " + Settings.SqlUserIp + "; Database = " + Settings.SqlUserDatabase + "; UID = " + Settings.SqlUserUsername + "; PWD = " + Settings.SqlUserPassword + "; Connection Timeout = 5;"

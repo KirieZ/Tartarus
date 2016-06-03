@@ -21,9 +21,6 @@ namespace Game.Players
 	{
         private static object CreateLock = new object();
 
-		static int sqlConType = Settings.SqlEngine;
-		static string sqlConString = "Server=" + Settings.SqlUserIp + ";Database=" + Settings.SqlUserDatabase + ";UID=" + Settings.SqlUserUsername + ";PWD=" + Settings.SqlUserPassword + ";Connection Timeout=5;";
-
 		/// <summary>
 		/// Retrieves the character list
 		/// </summary>
