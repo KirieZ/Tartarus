@@ -160,8 +160,6 @@ namespace Game.Content
             this.Inventory = new List<uint>();
             this.WearInfo = new uint[(int)Wear.Max];
 
-            this.PositionsToMove = new List<Position>();
-
             this.MoveSpeed = 11;
 		}
 
@@ -268,7 +266,7 @@ namespace Game.Content
         {
             base.Update();
             this.Move();
-            Console.WriteLine("UPDATE");
+            Console.WriteLine("UPDATE PLAYER");
         }
 
         #endregion

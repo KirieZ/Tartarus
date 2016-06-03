@@ -63,6 +63,7 @@ namespace Game.Content
             Timer updateTimer = new Timer(100);
             updateTimer.AutoReset = true;
             updateTimer.Elapsed += UpdateObjects;
+            updateTimer.Start();
         }
         
         /// <summary>

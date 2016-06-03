@@ -31,6 +31,8 @@ namespace Game.Content
 		{
             this.Position = new Position();
             this.LastUpdate = Globals.GetTime();
+
+            this.PositionsToMove = new List<Position>();
 		}
 
         public void Move()
