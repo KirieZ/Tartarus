@@ -58,8 +58,7 @@ namespace Auth.Network
 		/// <param name="packetStream"></param>
 		private void PacketReceived(GameClient gameClient, PacketStream packetStream)
 		{
-			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from Client");
-			ClientPackets.Instance.PacketReceived(gameClient, packetStream);
+            ClientPackets.Instance.PacketReceived(gameClient, packetStream);
 		}
 
 		/// <summary>

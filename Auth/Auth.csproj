@@ -75,6 +75,18 @@
     <Compile Include="..\src\Auth\Network\GamePackets.cs">
       <Link>Network\GamePackets.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\CA\ImbcLogin.cs">
+      <Link>Network\Packets\CA\ImbcLogin.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\CA\Login.cs">
+      <Link>Network\Packets\CA\Login.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\CA\SelectServer.cs">
+      <Link>Network\Packets\CA\SelectServer.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\CA\Version.cs">
+      <Link>Network\Packets\CA\Version.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\Program.cs">
       <Link>Auth\Program.cs</Link>
     </Compile>
@@ -117,6 +129,12 @@
     </Compile>
     <Compile Include="..\src\Common\NetworkData.cs">
       <Link>Common\NetworkData.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\PacketHeader.cs">
+      <Link>Common\PacketHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\PacketManager.cs">
+      <Link>Common\PacketManager.cs</Link>
     </Compile>
     <Compile Include="..\src\Common\PacketStream.cs">
       <Link>Common\PacketStream.cs</Link>
@@ -166,6 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Network\Packets\AC\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
