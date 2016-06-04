@@ -68,8 +68,7 @@ namespace Game.Players
 
         internal static void Equip(Player player, Item item, bool sendUpdate)
         {
-            //short position = (short)Arcadia.ItemResource.Find(obj => obj.id == item.Code).wear_type;
-            short position = 0;
+            short position = (short)Arcadia.ItemResource[item.Code].wear_type;
 
             if (player.WearInfo[position] > 0)
             {
@@ -115,8 +114,7 @@ namespace Game.Players
 
         internal static void InsertItem(int charId, int itemCode, bool equip)
         {
-            //DB_Item item = Arcadia.ItemResource.Find(obj => obj.id == itemCode);
-            DB_Item item = new DB_Item();
+            DB_Item item = Arcadia.ItemResource[itemCode];
             using (DBManager dbManager = new DBManager(Databases.User))
             {
                 using (DbCommand dbCmd = dbManager.CreateCommand(21))

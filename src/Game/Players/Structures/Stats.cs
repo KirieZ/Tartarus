@@ -39,7 +39,7 @@ namespace Game.Players.Structures
             }
             else
             {
-                AddStats(player.JobLevel, player.JobLevel, 1);
+                AddStats(player.Job, player.JobLevel, 1);
             }
 
             player.Attributes.Calculate(player.Stats, player.Level);
@@ -110,8 +110,7 @@ namespace Game.Players.Structures
 
         internal void Add(Item item)
         {
-            // TODO : DB_Item dbItem = Arcadia.ItemResource.Find(obj => obj.id == item.Code);
-			DB_Item dbItem = new DB_Item();
+            DB_Item dbItem = Arcadia.ItemResource[item.Code];
 
             this.ChangeAttribute(dbItem.base_type_0, (short)(dbItem.base_var1_0 + item.Level * dbItem.base_var2_0));
             this.ChangeAttribute(dbItem.base_type_1, (short)(dbItem.base_var1_1 + item.Level * dbItem.base_var2_1));
@@ -125,8 +124,7 @@ namespace Game.Players.Structures
 
         internal void Remove(Item item)
         {
-            //DB_Item dbItem = Arcadia.ItemResource.Find(obj => obj.id == item.Code);
-			DB_Item dbItem = new DB_Item();
+            DB_Item dbItem = Arcadia.ItemResource[item.Code];
 
             this.ChangeAttribute(dbItem.base_type_0, (short)(-1*(dbItem.base_var1_0 + item.Level * dbItem.base_var2_0)));
             this.ChangeAttribute(dbItem.base_type_1, (short)(-1*(dbItem.base_var1_1 + item.Level * dbItem.base_var2_1)));
