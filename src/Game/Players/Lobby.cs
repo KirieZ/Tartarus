@@ -427,7 +427,7 @@ namespace Game.Players
                 ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
                 ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
 
-                ClientPackets.Instance.InventoryList(player, player.Inventory);
+                ClientPackets.Instance.InventoryList(player, player.InventoryHandles);
                 ClientPackets.Instance.EquipSummon(player, player.Summon, false);
 
                 ClientPackets.Instance.WearInfo(player, player.WearInfo);

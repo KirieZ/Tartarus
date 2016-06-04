@@ -52,7 +52,8 @@ namespace Game.Players
                                 if (item.WearInfo >= 0)
                                     Equip(player, item, false);
 
-                                player.Inventory.Add(item.Handle);
+                                player.Inventory.Add(item.Handle, item);
+                                player.InventoryHandles.Add(item.Handle);
                             }
                         }
                     }
@@ -66,7 +67,7 @@ namespace Game.Players
             }
         }
 
-        internal static void Equip(Player player, Item item, bool sendUpdate)
+        internal static bool Equip(Player player, Item item, bool sendUpdate)
         {
             short position = (short)Arcadia.ItemResource[item.Code].wear_type;
 
@@ -84,18 +85,27 @@ namespace Game.Players
 
             if (sendUpdate)
             {
+                ClientPackets.Instance.ItemWearInfo(player, item.Handle, position, player.Handle, item.Enhance, item.ElementalEffectType);
+
                 ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
                 ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
 
                 ClientPackets.Instance.Property(player, "max_havoc", player.MaxHavoc, true);
                 ClientPackets.Instance.Property(player, "max_chaos", player.MaxChaos, true);
                 ClientPackets.Instance.Property(player, "max_stamina", player.MaxStamina, true);
+
+                ClientPackets.Instance.WearInfo(player, player.WearInfo);
             }
+
+            return true;
         }
 
-        internal static void Unequip(Player player, int position, bool sendUpdate)
+        internal static bool Unequip(Player player, int position, bool sendUpdate)
         {
             Item item = (Item)GObjectManager.Instance.Get(ObjectType.Item, player.WearInfo[position]);
+
+            if (item == null)
+                return false;
 
             player.Attributes.Remove(item);
             item.WearInfo = Wear.None;
@@ -103,13 +113,19 @@ namespace Game.Players
 
             if (sendUpdate)
             {
+                ClientPackets.Instance.ItemWearInfo(player, item.Handle, -1, player.Handle, item.Enhance, item.ElementalEffectType);
+
                 ClientPackets.Instance.StatInfo(player, player.Stats, player.Attributes, false);
                 ClientPackets.Instance.StatInfo(player, player.BonusStats, player.BonusAttributes, true);
 
                 ClientPackets.Instance.Property(player, "max_havoc", player.MaxHavoc, true);
                 ClientPackets.Instance.Property(player, "max_chaos", player.MaxChaos, true);
                 ClientPackets.Instance.Property(player, "max_stamina", player.MaxStamina, true);
+
+                ClientPackets.Instance.WearInfo(player, player.WearInfo);
             }
+
+            return true;
         }
 
         internal static void InsertItem(int charId, int itemCode, bool equip)

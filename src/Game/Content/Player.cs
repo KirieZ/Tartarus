@@ -130,7 +130,8 @@ namespace Game.Content
 		public PlayerAttribute Attributes { get; set; }
 		public PlayerAttribute BonusAttributes { get; set; }
 
-        public List<uint> Inventory { get; set; }
+        public List<uint> InventoryHandles { get; set; }
+        public Dictionary<uint, Item> Inventory { get; set; }
         public uint[] WearInfo { get; set; }
         public int StaminaRegen { get; internal set; }
 
@@ -154,7 +155,8 @@ namespace Game.Content
             this.Attributes = new PlayerAttribute();
             this.BonusAttributes = new PlayerAttribute();
 
-            this.Inventory = new List<uint>();
+            this.InventoryHandles = new List<uint>();
+            this.Inventory = new Dictionary<uint, Item>();
             this.WearInfo = new uint[(int)Wear.Max];
 
             this.MoveSpeed = 11;
@@ -226,14 +228,41 @@ namespace Game.Content
         #endregion
 
         #region Item
-        public void Equip(Item item, bool sendUpdate = true)
+        public bool Equip(Item item, bool sendUpdate = true)
         {
-            Players.Inventory.Equip(this, item, sendUpdate);
+            return Players.Inventory.Equip(this, item, sendUpdate);
         }
 
-        public void Unequip(int position, bool sendUpdate = true)
+        internal bool Equip(uint itemHandle, byte position, uint targetHandle = 0)
         {
-            Players.Inventory.Unequip(this, position, sendUpdate);
+            Item item;
+            if (this.Inventory.TryGetValue(itemHandle, out item))
+            {
+                if (targetHandle == 0)
+                {
+                    return this.Equip(item);
+                }
+                else
+                {
+                    // TODO : Equip item in another creature
+                }
+            }
+
+            return false;
+        }
+
+        public bool Unequip(int position, uint targetHandle, bool sendUpdate = true)
+        {
+            if (targetHandle == 0)
+            {
+                return Players.Inventory.Unequip(this, position, sendUpdate);
+            }
+            else
+            {
+                // TODO : Unequip item from another creature
+            }
+
+            return false;
         }
         #endregion
 
@@ -265,7 +294,6 @@ namespace Game.Content
             this.Move();
             Console.WriteLine("UPDATE PLAYER");
         }
-
         #endregion
     }
 }

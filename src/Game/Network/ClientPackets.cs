@@ -36,6 +36,8 @@ namespace Game.Network
             PacketsDb.Add(0x001A, CS_RequestLogout);
             PacketsDb.Add(0x001B, CS_Logout);
             PacketsDb.Add(0x0032, CS_Version);
+            PacketsDb.Add(0x00C8, CS_PutOnItem);
+            PacketsDb.Add(0x00C9, CS_PutOffItem);
             PacketsDb.Add(0x07D1, CS_CharacterList);
             PacketsDb.Add(0x07D2, CS_CreateCharacter);
             PacketsDb.Add(0x07D3, CS_DeleteCharacter);
@@ -91,6 +93,7 @@ namespace Game.Network
         /// <param name="client"></param>
         /// <param name="stream"></param>
         private void CA_Unknown(Player client, PacketStream stream) { }
+        
         #endregion
 
         #region Lobby
@@ -272,6 +275,42 @@ namespace Game.Network
 
         #endregion
 
+        #region Inventory
+
+        /// <summary>
+        /// User wants to equip an item on self or a target
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_PutOnItem(Player client, PacketStream stream)
+        {
+            byte position = stream.ReadByte();
+            uint itemHandle = stream.ReadUInt32();
+            uint targetHandle = stream.ReadUInt32();
+
+            if (client.Equip(itemHandle, position, targetHandle))
+                this.Result(client, 0x00C8, 0, 0);
+            else
+                this.Result(client, 0x00C8, 3, 0); // TODO : Confirm this error code
+        }
+
+        /// <summary>
+        /// User wants to unequip an item from self or a target
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="stream"></param>
+        private void CS_PutOffItem(Player client, PacketStream stream)
+        {
+            byte position = stream.ReadByte();
+            uint targetHandle = stream.ReadUInt32();
+
+            if (client.Unequip(position, targetHandle))
+                client.Unequip(position, targetHandle);
+            else
+                this.Result(client, 0x00C9, 3, 0); // TODO : Confirm this error code
+        }
+
+        #endregion
 
         #endregion
 
@@ -513,6 +552,27 @@ namespace Game.Network
                 stream.WriteInt32(level[i]);
             for (int i = 0; i < maxWear; i++)
                 stream.WriteByte(type[i]);
+
+            ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
+        }
+
+        /// <summary>
+        /// Informs about changes in what target is wearing
+        /// </summary>
+        /// <param name="itemHandle"></param>
+        /// <param name="position"></param>
+        /// <param name="targetHandle"></param>
+        /// <param name="enhance"></param>
+        /// <param name="elementalEffectType"></param>
+        internal void ItemWearInfo(Player player, uint itemHandle, short position, uint targetHandle, int enhance, short elementalEffectType)
+        {
+            PacketStream stream = new PacketStream(0x011f);
+
+            stream.WriteUInt32(itemHandle);
+            stream.WriteInt16(position);
+            stream.WriteUInt32(targetHandle);
+            stream.WriteInt32(enhance);
+            stream.WriteByte((byte)elementalEffectType);
 
             ClientManager.Instance.Send(player, stream, BroadcastArea.Self);
         }
