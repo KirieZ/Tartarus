@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_SetItemEffect
 	{
-		public int set_id { get; set; }
 		public int set_part_id { get; set; }
 		public int text_id { get; set; }
 		public int tooltip_id { get; set; }

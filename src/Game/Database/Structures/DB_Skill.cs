@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Skill
 	{
-		public int id { get; set; }
 		public int text_id { get; set; }
 		public int desc_id { get; set; }
 		public int tooltip_id { get; set; }

@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Quest
 	{
-		public int id { get; set; }
 		public int text_id_quest { get; set; }
 		public int text_id_summary { get; set; }
 		public int text_id_status { get; set; }

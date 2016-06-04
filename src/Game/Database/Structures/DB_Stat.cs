@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Stat
 	{
-		public int id { get; set; }
 		public int STR { get; set; }
 		public int VIT { get; set; }
 		public int DEX { get; set; }

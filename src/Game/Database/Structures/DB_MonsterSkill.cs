@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_MonsterSkill
 	{
-		public int id { get; set; }
 		public int sub_id { get; set; }
 		public int trigger_1_type { get; set; }
 		public decimal trigger_1_value_1 { get; set; }

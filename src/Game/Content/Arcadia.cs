@@ -24,22 +24,22 @@ namespace Game.Content
         public static Dictionary<int, DB_Level> LevelResource;
         public static Dictionary<String, DB_Market[]> MarketResource;
         public static Dictionary<int, DB_Monster> MonsterResource;
-        public static List<DB_MonsterDropTable> MonsterDropTableResource;
-        public static List<DB_MonsterSkill> MonsterSkillResource;
-        public static List<DB_QuestLink> QuestLinkResource;
-        public static List<DB_Quest> QuestResource;
-        public static List<DB_RandomPool> RandomPoolResource;
-        public static List<DB_SetItemEffect> SetItemEffectResource;
-        public static List<DB_Skill> SkillResource;
-        public static List<DB_SkillJP> SkillJPResource;
-        public static List<DB_SkillTree> SkillTreeResource;
-        public static List<DB_Stat> StatResource;
-        public static List<DB_SummonName> SummonDefaultNameResource;
-        public static List<DB_SummonLevel> SummonLevelResource;
-        public static List<DB_SummonName> SummonUniqueNameResource;
-        public static List<DB_Summon> SummonResource;
-        public static List<DB_State> StateResource;
-        public static List<DB_String> StringResource;
+        public static Dictionary<int, DB_MonsterDropTable[]> MonsterDropTableResource;
+        public static Dictionary<int, DB_MonsterSkill[]> MonsterSkillResource;
+        public static Dictionary<int, DB_QuestLink[]> QuestLinkResource;
+        public static Dictionary<int, DB_Quest> QuestResource;
+        //public static Dictionary<int, DB_RandomPool> RandomPoolResource;
+        public static Dictionary<int, DB_SetItemEffect[]> SetItemEffectResource;
+        public static Dictionary<int, DB_Skill> SkillResource;
+        public static Dictionary<int, DB_SkillJP> SkillJPResource;
+        public static Dictionary<int, DB_SkillTree[]> SkillTreeResource;
+        public static Dictionary<int, DB_Stat> StatResource;
+        public static Dictionary<int, DB_SummonName> SummonDefaultNameResource;
+        public static Dictionary<int, DB_SummonLevel> SummonLevelResource;
+        public static Dictionary<int, DB_SummonName> SummonUniqueNameResource;
+        public static Dictionary<int, DB_Summon> SummonResource;
+        public static Dictionary<int, DB_State> StateResource;
+        public static Dictionary<int, DB_String> StringResource;
 
         #region Load Methods
 
@@ -921,7 +921,7 @@ namespace Game.Content
 
         internal static void LoadMonsterDropTable()
         {
-            MonsterDropTableResource = new List<DB_MonsterDropTable>();
+            MonsterDropTableResource = new Dictionary<int, DB_MonsterDropTable[]>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -933,14 +933,27 @@ namespace Game.Content
 
                         using (DbDataReader dbReader = dbCmd.ExecuteReader())
                         {
+                            bool started = false;
+                            int id = 0;
+                            List<DB_MonsterDropTable> dropTable = new List<DB_MonsterDropTable>();
+
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                if (id != (int)dbReader[off] && started)
+                                {
+                                    if (!MonsterDropTableResource.ContainsKey(id))
+                                        MonsterDropTableResource.Add(id, dropTable.ToArray());
+                                    else
+                                        ConsoleUtils.ShowError("Duplicated Monster Drop Table with ID {0}. Skipping duplicated entry.", id);
+                                }
 
-                                MonsterDropTableResource.Add(
+                                started = true;
+                                id = (int)dbReader[off++];
+
+                                dropTable.Add(
                                     new DB_MonsterDropTable
                                     {
-                                        id = (int)dbReader[off++],
                                         sub_id = (int)dbReader[off++],
                                         drop_item_id_00 = (int)dbReader[off++],
                                         drop_percentage_00 = (decimal)dbReader[off++],
@@ -1004,6 +1017,11 @@ namespace Game.Content
                                         drop_max_level_09 = (short)dbReader[off++],
                                     });
                             }
+
+                            if (!MonsterDropTableResource.ContainsKey(id))
+                                MonsterDropTableResource.Add(id, dropTable.ToArray());
+                            else
+                                ConsoleUtils.ShowError("Duplicated Monster Drop Table with ID {0}. Skipping duplicated entry.", id);
                         }
                     }
                     catch (Exception ex)
@@ -1020,7 +1038,7 @@ namespace Game.Content
 
         internal static void LoadMonsterSkill()
         {
-            MonsterSkillResource = new List<DB_MonsterSkill>();
+            MonsterSkillResource = new Dictionary<int, DB_MonsterSkill[]>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1032,13 +1050,26 @@ namespace Game.Content
 
                         using (DbDataReader dbReader = dbCmd.ExecuteReader())
                         {
+                            int id = 0;
+                            bool started = false;
+                            List<DB_MonsterSkill> skills = new List<DB_MonsterSkill>();
+
                             while (dbReader.Read())
                             {
                                 int off = 0;
-
-                                MonsterSkillResource.Add(new DB_MonsterSkill
+                                if (id != (int)dbReader[off] && started)
                                 {
-                                    id = (int)dbReader[off++],
+                                    if (!MonsterSkillResource.ContainsKey(id))
+                                        MonsterSkillResource.Add(id, skills.ToArray());
+                                    else
+                                        ConsoleUtils.ShowError("Duplicated Monster Skill Table with ID {0}. Skipping duplicated entry.", id);
+                                }
+
+                                started = true;
+                                id = (int)dbReader[off++];
+
+                                skills.Add(new DB_MonsterSkill
+                                {
                                     sub_id = (int)dbReader[off++],
                                     trigger_1_type = (int)dbReader[off++],
                                     trigger_1_value_1 = (decimal)dbReader[off++],
@@ -1084,6 +1115,10 @@ namespace Game.Content
                                     skill6_probability = (decimal)dbReader[off++],
                                 });
                             }
+                            if (!MonsterSkillResource.ContainsKey(id))
+                                MonsterSkillResource.Add(id, skills.ToArray());
+                            else
+                                ConsoleUtils.ShowError("Duplicated Monster Skill Table with ID {0}. Skipping duplicated entry.", id);
                         }
                     }
                     catch (Exception ex)
@@ -1100,7 +1135,7 @@ namespace Game.Content
 
         internal static void LoadQuestLink()
         {
-            QuestLinkResource = new List<DB_QuestLink>();
+            QuestLinkResource = new Dictionary<int, DB_QuestLink[]>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1112,14 +1147,27 @@ namespace Game.Content
 
                         using (DbDataReader dbReader = dbCmd.ExecuteReader())
                         {
+                            int id = 0;
+                            bool started = false;
+                            List<DB_QuestLink> link = new List<DB_QuestLink>();
+
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                if (id != (int)dbReader[off] && started)
+                                {
+                                    if (!QuestLinkResource.ContainsKey(id))
+                                        QuestLinkResource.Add(id, link.ToArray());
+                                    else
+                                        ConsoleUtils.ShowError("Duplicated Quest Link with NPC ID {0}. Skipping duplicated entry.", id);
+                                }
 
-                                QuestLinkResource.Add(
+                                started = true;
+                                id = (int)dbReader[off++];
+
+                                link.Add(
                                     new DB_QuestLink
                                     {
-                                        npc_id = (int)dbReader[off++],
                                         quest_id = (int)dbReader[off++],
                                         flag_start = Convert.ToChar(dbReader[off++]),
                                         flag_progress = Convert.ToChar(dbReader[off++]),
@@ -1129,6 +1177,11 @@ namespace Game.Content
                                         text_id_end = (int)dbReader[off++]
                                     });
                             }
+
+                            if (!QuestLinkResource.ContainsKey(id))
+                                QuestLinkResource.Add(id, link.ToArray());
+                            else
+                                ConsoleUtils.ShowError("Duplicated Quest Link with NPC ID {0}. Skipping duplicated entry.", id);
                         }
                     }
                     catch (Exception ex)
@@ -1145,7 +1198,7 @@ namespace Game.Content
 
         internal static void LoadQuest()
         {
-            QuestResource = new List<DB_Quest>();
+            QuestResource = new Dictionary<int, DB_Quest>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1161,85 +1214,90 @@ namespace Game.Content
                             {
                                 int off = 0;
 
-                                QuestResource.Add(
-                                    new DB_Quest
-                                    {
-                                        id = (int)dbReader[off++],
-                                        text_id_quest = (int)dbReader[off++],
-                                        text_id_summary = (int)dbReader[off++],
-                                        text_id_status = (int)dbReader[off++],
-                                        limit_begin_time = (int)dbReader[off++],
-                                        limit_end_time = (int)dbReader[off++],
-                                        limit_level = (int)dbReader[off++],
-                                        limit_job_level = (int)dbReader[off++],
-                                        limit_max_level = (int)dbReader[off++],
-                                        limit_max_job_level = (int)dbReader[off++],
-                                        limit_deva = Convert.ToChar(dbReader[off++]),
-                                        limit_asura = Convert.ToChar(dbReader[off++]),
-                                        limit_gaia = Convert.ToChar(dbReader[off++]),
-                                        limit_fighter = Convert.ToChar(dbReader[off++]),
-                                        limit_hunter = Convert.ToChar(dbReader[off++]),
-                                        limit_magician = Convert.ToChar(dbReader[off++]),
-                                        limit_summoner = Convert.ToChar(dbReader[off++]),
-                                        limit_job = (int)dbReader[off++],
-                                        limit_favor_group_id = (int)dbReader[off++],
-                                        limit_favor = (int)dbReader[off++],
-                                        repeatable = Convert.ToChar(dbReader[off++]),
-                                        invoke_condition = (int)dbReader[off++],
-                                        invoke_value = (int)dbReader[off++],
-                                        time_limit_type = Convert.ToChar(dbReader[off++]),
-                                        time_limit = (int)dbReader[off++],
-                                        type = (int)dbReader[off++],
-                                        value1 = (int)dbReader[off++],
-                                        value2 = (int)dbReader[off++],
-                                        value3 = (int)dbReader[off++],
-                                        value4 = (int)dbReader[off++],
-                                        value5 = (int)dbReader[off++],
-                                        value6 = (int)dbReader[off++],
-                                        value7 = (int)dbReader[off++],
-                                        value8 = (int)dbReader[off++],
-                                        value9 = (int)dbReader[off++],
-                                        value10 = (int)dbReader[off++],
-                                        value11 = (int)dbReader[off++],
-                                        value12 = (int)dbReader[off++],
-                                        drop_group_id = (int)dbReader[off++],
-                                        quest_difficulty = (int)dbReader[off++],
-                                        favor_group_id = (int)dbReader[off++],
-                                        hate_group_id = (int)dbReader[off++],
-                                        favor = (int)dbReader[off++],
-                                        exp = (long)dbReader[off++],
-                                        jp = (int)dbReader[off++],
-                                        holicpoint = (int)dbReader[off++],
-                                        gold = (int)dbReader[off++],
-                                        default_reward_id = (int)dbReader[off++],
-                                        default_reward_level = (int)dbReader[off++],
-                                        default_reward_quantity = (int)dbReader[off++],
-                                        optional_reward_id1 = (int)dbReader[off++],
-                                        optional_reward_level1 = (int)dbReader[off++],
-                                        optional_reward_quantity1 = (int)dbReader[off++],
-                                        optional_reward_id2 = (int)dbReader[off++],
-                                        optional_reward_level2 = (int)dbReader[off++],
-                                        optional_reward_quantity2 = (int)dbReader[off++],
-                                        optional_reward_id3 = (int)dbReader[off++],
-                                        optional_reward_level3 = (int)dbReader[off++],
-                                        optional_reward_quantity3 = (int)dbReader[off++],
-                                        optional_reward_id4 = (int)dbReader[off++],
-                                        optional_reward_level4 = (int)dbReader[off++],
-                                        optional_reward_quantity4 = (int)dbReader[off++],
-                                        optional_reward_id5 = (int)dbReader[off++],
-                                        optional_reward_level5 = (int)dbReader[off++],
-                                        optional_reward_quantity5 = (int)dbReader[off++],
-                                        optional_reward_id6 = (int)dbReader[off++],
-                                        optional_reward_level6 = (int)dbReader[off++],
-                                        optional_reward_quantity6 = (int)dbReader[off++],
-                                        forequest1 = (int)dbReader[off++],
-                                        forequest2 = (int)dbReader[off++],
-                                        forequest3 = (int)dbReader[off++],
-                                        or_flag = Convert.ToChar(dbReader[off++]),
-                                        script_start_text = (string)dbReader[off++],
-                                        script_end_text = (string)dbReader[off++],
-                                        script_text = (string)dbReader[off++]
-                                    });
+                                int id = (int)dbReader[off++];
+
+                                if (!QuestResource.ContainsKey(id))
+                                    QuestResource.Add(
+                                        id,
+                                        new DB_Quest
+                                        {
+                                            text_id_quest = (int)dbReader[off++],
+                                            text_id_summary = (int)dbReader[off++],
+                                            text_id_status = (int)dbReader[off++],
+                                            limit_begin_time = (int)dbReader[off++],
+                                            limit_end_time = (int)dbReader[off++],
+                                            limit_level = (int)dbReader[off++],
+                                            limit_job_level = (int)dbReader[off++],
+                                            limit_max_level = (int)dbReader[off++],
+                                            limit_max_job_level = (int)dbReader[off++],
+                                            limit_deva = Convert.ToChar(dbReader[off++]),
+                                            limit_asura = Convert.ToChar(dbReader[off++]),
+                                            limit_gaia = Convert.ToChar(dbReader[off++]),
+                                            limit_fighter = Convert.ToChar(dbReader[off++]),
+                                            limit_hunter = Convert.ToChar(dbReader[off++]),
+                                            limit_magician = Convert.ToChar(dbReader[off++]),
+                                            limit_summoner = Convert.ToChar(dbReader[off++]),
+                                            limit_job = (int)dbReader[off++],
+                                            limit_favor_group_id = (int)dbReader[off++],
+                                            limit_favor = (int)dbReader[off++],
+                                            repeatable = Convert.ToChar(dbReader[off++]),
+                                            invoke_condition = (int)dbReader[off++],
+                                            invoke_value = (int)dbReader[off++],
+                                            time_limit_type = Convert.ToChar(dbReader[off++]),
+                                            time_limit = (int)dbReader[off++],
+                                            type = (int)dbReader[off++],
+                                            value1 = (int)dbReader[off++],
+                                            value2 = (int)dbReader[off++],
+                                            value3 = (int)dbReader[off++],
+                                            value4 = (int)dbReader[off++],
+                                            value5 = (int)dbReader[off++],
+                                            value6 = (int)dbReader[off++],
+                                            value7 = (int)dbReader[off++],
+                                            value8 = (int)dbReader[off++],
+                                            value9 = (int)dbReader[off++],
+                                            value10 = (int)dbReader[off++],
+                                            value11 = (int)dbReader[off++],
+                                            value12 = (int)dbReader[off++],
+                                            drop_group_id = (int)dbReader[off++],
+                                            quest_difficulty = (int)dbReader[off++],
+                                            favor_group_id = (int)dbReader[off++],
+                                            hate_group_id = (int)dbReader[off++],
+                                            favor = (int)dbReader[off++],
+                                            exp = (long)dbReader[off++],
+                                            jp = (int)dbReader[off++],
+                                            holicpoint = (int)dbReader[off++],
+                                            gold = (int)dbReader[off++],
+                                            default_reward_id = (int)dbReader[off++],
+                                            default_reward_level = (int)dbReader[off++],
+                                            default_reward_quantity = (int)dbReader[off++],
+                                            optional_reward_id1 = (int)dbReader[off++],
+                                            optional_reward_level1 = (int)dbReader[off++],
+                                            optional_reward_quantity1 = (int)dbReader[off++],
+                                            optional_reward_id2 = (int)dbReader[off++],
+                                            optional_reward_level2 = (int)dbReader[off++],
+                                            optional_reward_quantity2 = (int)dbReader[off++],
+                                            optional_reward_id3 = (int)dbReader[off++],
+                                            optional_reward_level3 = (int)dbReader[off++],
+                                            optional_reward_quantity3 = (int)dbReader[off++],
+                                            optional_reward_id4 = (int)dbReader[off++],
+                                            optional_reward_level4 = (int)dbReader[off++],
+                                            optional_reward_quantity4 = (int)dbReader[off++],
+                                            optional_reward_id5 = (int)dbReader[off++],
+                                            optional_reward_level5 = (int)dbReader[off++],
+                                            optional_reward_quantity5 = (int)dbReader[off++],
+                                            optional_reward_id6 = (int)dbReader[off++],
+                                            optional_reward_level6 = (int)dbReader[off++],
+                                            optional_reward_quantity6 = (int)dbReader[off++],
+                                            forequest1 = (int)dbReader[off++],
+                                            forequest2 = (int)dbReader[off++],
+                                            forequest3 = (int)dbReader[off++],
+                                            or_flag = Convert.ToChar(dbReader[off++]),
+                                            script_start_text = (string)dbReader[off++],
+                                            script_end_text = (string)dbReader[off++],
+                                            script_text = (string)dbReader[off++]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Quest with ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -1255,6 +1313,7 @@ namespace Game.Content
             ConsoleUtils.ShowNotice("{0} entries loaded from QuestResource", QuestResource.Count);
         }
 
+        /*
         internal static void LoadRandomPool()
         {
             RandomPoolResource = new List<DB_RandomPool>();
@@ -1292,10 +1351,11 @@ namespace Game.Content
 
             ConsoleUtils.ShowNotice("{0} entries loaded from RandomPoolResource", RandomPoolResource.Count);
         }
+        */
 
         internal static void LoadSetItemEffect()
         {
-            SetItemEffectResource = new List<DB_SetItemEffect>();
+            SetItemEffectResource = new Dictionary<int, DB_SetItemEffect[]>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1307,14 +1367,27 @@ namespace Game.Content
 
                         using (DbDataReader dbReader = dbCmd.ExecuteReader())
                         {
+                            int id = 0;
+                            bool started = false;
+                            List<DB_SetItemEffect> set = new List<DB_SetItemEffect>();
+
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                if (id != (int)dbReader[off] && started)
+                                {
+                                    if (!SetItemEffectResource.ContainsKey(id))
+                                        SetItemEffectResource.Add(id, set.ToArray());
+                                    else
+                                        ConsoleUtils.ShowError("Duplicated Set Effect with ID {0}. Skipping duplicated entry.", id);
+                                }
 
-                                SetItemEffectResource.Add(
+                                started = true;
+                                id = (int)dbReader[off++];
+
+                                set.Add(
                                     new DB_SetItemEffect
                                     {
-                                         set_id = (int)dbReader[off++],
                                          set_part_id = (int)dbReader[off++],
                                          text_id = (int)dbReader[off++],
                                          tooltip_id = (int)dbReader[off++],
@@ -1345,6 +1418,11 @@ namespace Game.Content
                                          effect_id = (int)dbReader[off++]
                                     });  
                             }
+
+                            if (!SetItemEffectResource.ContainsKey(id))
+                                SetItemEffectResource.Add(id, set.ToArray());
+                            else
+                                ConsoleUtils.ShowError("Duplicated Set Effect with ID {0}. Skipping duplicated entry.", id);
                         }
                     }
                     catch (Exception ex)
@@ -1361,7 +1439,7 @@ namespace Game.Content
 
         internal static void LoadSkill()
         {
-            SkillResource = new List<DB_Skill>();
+            SkillResource = new Dictionary<int, DB_Skill>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1376,136 +1454,139 @@ namespace Game.Content
                             while (dbReader.Read())
                             {
                                 int off = 0;
-
-                                SkillResource.Add(
-                                    new DB_Skill
-                                    {
-                                        id = (int)dbReader[off++],
-                                        text_id = (int)dbReader[off++],
-                                        desc_id = (int)dbReader[off++],
-                                        tooltip_id = (int)dbReader[off++],
-                                        is_valid = (byte)dbReader[off++],
-                                        elemental = Convert.ToChar(dbReader[off++]),
-                                        is_passive = Convert.ToChar(dbReader[off++]),
-                                        is_physical_act = Convert.ToChar(dbReader[off++]),
-                                        is_harmful = Convert.ToChar(dbReader[off++]),
-                                        is_need_target = Convert.ToChar(dbReader[off++]),
-                                        is_corpse = Convert.ToChar(dbReader[off++]),
-                                        is_toggle = Convert.ToChar(dbReader[off++]),
-                                        toggle_group = (int)dbReader[off++],
-                                        casting_type = Convert.ToChar(dbReader[off++]),
-                                        casting_level = Convert.ToChar(dbReader[off++]),
-                                        cast_range = (int)dbReader[off++],
-                                        valid_range = (int)dbReader[off++],
-                                        cost_hp = (int)dbReader[off++],
-                                        cost_hp_per_skl = (int)dbReader[off++],
-                                        cost_mp = (int)dbReader[off++],
-                                        cost_mp_per_skl = (int)dbReader[off++],
-                                        cost_mp_per_enhance = (int)dbReader[off++],
-                                        cost_hp_per = (decimal)dbReader[off++],
-                                        cost_hp_per_skl_per = (decimal)dbReader[off++],
-                                        cost_mp_per = (decimal)dbReader[off++],
-                                        cost_mp_per_skl_per = (decimal)dbReader[off++],
-                                        cost_havoc = (int)dbReader[off++],
-                                        cost_havoc_per_skl = (int)dbReader[off++],
-                                        cost_energy = (decimal)dbReader[off++],
-                                        cost_energy_per_skl = (decimal)dbReader[off++],
-                                        cost_exp = (int)dbReader[off++],
-                                        cost_exp_per_enhance = (int)dbReader[off++],
-                                        cost_jp = (int)dbReader[off++],
-                                        cost_jp_per_enhance = (int)dbReader[off++],
-                                        cost_item = (int)dbReader[off++],
-                                        cost_item_count = (int)dbReader[off++],
-                                        cost_item_count_per_skl = (int)dbReader[off++],
-                                        need_level = (int)dbReader[off++],
-                                        need_hp = (int)dbReader[off++],
-                                        need_mp = (int)dbReader[off++],
-                                        need_havoc = (int)dbReader[off++],
-                                        need_havoc_burst = (int)dbReader[off++],
-                                        need_state_id = (int)dbReader[off++],
-                                        need_state_level = (byte)dbReader[off++],
-                                        need_state_exhaust = (byte)dbReader[off++],
-                                        vf_one_hand_sword = Convert.ToChar(dbReader[off++]),
-                                        vf_two_hand_sword = Convert.ToChar(dbReader[off++]),
-                                        vf_double_sword = Convert.ToChar(dbReader[off++]),
-                                        vf_dagger = Convert.ToChar(dbReader[off++]),
-                                        vf_double_dagger = Convert.ToChar(dbReader[off++]),
-                                        vf_spear = Convert.ToChar(dbReader[off++]),
-                                        vf_axe = Convert.ToChar(dbReader[off++]),
-                                        vf_one_hand_axe = Convert.ToChar(dbReader[off++]),
-                                        vf_double_axe = Convert.ToChar(dbReader[off++]),
-                                        vf_one_hand_mace = Convert.ToChar(dbReader[off++]),
-                                        vf_two_hand_mace = Convert.ToChar(dbReader[off++]),
-                                        vf_lightbow = Convert.ToChar(dbReader[off++]),
-                                        vf_heavybow = Convert.ToChar(dbReader[off++]),
-                                        vf_crossbow = Convert.ToChar(dbReader[off++]),
-                                        vf_one_hand_staff = Convert.ToChar(dbReader[off++]),
-                                        vf_two_hand_staff = Convert.ToChar(dbReader[off++]),
-                                        vf_shield_only = Convert.ToChar(dbReader[off++]),
-                                        vf_is_not_need_weapon = Convert.ToChar(dbReader[off++]),
-                                        delay_cast = (decimal)dbReader[off++],
-                                        delay_cast_per_skl = (decimal)dbReader[off++],
-                                        delay_cast_mode_per_enhance = (decimal)dbReader[off++],
-                                        delay_common = (decimal)dbReader[off++],
-                                        delay_cooltime = (decimal)dbReader[off++],
-                                        delay_cooltime_mode_per_enhance = (decimal)dbReader[off++],
-                                        cool_time_group_id = (int)dbReader[off++],
-                                        uf_self = Convert.ToChar(dbReader[off++]),
-                                        uf_party = Convert.ToChar(dbReader[off++]),
-                                        uf_guild = Convert.ToChar(dbReader[off++]),
-                                        uf_neutral = Convert.ToChar(dbReader[off++]),
-                                        uf_purple = Convert.ToChar(dbReader[off++]),
-                                        uf_enemy = Convert.ToChar(dbReader[off++]),
-                                        tf_avatar = Convert.ToChar(dbReader[off++]),
-                                        tf_summon = Convert.ToChar(dbReader[off++]),
-                                        tf_monster = Convert.ToChar(dbReader[off++]),
-                                        target = (short)dbReader[off++],
-                                        effect_type = (short)dbReader[off++],
-                                        state_id = (int)dbReader[off++],
-                                        state_level_base = (int)dbReader[off++],
-                                        state_level_per_skl = (decimal)dbReader[off++],
-                                        state_level_per_enhance = (decimal)dbReader[off++],
-                                        state_second = (decimal)dbReader[off++],
-                                        state_second_per_level = (decimal)dbReader[off++],
-                                        state_second_per_enhance = (decimal)dbReader[off++],
-                                        state_type = Convert.ToChar(dbReader[off++]),
-                                        probability_on_hit = (int)dbReader[off++],
-                                        probability_inc_by_slv = (int)dbReader[off++],
-                                        hit_bonus = (short)dbReader[off++],
-                                        hit_bonus_per_enhance = (short)dbReader[off++],
-                                        percentage = (short)dbReader[off++],
-                                        hate_mod = (decimal)dbReader[off++],
-                                        hate_basic = (short)dbReader[off++],
-                                        hate_per_skl = (decimal)dbReader[off++],
-                                        hate_per_enhance = (decimal)dbReader[off++],
-                                        critical_bonus = (int)dbReader[off++],
-                                        critical_bonus_per_skl = (int)dbReader[off++],
-                                        var1 = (decimal)dbReader[off++],
-                                        var2 = (decimal)dbReader[off++],
-                                        var3 = (decimal)dbReader[off++],
-                                        var4 = (decimal)dbReader[off++],
-                                        var5 = (decimal)dbReader[off++],
-                                        var6 = (decimal)dbReader[off++],
-                                        var7 = (decimal)dbReader[off++],
-                                        var8 = (decimal)dbReader[off++],
-                                        var9 = (decimal)dbReader[off++],
-                                        var10 = (decimal)dbReader[off++],
-                                        var11 = (decimal)dbReader[off++],
-                                        var12 = (decimal)dbReader[off++],
-                                        var13 = (decimal)dbReader[off++],
-                                        var14 = (decimal)dbReader[off++],
-                                        var15 = (decimal)dbReader[off++],
-                                        var16 = (decimal)dbReader[off++],
-                                        var17 = (decimal)dbReader[off++],
-                                        var18 = (decimal)dbReader[off++],
-                                        var19 = (decimal)dbReader[off++],
-                                        var20 = (decimal)dbReader[off++],
-                                        icon_id = (int)dbReader[off++],
-                                        icon_file_name = (string)dbReader[off++],
-                                        is_projectile = (byte)dbReader[off++],
-                                        projectile_speed = (decimal)dbReader[off++],
-                                        projectile_acceleration = (decimal)dbReader[off++]
-                                    });
+                                int id = (int)dbReader[off++];
+                                if (!SkillResource.ContainsKey(id))
+                                    SkillResource.Add(
+                                        id,
+                                        new DB_Skill
+                                        {
+                                            text_id = (int)dbReader[off++],
+                                            desc_id = (int)dbReader[off++],
+                                            tooltip_id = (int)dbReader[off++],
+                                            is_valid = (byte)dbReader[off++],
+                                            elemental = Convert.ToChar(dbReader[off++]),
+                                            is_passive = Convert.ToChar(dbReader[off++]),
+                                            is_physical_act = Convert.ToChar(dbReader[off++]),
+                                            is_harmful = Convert.ToChar(dbReader[off++]),
+                                            is_need_target = Convert.ToChar(dbReader[off++]),
+                                            is_corpse = Convert.ToChar(dbReader[off++]),
+                                            is_toggle = Convert.ToChar(dbReader[off++]),
+                                            toggle_group = (int)dbReader[off++],
+                                            casting_type = Convert.ToChar(dbReader[off++]),
+                                            casting_level = Convert.ToChar(dbReader[off++]),
+                                            cast_range = (int)dbReader[off++],
+                                            valid_range = (int)dbReader[off++],
+                                            cost_hp = (int)dbReader[off++],
+                                            cost_hp_per_skl = (int)dbReader[off++],
+                                            cost_mp = (int)dbReader[off++],
+                                            cost_mp_per_skl = (int)dbReader[off++],
+                                            cost_mp_per_enhance = (int)dbReader[off++],
+                                            cost_hp_per = (decimal)dbReader[off++],
+                                            cost_hp_per_skl_per = (decimal)dbReader[off++],
+                                            cost_mp_per = (decimal)dbReader[off++],
+                                            cost_mp_per_skl_per = (decimal)dbReader[off++],
+                                            cost_havoc = (int)dbReader[off++],
+                                            cost_havoc_per_skl = (int)dbReader[off++],
+                                            cost_energy = (decimal)dbReader[off++],
+                                            cost_energy_per_skl = (decimal)dbReader[off++],
+                                            cost_exp = (int)dbReader[off++],
+                                            cost_exp_per_enhance = (int)dbReader[off++],
+                                            cost_jp = (int)dbReader[off++],
+                                            cost_jp_per_enhance = (int)dbReader[off++],
+                                            cost_item = (int)dbReader[off++],
+                                            cost_item_count = (int)dbReader[off++],
+                                            cost_item_count_per_skl = (int)dbReader[off++],
+                                            need_level = (int)dbReader[off++],
+                                            need_hp = (int)dbReader[off++],
+                                            need_mp = (int)dbReader[off++],
+                                            need_havoc = (int)dbReader[off++],
+                                            need_havoc_burst = (int)dbReader[off++],
+                                            need_state_id = (int)dbReader[off++],
+                                            need_state_level = (byte)dbReader[off++],
+                                            need_state_exhaust = (byte)dbReader[off++],
+                                            vf_one_hand_sword = Convert.ToChar(dbReader[off++]),
+                                            vf_two_hand_sword = Convert.ToChar(dbReader[off++]),
+                                            vf_double_sword = Convert.ToChar(dbReader[off++]),
+                                            vf_dagger = Convert.ToChar(dbReader[off++]),
+                                            vf_double_dagger = Convert.ToChar(dbReader[off++]),
+                                            vf_spear = Convert.ToChar(dbReader[off++]),
+                                            vf_axe = Convert.ToChar(dbReader[off++]),
+                                            vf_one_hand_axe = Convert.ToChar(dbReader[off++]),
+                                            vf_double_axe = Convert.ToChar(dbReader[off++]),
+                                            vf_one_hand_mace = Convert.ToChar(dbReader[off++]),
+                                            vf_two_hand_mace = Convert.ToChar(dbReader[off++]),
+                                            vf_lightbow = Convert.ToChar(dbReader[off++]),
+                                            vf_heavybow = Convert.ToChar(dbReader[off++]),
+                                            vf_crossbow = Convert.ToChar(dbReader[off++]),
+                                            vf_one_hand_staff = Convert.ToChar(dbReader[off++]),
+                                            vf_two_hand_staff = Convert.ToChar(dbReader[off++]),
+                                            vf_shield_only = Convert.ToChar(dbReader[off++]),
+                                            vf_is_not_need_weapon = Convert.ToChar(dbReader[off++]),
+                                            delay_cast = (decimal)dbReader[off++],
+                                            delay_cast_per_skl = (decimal)dbReader[off++],
+                                            delay_cast_mode_per_enhance = (decimal)dbReader[off++],
+                                            delay_common = (decimal)dbReader[off++],
+                                            delay_cooltime = (decimal)dbReader[off++],
+                                            delay_cooltime_mode_per_enhance = (decimal)dbReader[off++],
+                                            cool_time_group_id = (int)dbReader[off++],
+                                            uf_self = Convert.ToChar(dbReader[off++]),
+                                            uf_party = Convert.ToChar(dbReader[off++]),
+                                            uf_guild = Convert.ToChar(dbReader[off++]),
+                                            uf_neutral = Convert.ToChar(dbReader[off++]),
+                                            uf_purple = Convert.ToChar(dbReader[off++]),
+                                            uf_enemy = Convert.ToChar(dbReader[off++]),
+                                            tf_avatar = Convert.ToChar(dbReader[off++]),
+                                            tf_summon = Convert.ToChar(dbReader[off++]),
+                                            tf_monster = Convert.ToChar(dbReader[off++]),
+                                            target = (short)dbReader[off++],
+                                            effect_type = (short)dbReader[off++],
+                                            state_id = (int)dbReader[off++],
+                                            state_level_base = (int)dbReader[off++],
+                                            state_level_per_skl = (decimal)dbReader[off++],
+                                            state_level_per_enhance = (decimal)dbReader[off++],
+                                            state_second = (decimal)dbReader[off++],
+                                            state_second_per_level = (decimal)dbReader[off++],
+                                            state_second_per_enhance = (decimal)dbReader[off++],
+                                            state_type = Convert.ToChar(dbReader[off++]),
+                                            probability_on_hit = (int)dbReader[off++],
+                                            probability_inc_by_slv = (int)dbReader[off++],
+                                            hit_bonus = (short)dbReader[off++],
+                                            hit_bonus_per_enhance = (short)dbReader[off++],
+                                            percentage = (short)dbReader[off++],
+                                            hate_mod = (decimal)dbReader[off++],
+                                            hate_basic = (short)dbReader[off++],
+                                            hate_per_skl = (decimal)dbReader[off++],
+                                            hate_per_enhance = (decimal)dbReader[off++],
+                                            critical_bonus = (int)dbReader[off++],
+                                            critical_bonus_per_skl = (int)dbReader[off++],
+                                            var1 = (decimal)dbReader[off++],
+                                            var2 = (decimal)dbReader[off++],
+                                            var3 = (decimal)dbReader[off++],
+                                            var4 = (decimal)dbReader[off++],
+                                            var5 = (decimal)dbReader[off++],
+                                            var6 = (decimal)dbReader[off++],
+                                            var7 = (decimal)dbReader[off++],
+                                            var8 = (decimal)dbReader[off++],
+                                            var9 = (decimal)dbReader[off++],
+                                            var10 = (decimal)dbReader[off++],
+                                            var11 = (decimal)dbReader[off++],
+                                            var12 = (decimal)dbReader[off++],
+                                            var13 = (decimal)dbReader[off++],
+                                            var14 = (decimal)dbReader[off++],
+                                            var15 = (decimal)dbReader[off++],
+                                            var16 = (decimal)dbReader[off++],
+                                            var17 = (decimal)dbReader[off++],
+                                            var18 = (decimal)dbReader[off++],
+                                            var19 = (decimal)dbReader[off++],
+                                            var20 = (decimal)dbReader[off++],
+                                            icon_id = (int)dbReader[off++],
+                                            icon_file_name = (string)dbReader[off++],
+                                            is_projectile = (byte)dbReader[off++],
+                                            projectile_speed = (decimal)dbReader[off++],
+                                            projectile_acceleration = (decimal)dbReader[off++]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Skill with ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -1523,7 +1604,7 @@ namespace Game.Content
 
         internal static void LoadSkillJP()
         {
-            SkillJPResource = new List<DB_SkillJP>();
+            SkillJPResource = new Dictionary<int, DB_SkillJP>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1538,52 +1619,56 @@ namespace Game.Content
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                int id = (int)dbReader[off++];
 
-                                SkillJPResource.Add(
-                                    new DB_SkillJP
-                                    {
-                                        skill_id = (int)dbReader[off++],
-                                        jp_01 = (int)dbReader[off++],
-                                        jp_02 = (int)dbReader[off++],
-                                        jp_03 = (int)dbReader[off++],
-                                        jp_04 = (int)dbReader[off++],
-                                        jp_05 = (int)dbReader[off++],
-                                        jp_06 = (int)dbReader[off++],
-                                        jp_07 = (int)dbReader[off++],
-                                        jp_08 = (int)dbReader[off++],
-                                        jp_09 = (int)dbReader[off++],
-                                        jp_10 = (int)dbReader[off++],
-                                        jp_11 = (int)dbReader[off++],
-                                        jp_12 = (int)dbReader[off++],
-                                        jp_13 = (int)dbReader[off++],
-                                        jp_14 = (int)dbReader[off++],
-                                        jp_15 = (int)dbReader[off++],
-                                        jp_16 = (int)dbReader[off++],
-                                        jp_17 = (int)dbReader[off++],
-                                        jp_18 = (int)dbReader[off++],
-                                        jp_19 = (int)dbReader[off++],
-                                        jp_20 = (int)dbReader[off++],
-                                        jp_31 = (int)dbReader[off++],
-                                        jp_32 = (int)dbReader[off++],
-                                        jp_33 = (int)dbReader[off++],
-                                        jp_34 = (int)dbReader[off++],
-                                        jp_35 = (int)dbReader[off++],
-                                        jp_36 = (int)dbReader[off++],
-                                        jp_37 = (int)dbReader[off++],
-                                        jp_38 = (int)dbReader[off++],
-                                        jp_39 = (int)dbReader[off++],
-                                        jp_40 = (int)dbReader[off++],
-                                        jp_41 = (int)dbReader[off++],
-                                        jp_42 = (int)dbReader[off++],
-                                        jp_43 = (int)dbReader[off++],
-                                        jp_44 = (int)dbReader[off++],
-                                        jp_45 = (int)dbReader[off++],
-                                        jp_46 = (int)dbReader[off++],
-                                        jp_47 = (int)dbReader[off++],
-                                        jp_48 = (int)dbReader[off++],
-                                        jp_49 = (int)dbReader[off++],
-                                        jp_50 = (int)dbReader[off++],
-                                    });
+                                if (!SkillJPResource.ContainsKey(id))
+                                    SkillJPResource.Add(
+                                        id,
+                                        new DB_SkillJP
+                                        {
+                                            jp_01 = (int)dbReader[off++],
+                                            jp_02 = (int)dbReader[off++],
+                                            jp_03 = (int)dbReader[off++],
+                                            jp_04 = (int)dbReader[off++],
+                                            jp_05 = (int)dbReader[off++],
+                                            jp_06 = (int)dbReader[off++],
+                                            jp_07 = (int)dbReader[off++],
+                                            jp_08 = (int)dbReader[off++],
+                                            jp_09 = (int)dbReader[off++],
+                                            jp_10 = (int)dbReader[off++],
+                                            jp_11 = (int)dbReader[off++],
+                                            jp_12 = (int)dbReader[off++],
+                                            jp_13 = (int)dbReader[off++],
+                                            jp_14 = (int)dbReader[off++],
+                                            jp_15 = (int)dbReader[off++],
+                                            jp_16 = (int)dbReader[off++],
+                                            jp_17 = (int)dbReader[off++],
+                                            jp_18 = (int)dbReader[off++],
+                                            jp_19 = (int)dbReader[off++],
+                                            jp_20 = (int)dbReader[off++],
+                                            jp_31 = (int)dbReader[off++],
+                                            jp_32 = (int)dbReader[off++],
+                                            jp_33 = (int)dbReader[off++],
+                                            jp_34 = (int)dbReader[off++],
+                                            jp_35 = (int)dbReader[off++],
+                                            jp_36 = (int)dbReader[off++],
+                                            jp_37 = (int)dbReader[off++],
+                                            jp_38 = (int)dbReader[off++],
+                                            jp_39 = (int)dbReader[off++],
+                                            jp_40 = (int)dbReader[off++],
+                                            jp_41 = (int)dbReader[off++],
+                                            jp_42 = (int)dbReader[off++],
+                                            jp_43 = (int)dbReader[off++],
+                                            jp_44 = (int)dbReader[off++],
+                                            jp_45 = (int)dbReader[off++],
+                                            jp_46 = (int)dbReader[off++],
+                                            jp_47 = (int)dbReader[off++],
+                                            jp_48 = (int)dbReader[off++],
+                                            jp_49 = (int)dbReader[off++],
+                                            jp_50 = (int)dbReader[off++],
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Skill JP Resource for skill ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -1601,7 +1686,7 @@ namespace Game.Content
 
         internal static void LoadSkillTree()
         {
-            SkillTreeResource = new List<DB_SkillTree>();
+            SkillTreeResource = new Dictionary<int, DB_SkillTree[]>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1613,14 +1698,27 @@ namespace Game.Content
 
                         using (DbDataReader dbReader = dbCmd.ExecuteReader())
                         {
+                            int id = 0;
+                            bool started = false;
+                            List<DB_SkillTree> tree = new List<DB_SkillTree>();
+
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                if (id != (int)dbReader[off] && started)
+                                {
+                                    if (!SkillTreeResource.ContainsKey(id))
+                                        SkillTreeResource.Add(id, tree.ToArray());
+                                    else
+                                        ConsoleUtils.ShowError("Duplicated Skill Tree for Job Id {0}. Skipping duplicated entry.", id);
+                                }
 
-                                SkillTreeResource.Add(
+                                started = true;
+                                id = (int)dbReader[off++];
+
+                                tree.Add(
                                     new DB_SkillTree
                                     {
-                                        job_id = (int)dbReader[off++],
                                         skill_id = (int)dbReader[off++],
                                         min_skill_lv = (int)dbReader[off++],
                                         max_skill_lv = (int)dbReader[off++],
@@ -1635,6 +1733,11 @@ namespace Game.Content
                                         need_skill_lv_3 = (int)dbReader[off++],
                                     });
                             }
+
+                            if (!SkillTreeResource.ContainsKey(id))
+                                SkillTreeResource.Add(id, tree.ToArray());
+                            else
+                                ConsoleUtils.ShowError("Duplicated Skill Tree for Job Id {0}. Skipping duplicated entry.", id);
                         }
                     }
                     catch (Exception ex)
@@ -1651,7 +1754,7 @@ namespace Game.Content
 
         internal static void LoadStat()
         {
-            StatResource = new List<DB_Stat>();
+            StatResource = new Dictionary<int, DB_Stat>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1666,19 +1769,22 @@ namespace Game.Content
                             while (dbReader.Read())
                             {
                                 int off = 0;
-
-                                StatResource.Add(
-                                    new DB_Stat
-                                    {
-                                        id = (int)dbReader[off++],
-                                        STR = (int)dbReader[off++],
-                                        VIT = (int)dbReader[off++],
-                                        DEX = (int)dbReader[off++],
-                                        AGI = (int)dbReader[off++],
-                                        INT = (int)dbReader[off++],
-                                        MEN = (int)dbReader[off++],
-                                        LUK = (int)dbReader[off++]
-                                    });
+                                int id = (int)dbReader[off++];
+                                if (!StatResource.ContainsKey(id))
+                                    StatResource.Add(
+                                        id,
+                                        new DB_Stat
+                                        {
+                                            STR = (int)dbReader[off++],
+                                            VIT = (int)dbReader[off++],
+                                            DEX = (int)dbReader[off++],
+                                            AGI = (int)dbReader[off++],
+                                            INT = (int)dbReader[off++],
+                                            MEN = (int)dbReader[off++],
+                                            LUK = (int)dbReader[off++]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Stat with ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -1696,7 +1802,7 @@ namespace Game.Content
 
         internal static void LoadSummonDefaultName()
         {
-            SummonDefaultNameResource = new List<DB_SummonName>();
+            SummonDefaultNameResource = new Dictionary<int, DB_SummonName>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1710,13 +1816,18 @@ namespace Game.Content
                         {
                             while (dbReader.Read())
                             {
-                                SummonDefaultNameResource.Add(
-                                    new DB_SummonName
-                                    {
-                                        id = (int)dbReader[0],
-                                        kind = (int)dbReader[1],
-                                        text_id = (int)dbReader[2]
-                                    });
+                                int id = (int)dbReader[0];
+
+                                if (!SummonDefaultNameResource.ContainsKey(id))
+                                    SummonDefaultNameResource.Add(
+                                        id,
+                                        new DB_SummonName
+                                        {
+                                            kind = (int)dbReader[1],
+                                            text_id = (int)dbReader[2]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Summon Default Name with ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -1734,7 +1845,7 @@ namespace Game.Content
 
         internal static void LoadSummonLevel()
         {
-            SummonLevelResource = new List<DB_SummonLevel>();
+            SummonLevelResource = new Dictionary<int, DB_SummonLevel>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1748,14 +1859,19 @@ namespace Game.Content
                         {
                             while (dbReader.Read())
                             {
-                                SummonLevelResource.Add(
-                                    new DB_SummonLevel
-                                    {
-                                        level = (int)dbReader[0],
-                                        normal_exp = (long)dbReader[1],
-                                        growth_exp = (long)dbReader[2],
-                                        evolve_exp = (long)dbReader[3]
-                                    });
+                                int level = (int)dbReader[0];
+
+                                if (!SummonLevelResource.ContainsKey(level))
+                                    SummonLevelResource.Add(
+                                        level,
+                                        new DB_SummonLevel
+                                        {
+                                            normal_exp = (long)dbReader[1],
+                                            growth_exp = (long)dbReader[2],
+                                            evolve_exp = (long)dbReader[3]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Summon Level {0}. Skipping duplicated entry.", level);
                             }
                         }
                     }
@@ -1773,7 +1889,7 @@ namespace Game.Content
 
         internal static void LoadSummonUniqueName()
         {
-            SummonUniqueNameResource = new List<DB_SummonName>();
+            SummonUniqueNameResource = new Dictionary<int, DB_SummonName>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1787,13 +1903,18 @@ namespace Game.Content
                         {
                             while (dbReader.Read())
                             {
-                                SummonDefaultNameResource.Add(
-                                    new DB_SummonName
-                                    {
-                                        id = (int)dbReader[0],
-                                        kind = (int)dbReader[1],
-                                        text_id = (int)dbReader[2]
-                                    });
+                                int id = (int)dbReader[0];
+
+                                if (!SummonUniqueNameResource.ContainsKey(id))
+                                    SummonDefaultNameResource.Add(
+                                        id,
+                                        new DB_SummonName
+                                        {
+                                            kind = (int)dbReader[1],
+                                            text_id = (int)dbReader[2]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Summon Unique Name with ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -1811,7 +1932,7 @@ namespace Game.Content
 
         internal static void LoadString()
         {
-            StringResource = new List<DB_String>();
+            StringResource = new Dictionary<int, DB_String>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1825,14 +1946,19 @@ namespace Game.Content
                         {
                             while (dbReader.Read())
                             {
-                                StringResource.Add(
-                                    new DB_String
-                                    {
-                                        name = (string)dbReader[0],
-                                        group_id = (int)dbReader[1],
-                                        code = (int)dbReader[2],
-                                        value = (string)dbReader[3]
-                                    });
+                                int code = (int)dbReader[2];
+
+                                if (!StringResource.ContainsKey(code))
+                                    StringResource.Add(
+                                        code,
+                                        new DB_String
+                                        {
+                                            name = (string)dbReader[0],
+                                            group_id = (int)dbReader[1],
+                                            value = (string)dbReader[3]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated String Id {0}. Skipping duplicated entry.", code);
                             }
                         }
                     }
@@ -1850,7 +1976,7 @@ namespace Game.Content
 
         internal static void LoadState()
         {
-            StateResource = new List<DB_State>();
+            StateResource = new Dictionary<int, DB_State>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1865,64 +1991,69 @@ namespace Game.Content
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                int state_id = (int)dbReader[off++];
 
-                                StateResource.Add(new DB_State
-                                {
-                                    state_id = (int)dbReader[off++],
-                                    text_id = (int)dbReader[off++],
-                                    tooltip_id = (int)dbReader[off++],
-                                    is_harmful = Convert.ToChar(dbReader[off++]),
-                                    state_time_type = (int)dbReader[off++],
-                                    state_group = (int)dbReader[off++],
-                                    duplicate_group_1 = (int)dbReader[off++],
-                                    duplicate_group_2 = (int)dbReader[off++],
-                                    duplicate_group_3 = (int)dbReader[off++],
-                                    uf_avatar = Convert.ToChar(dbReader[off++]),
-                                    uf_summon = Convert.ToChar(dbReader[off++]),
-                                    uf_monster = Convert.ToChar(dbReader[off++]),
-                                    base_effect_id = (int)dbReader[off++],
-                                    fire_interval = (int)dbReader[off++],
-                                    elemental_type = (int)dbReader[off++],
-                                    amplify_base = (decimal)dbReader[off++],
-                                    amplify_per_skl = (decimal)dbReader[off++],
-                                    add_damage_base = (int)dbReader[off++],
-                                    add_damage_per_skl = (int)dbReader[off++],
-                                    effect_type = (int)dbReader[off++],
-                                    value_0 = (decimal)dbReader[off++],
-                                    value_1 = (decimal)dbReader[off++],
-                                    value_2 = (decimal)dbReader[off++],
-                                    value_3 = (decimal)dbReader[off++],
-                                    value_4 = (decimal)dbReader[off++],
-                                    value_5 = (decimal)dbReader[off++],
-                                    value_6 = (decimal)dbReader[off++],
-                                    value_7 = (decimal)dbReader[off++],
-                                    value_8 = (decimal)dbReader[off++],
-                                    value_9 = (decimal)dbReader[off++],
-                                    value_10 = (decimal)dbReader[off++],
-                                    value_11 = (decimal)dbReader[off++],
-                                    value_12 = (decimal)dbReader[off++],
-                                    value_13 = (decimal)dbReader[off++],
-                                    value_14 = (decimal)dbReader[off++],
-                                    value_15 = (decimal)dbReader[off++],
-                                    value_16 = (decimal)dbReader[off++],
-                                    value_17 = (decimal)dbReader[off++],
-                                    value_18 = (decimal)dbReader[off++],
-                                    value_19 = (decimal)dbReader[off++],
-                                    icon_id = (int)dbReader[off++],
-                                    icon_file_name = (string)dbReader[off++],
-                                    fx_id = (int)dbReader[off++],
-                                    pos_id = (int)dbReader[off++],
-                                    cast_skill_id = (int)dbReader[off++],
-                                    cast_fx_id = (int)dbReader[off++],
-                                    cast_fx_pos_id = (int)dbReader[off++],
-                                    hit_fx_id = (int)dbReader[off++],
-                                    hit_fx_pos_id = (int)dbReader[off++],
-                                    special_output_timining_id = (int)dbReader[off++],
-                                    special_output_fx_pos_id = (int)dbReader[off++],
-                                    special_output_fx_delay = (int)dbReader[off++],
-                                    state_fx_id = (int)dbReader[off++],
-                                    state_fx_pos_id = (int)dbReader[off++]
-                                });
+                                if (!StateResource.ContainsKey(state_id))
+                                    StateResource.Add(
+                                        state_id,
+                                        new DB_State
+                                        {
+                                            text_id = (int)dbReader[off++],
+                                            tooltip_id = (int)dbReader[off++],
+                                            is_harmful = Convert.ToChar(dbReader[off++]),
+                                            state_time_type = (int)dbReader[off++],
+                                            state_group = (int)dbReader[off++],
+                                            duplicate_group_1 = (int)dbReader[off++],
+                                            duplicate_group_2 = (int)dbReader[off++],
+                                            duplicate_group_3 = (int)dbReader[off++],
+                                            uf_avatar = Convert.ToChar(dbReader[off++]),
+                                            uf_summon = Convert.ToChar(dbReader[off++]),
+                                            uf_monster = Convert.ToChar(dbReader[off++]),
+                                            base_effect_id = (int)dbReader[off++],
+                                            fire_interval = (int)dbReader[off++],
+                                            elemental_type = (int)dbReader[off++],
+                                            amplify_base = (decimal)dbReader[off++],
+                                            amplify_per_skl = (decimal)dbReader[off++],
+                                            add_damage_base = (int)dbReader[off++],
+                                            add_damage_per_skl = (int)dbReader[off++],
+                                            effect_type = (int)dbReader[off++],
+                                            value_0 = (decimal)dbReader[off++],
+                                            value_1 = (decimal)dbReader[off++],
+                                            value_2 = (decimal)dbReader[off++],
+                                            value_3 = (decimal)dbReader[off++],
+                                            value_4 = (decimal)dbReader[off++],
+                                            value_5 = (decimal)dbReader[off++],
+                                            value_6 = (decimal)dbReader[off++],
+                                            value_7 = (decimal)dbReader[off++],
+                                            value_8 = (decimal)dbReader[off++],
+                                            value_9 = (decimal)dbReader[off++],
+                                            value_10 = (decimal)dbReader[off++],
+                                            value_11 = (decimal)dbReader[off++],
+                                            value_12 = (decimal)dbReader[off++],
+                                            value_13 = (decimal)dbReader[off++],
+                                            value_14 = (decimal)dbReader[off++],
+                                            value_15 = (decimal)dbReader[off++],
+                                            value_16 = (decimal)dbReader[off++],
+                                            value_17 = (decimal)dbReader[off++],
+                                            value_18 = (decimal)dbReader[off++],
+                                            value_19 = (decimal)dbReader[off++],
+                                            icon_id = (int)dbReader[off++],
+                                            icon_file_name = (string)dbReader[off++],
+                                            fx_id = (int)dbReader[off++],
+                                            pos_id = (int)dbReader[off++],
+                                            cast_skill_id = (int)dbReader[off++],
+                                            cast_fx_id = (int)dbReader[off++],
+                                            cast_fx_pos_id = (int)dbReader[off++],
+                                            hit_fx_id = (int)dbReader[off++],
+                                            hit_fx_pos_id = (int)dbReader[off++],
+                                            special_output_timining_id = (int)dbReader[off++],
+                                            special_output_fx_pos_id = (int)dbReader[off++],
+                                            special_output_fx_delay = (int)dbReader[off++],
+                                            state_fx_id = (int)dbReader[off++],
+                                            state_fx_pos_id = (int)dbReader[off++]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated State with ID {0}. Skipping duplicated entry.", state_id);
                             }
                         }
                     }
@@ -1940,7 +2071,7 @@ namespace Game.Content
 
         internal static void LoadSummon()
         {
-            SummonResource = new List<DB_Summon>();
+            SummonResource = new Dictionary<int, DB_Summon>();
 
             using (DBManager dbManager = new DBManager(Databases.Game))
             {
@@ -1955,62 +2086,66 @@ namespace Game.Content
                             while (dbReader.Read())
                             {
                                 int off = 0;
+                                int id = (int)dbReader[off++];
 
-                                SummonResource.Add(
-                                    new DB_Summon
-                                    {
-                                        id = (int)dbReader[off++],
-                                        model_id = (int)dbReader[off++],
-                                        name_id = (int)dbReader[off++],
-                                        type = (int)dbReader[off++],
-                                        magic_type = (int)dbReader[off++],
-                                        rate = (byte)dbReader[off++],
-                                        stat_id = (int)dbReader[off++],
-                                        size = (decimal)dbReader[off++],
-                                        scale = (decimal)dbReader[off++],
-                                        target_fx_size = (decimal)dbReader[off++],
-                                        standard_walk_speed = (int)dbReader[off++],
-                                        standard_run_speed = (int)dbReader[off++],
-                                        riding_speed = (int)dbReader[off++],
-                                        run_speed = (int)dbReader[off++],
-                                        is_riding_only = (byte)dbReader[off++],
-                                        riding_motion_type = (int)dbReader[off++],
-                                        attack_range = (decimal)dbReader[off++],
-                                        walk_type = (int)dbReader[off++],
-                                        slant_type = (int)dbReader[off++],
-                                        material = (int)dbReader[off++],
-                                        weapon_type = (int)dbReader[off++],
-                                        attack_motion_speed = (int)dbReader[off++],
-                                        form = (int)dbReader[off++],
-                                        evolve_target = (int)dbReader[off++],
-                                        camera_x = (int)dbReader[off++],
-                                        camera_y = (int)dbReader[off++],
-                                        camera_z = (int)dbReader[off++],
-                                        target_x = (decimal)dbReader[off++],
-                                        target_y = (decimal)dbReader[off++],
-                                        target_z = (decimal)dbReader[off++],
-                                        model = (string)dbReader[off++],
-                                        motion_file_id = (int)dbReader[off++],
-                                        face_id = (int)dbReader[off++],
-                                        face_file_name = (string)dbReader[off++],
-                                        card_id = (int)dbReader[off++],
-                                        script_text = (string)dbReader[off++],
-                                        illust_file_name = (string)dbReader[off++],
-                                        text_feature_id = (int)dbReader[off++],
-                                        text_name_id = (int)dbReader[off++],
-                                        skill1_id = (int)dbReader[off++],
-                                        skill1_text_id = (int)dbReader[off++],
-                                        skill2_id = (int)dbReader[off++],
-                                        skill2_text_id = (int)dbReader[off++],
-                                        skill3_id = (int)dbReader[off++],
-                                        skill3_text_id = (int)dbReader[off++],
-                                        skill4_id = (int)dbReader[off++],
-                                        skill4_text_id = (int)dbReader[off++],
-                                        skill5_id = (int)dbReader[off++],
-                                        skill5_text_id = (int)dbReader[off++],
-                                        texture_group = (int)dbReader[off++],
-                                        local_flag = (int)dbReader[off++]
-                                    });
+                                if (!SummonResource.ContainsKey(id))
+                                    SummonResource.Add(
+                                        id,
+                                        new DB_Summon
+                                        {
+                                            model_id = (int)dbReader[off++],
+                                            name_id = (int)dbReader[off++],
+                                            type = (int)dbReader[off++],
+                                            magic_type = (int)dbReader[off++],
+                                            rate = (byte)dbReader[off++],
+                                            stat_id = (int)dbReader[off++],
+                                            size = (decimal)dbReader[off++],
+                                            scale = (decimal)dbReader[off++],
+                                            target_fx_size = (decimal)dbReader[off++],
+                                            standard_walk_speed = (int)dbReader[off++],
+                                            standard_run_speed = (int)dbReader[off++],
+                                            riding_speed = (int)dbReader[off++],
+                                            run_speed = (int)dbReader[off++],
+                                            is_riding_only = (byte)dbReader[off++],
+                                            riding_motion_type = (int)dbReader[off++],
+                                            attack_range = (decimal)dbReader[off++],
+                                            walk_type = (int)dbReader[off++],
+                                            slant_type = (int)dbReader[off++],
+                                            material = (int)dbReader[off++],
+                                            weapon_type = (int)dbReader[off++],
+                                            attack_motion_speed = (int)dbReader[off++],
+                                            form = (int)dbReader[off++],
+                                            evolve_target = (int)dbReader[off++],
+                                            camera_x = (int)dbReader[off++],
+                                            camera_y = (int)dbReader[off++],
+                                            camera_z = (int)dbReader[off++],
+                                            target_x = (decimal)dbReader[off++],
+                                            target_y = (decimal)dbReader[off++],
+                                            target_z = (decimal)dbReader[off++],
+                                            model = (string)dbReader[off++],
+                                            motion_file_id = (int)dbReader[off++],
+                                            face_id = (int)dbReader[off++],
+                                            face_file_name = (string)dbReader[off++],
+                                            card_id = (int)dbReader[off++],
+                                            script_text = (string)dbReader[off++],
+                                            illust_file_name = (string)dbReader[off++],
+                                            text_feature_id = (int)dbReader[off++],
+                                            text_name_id = (int)dbReader[off++],
+                                            skill1_id = (int)dbReader[off++],
+                                            skill1_text_id = (int)dbReader[off++],
+                                            skill2_id = (int)dbReader[off++],
+                                            skill2_text_id = (int)dbReader[off++],
+                                            skill3_id = (int)dbReader[off++],
+                                            skill3_text_id = (int)dbReader[off++],
+                                            skill4_id = (int)dbReader[off++],
+                                            skill4_text_id = (int)dbReader[off++],
+                                            skill5_id = (int)dbReader[off++],
+                                            skill5_text_id = (int)dbReader[off++],
+                                            texture_group = (int)dbReader[off++],
+                                            local_flag = (int)dbReader[off++]
+                                        });
+                                else
+                                    ConsoleUtils.ShowError("Duplicated Summon with ID {0}. Skipping duplicated entry.", id);
                             }
                         }
                     }
@@ -2050,7 +2185,7 @@ namespace Game.Content
             LoadMonsterSkill();
             LoadQuestLink();
             LoadQuest();
-            LoadRandomPool();
+            //LoadRandomPool();
             LoadSetItemEffect();
             LoadSkill();
             LoadSkillJP();

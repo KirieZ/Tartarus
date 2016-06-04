@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_MonsterDropTable
 	{
-		public int id { get; set; }
 		public int sub_id { get; set; }
 		public int drop_item_id_00 { get; set; }
 		public decimal drop_percentage_00 { get; set; }

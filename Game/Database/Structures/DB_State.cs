@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_State
 	{
-		public int state_id { get; set; }
 		public int text_id { get; set; }
 		public int tooltip_id { get; set; }
 		public char is_harmful { get; set; }

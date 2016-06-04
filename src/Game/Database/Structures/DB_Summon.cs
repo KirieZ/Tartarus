@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Summon
 	{
-		public int id { get; set; }
 		public int model_id { get; set; }
 		public int name_id { get; set; }
 		public int type { get; set; }

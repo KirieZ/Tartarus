@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_SkillTree
 	{
-		public int job_id { get; set; }
 		public int skill_id { get; set; }
 		public int min_skill_lv { get; set; }
 		public int max_skill_lv { get; set; }

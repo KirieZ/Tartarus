@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_QuestLink
 	{
-		public int npc_id { get; set; }
 		public int quest_id { get; set; }
 		public char flag_start { get; set; }
 		public char flag_progress { get; set; }

@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_SkillJP
 	{
-		public int skill_id { get; set; }
 		public int jp_01 { get; set; }
 		public int jp_02 { get; set; }
 		public int jp_03 { get; set; }
