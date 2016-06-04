@@ -1906,7 +1906,7 @@ namespace Game.Content
                                 int id = (int)dbReader[0];
 
                                 if (!SummonUniqueNameResource.ContainsKey(id))
-                                    SummonDefaultNameResource.Add(
+                                    SummonUniqueNameResource.Add(
                                         id,
                                         new DB_SummonName
                                         {
@@ -2079,6 +2079,7 @@ namespace Game.Content
                 {
                     try
                     {
+                        dbManager.CreateInParameter(dbCmd, "localflag", System.Data.DbType.Int32, Settings.LocalFlag);
                         dbCmd.Connection.Open();
 
                         using (DbDataReader dbReader = dbCmd.ExecuteReader())
