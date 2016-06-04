@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_ItemEffect
 	{
-		public int id { get; set; }
 		public int ordinal_id { get; set; }
 		public int tooltip_id { get; set; }
 		public byte effect_type { get; set; }

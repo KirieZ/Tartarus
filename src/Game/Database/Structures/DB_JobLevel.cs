@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_JobLevel
 	{
-		public int job_id { get; set; }
 		public decimal str_1 { get; set; }
 		public decimal vit_1 { get; set; }
 		public decimal dex_1 { get; set; }

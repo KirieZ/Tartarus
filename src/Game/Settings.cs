@@ -47,6 +47,7 @@ namespace Game
 		// Other Settings
 		public static Boolean KeepDeletedCharacters;
 		public static Char[] ForbiddenCharacters;
+        public static Int32 LocalFlag;
 
 		// URL List
 		public static string GuildUrl { get; set; }
@@ -119,6 +120,7 @@ namespace Game
 			// Other Settings
 			KeepDeletedCharacters = (Boolean)ParseSetting(ref settings, DType.Bool, "keep_deleted_characters", false);
 			ForbiddenCharacters = (((String)ParseSetting(ref settings, DType.String, "forbidden_characters", "", true)) + "@").ToCharArray();
+            LocalFlag = (Int32)ParseSetting(ref settings, DType.Int32, "local_flag", 0, false);
 			
 			// URL List
 			GuildUrl = (String)ParseSetting(ref settings, DType.String, "guild.url", "", false);

@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_EventArea
 	{
-		public int id { get; set; }
 		public int begin_time { get; set; }
 		public int end_time { get; set; }
 		public int min_level { get; set; }

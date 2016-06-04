@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_AuctionCategory
 	{
-		public int category_id { get; set; }
 		public int sub_category_id { get; set; }
 		public int name_id { get; set; }
 		public int local_flag { get; set; }

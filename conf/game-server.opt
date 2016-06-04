@@ -50,6 +50,11 @@ keep_deleted_characters: 0
 // the @ is forbidden by default as it crashes the client
 forbidden_characters: 
 
+// Server local flag
+// Hides content based on content local_flag field.
+// Default: 1
+local_flag: 1
+
 // ====== URLs =======
 guild.url: http://127.0.0.1/guild/login.aspx
 guild_test_download.url: upload/

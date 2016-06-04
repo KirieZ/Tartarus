@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Monster
 	{
-		public int id { get; set; }
 		public int monster_group { get; set; }
 		public int name_id { get; set; }
 		public int location_id { get; set; }

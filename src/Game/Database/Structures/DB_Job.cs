@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Job
 	{
-		public int id { get; set; }
 		public int text_id { get; set; }
 		public int stat_id { get; set; }
 		public int job_class { get; set; }

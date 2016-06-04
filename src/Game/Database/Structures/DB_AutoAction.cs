@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_AutoAuction
 	{
-		public int id { get; set; }
 		public int item_id { get; set; }
 		public int auctionseller_id { get; set; }
 		public long price { get; set; }

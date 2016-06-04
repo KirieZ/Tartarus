@@ -2,9 +2,8 @@ using System;
 
 namespace Game.Database.Structures
 {
-	public class DB_CreateLevelBonus
-	{
-		public int id { get; set; }
+	public class DB_CreatureLevelBonus
+    {
 		public decimal STR { get; set; }
 		public decimal VIT { get; set; }
 		public decimal DEX { get; set; }

@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_DropGroup
 	{
-		public int id { get; set; }
 		public int drop_item_id_00 { get; set; }
 		public long drop_min_count_00 { get; set; }
 		public long drop_max_count_00 { get; set; }

@@ -4,7 +4,6 @@ namespace Game.Database.Structures
 {
 	public class DB_Item
 	{
-	    public int id { get; set; }
         public int name_id { get; set; }
         public int tooltip_id { get; set; }
         public int type { get; set; }
