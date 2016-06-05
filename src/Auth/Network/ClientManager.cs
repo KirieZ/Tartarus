@@ -66,16 +66,14 @@ namespace Auth.Network
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="packet"></param>
-		public void Send(GameClient client, PacketStream packet)
+		public void Send(GameClient client, byte[] packet)
 		{
-			byte[] data = packet.GetPacket().ToArray();
-
-			ConsoleUtils.HexDump(data, "Sent to Client");
+			ConsoleUtils.HexDump(packet, "Sent to Client");
 
 			client.NetData.ClSocket.BeginSend(
-				client.NetData.OutCipher.DoCipher(ref data),
+				client.NetData.OutCipher.DoCipher(ref packet),
 				0,
-				data.Length,
+                packet.Length,
 				0,
 				new AsyncCallback(SendCallback),
 				client

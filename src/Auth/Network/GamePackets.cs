@@ -107,7 +107,7 @@ namespace Auth.Network
 			PacketStream stream = new PacketStream(0x1010);
 
 			stream.WriteString(client.UserId, 61);
-			stream.WriteBytes(client.Key);
+			stream.WriteUInt64(client.Key);
 			stream.WriteByte(client.Permission);
 			stream.WriteInt32(client.AccountId);
 

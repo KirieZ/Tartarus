@@ -75,6 +75,15 @@
     <Compile Include="..\src\Auth\Network\GamePackets.cs">
       <Link>Network\GamePackets.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\AC\Result.cs">
+      <Link>Network\Packets\AC\Result.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\AC\SelectServer.cs">
+      <Link>Network\Packets\AC\SelectServer.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\AC\ServerList.cs">
+      <Link>Network\Packets\AC\ServerList.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\Network\Packets\CA\ImbcLogin.cs">
       <Link>Network\Packets\CA\ImbcLogin.cs</Link>
     </Compile>
@@ -185,9 +194,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Network\Packets\AC\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)$(TargetFileName)"

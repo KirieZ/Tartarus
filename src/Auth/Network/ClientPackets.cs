@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using CA = Auth.Network.Packets.CA;
+using AC = Auth.Network.Packets.AC;
 
 namespace Auth.Network
 {
@@ -87,20 +88,21 @@ namespace Auth.Network
 		#endregion
 
 		#region Server Packets
-		/// <summary>
-		/// Login Result
+		
+        /// <summary>
+		/// Result of a packet
 		/// </summary>
 		/// <param name="client"></param>
-		/// <param name="result"></param>
-		public void Result(GameClient client, ushort result)
+		/// <param name="code"></param>
+		public void Result(GameClient client, ushort code)
 		{
-			PacketStream stream = new PacketStream(0x2710);
+            AC.Result result = new Packets.AC.Result();
+            result.RequestMsgId = 0x271A;
+            result._Result = code;
+            result.Value = 0;
 
-			stream.WriteUInt16(0x271A); // msg Id
-			stream.WriteUInt16(result); // result
-			stream.WriteInt32(0);
-
-			ClientManager.Instance.Send(client, stream);
+            result.CreateChecksum();
+			ClientManager.Instance.Send(client, PacketManager.ToArray(result));
 		}
 
 		/// <summary>
@@ -110,52 +112,66 @@ namespace Auth.Network
 		/// <param name="result"></param>
 		/// <param name="otp"></param>
 		/// <param name="pendingTime"></param>
-		public void SelectServer(GameClient client, ushort result, byte[] otp, uint pendingTime)
+		public void SelectServer(GameClient client, ushort result, ulong otp, uint pendingTime)
 		{
-			PacketStream stream = new PacketStream(0x2728);
+            AC.SelectServer selectServer = new AC.SelectServer();
+            selectServer.Result = result;
+            selectServer.Otp = otp;
+            selectServer.PendingTime = pendingTime;
 
-			stream.WriteUInt16(result);
-			stream.WriteBytes(otp);
-			stream.WriteUInt32(pendingTime);
-
-			ClientManager.Instance.Send(client, stream);
+            selectServer.CreateChecksum();
+			ClientManager.Instance.Send(client, PacketManager.ToArray(selectServer));
 		}
 
-		/// <summary>
-		/// Sends the list of servers
-		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="servers"></param>
-		public void ServerList(GameClient client)
-		{
-			PacketStream stream = new PacketStream(0x2726);
+        /// <summary>
+        /// Sends the list of servers
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="servers"></param>
+        public void ServerList(GameClient client)
+        {
+            AC.ServerList serverList = new AC.ServerList();
+            AC.ServerInfo serverInfo = new AC.ServerInfo();
 
-			stream.WriteUInt16(client.LastServerId);
-			stream.WriteUInt16(0);
-			ushort count = 0;
+            ushort count = 0;
+            int offset;
+            byte[] bServerList = new byte[0];
+            int size = PacketManager.GetSize(serverInfo);
 
-			foreach(ushort index in Server.Instance.GameServers.Keys)
-			{
-				GameServer gs = Server.Instance.GameServers[index];
-				
-				if (gs.Permission > client.Permission) // Insufficient permission, skip
-					continue;
+            foreach (ushort index in Server.Instance.GameServers.Keys)
+            {
+                GameServer gs = Server.Instance.GameServers[index];
 
-				count++;
+                if (gs.Permission > client.Permission) // Insufficient permission, skip
+                    continue;
 
-				stream.WriteUInt16(index);
-				stream.WriteString(gs.Name, 21);
-				stream.WriteBool(gs.AdultServer);
-				stream.WriteString(gs.NoticeUrl, 256);
-				stream.WriteString(gs.IP, 16);
-				stream.WriteInt32(gs.Port);
-				stream.WriteUInt16(gs.UserRatio);
-			}
+                serverInfo.Index = index;
+                serverInfo.Name = gs.Name;
+                serverInfo.IsAdultServer = gs.AdultServer;
+                serverInfo.ScreenshotUrl = gs.NoticeUrl;
+                serverInfo.Ip = gs.IP;
+                serverInfo.Port = gs.Port;
+                serverInfo.UserRatio = gs.UserRatio;
 
-			// Writes real server count
-			stream.WriteAt(BitConverter.GetBytes(count), Globals.HeaderLength + 2, 2);
+                offset = bServerList.Length;
+                Array.Resize(ref bServerList, bServerList.Length + size);
+                Buffer.BlockCopy(PacketManager.ToArray(serverInfo), 0, bServerList, offset, size);
 
-			ClientManager.Instance.Send(client, stream);
+                ++count;
+            }
+
+            serverList.LastLoginServerId = client.LastServerId;
+            serverList.Count = count;
+
+            serverList.Size = (uint)(PacketManager.GetSize(serverList) + bServerList.Length);
+            serverList.Checksum = PacketManager.GetChecksum(serverList.Size, serverList.ID);
+
+            byte[] buffer = PacketManager.ToArray(serverList);
+            offset = buffer.Length;
+            Array.Resize(ref buffer, offset + bServerList.Length);
+            Buffer.BlockCopy(bServerList, 0, buffer, offset, bServerList.Length);
+            
+            ClientManager.Instance.Send(client, buffer);
 		}
 		#endregion
 	}
