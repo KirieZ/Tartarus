@@ -53,7 +53,7 @@ namespace Auth
 			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 			rng.GetBytes(key);
 
-			gameClient.Key = BitConverter.ToUInt64(key, 0);
+			gameClient.Key = BitConverter.ToInt64(key, 0);
 			
 			// Stores the client
 			if (this.PendingClients.ContainsKey(gameClient.UserId))

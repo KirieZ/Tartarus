@@ -112,7 +112,7 @@ namespace Auth.Network
 		/// <param name="result"></param>
 		/// <param name="otp"></param>
 		/// <param name="pendingTime"></param>
-		public void SelectServer(GameClient client, ushort result, ulong otp, uint pendingTime)
+		public void SelectServer(GameClient client, ushort result, long otp, uint pendingTime)
 		{
             AC.SelectServer selectServer = new AC.SelectServer();
             selectServer.Result = result;

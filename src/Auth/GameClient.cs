@@ -26,7 +26,7 @@ namespace Auth
 		public byte Permission { get; set; }
 		public ushort LastServerId { get; set; }
 
-		public ulong Key { get; set; }
+		public long Key { get; set; }
 
 		public GameClient(Socket socket)
 		{

@@ -14,7 +14,7 @@ namespace Auth.Network.Packets.AC
     public class SelectServer : PacketHeader
     {
         public UInt16 Result;
-        public UInt64 Otp;
+        public Int64 Otp;
         public UInt32 PendingTime;
 
         public SelectServer()
