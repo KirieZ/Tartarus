@@ -84,6 +84,12 @@
     <Compile Include="..\src\Auth\Network\Packets\AC\ServerList.cs">
       <Link>Network\Packets\AC\ServerList.cs</Link>
     </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\AG\RegisterResult.cs">
+      <Link>Network\Packets\AG\RegisterResult.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\AG\UserJoin.cs">
+      <Link>Network\Packets\AG\UserJoin.cs</Link>
+    </Compile>
     <Compile Include="..\src\Auth\Network\Packets\CA\ImbcLogin.cs">
       <Link>Network\Packets\CA\ImbcLogin.cs</Link>
     </Compile>
@@ -95,6 +101,12 @@
     </Compile>
     <Compile Include="..\src\Auth\Network\Packets\CA\Version.cs">
       <Link>Network\Packets\CA\Version.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\GA\JoinResult.cs">
+      <Link>Network\Packets\GA\JoinResult.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Auth\Network\Packets\GA\Register.cs">
+      <Link>Network\Packets\GA\Register.cs</Link>
     </Compile>
     <Compile Include="..\src\Auth\Program.cs">
       <Link>Auth\Program.cs</Link>

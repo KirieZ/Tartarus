@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using AG = Auth.Network.Packets.AG;
+using GA = Auth.Network.Packets.GA;
 
 namespace Auth.Network
 {
@@ -16,7 +18,7 @@ namespace Auth.Network
 	{
 		public static readonly GamePackets Instance = new GamePackets();
 		
-		private delegate void PacketAction(GameServer server, PacketStream stream);
+		private delegate void PacketAction(GameServer server, byte[] stream);
 
 		private Dictionary<ushort, PacketAction> PacketsDb;
 
@@ -36,18 +38,22 @@ namespace Auth.Network
 		/// Called whenever a packet is received from a game client
 		/// </summary>
 		/// <param name="client"></param>
-		/// <param name="stream"></param>
-		public void PacketReceived(GameServer server, PacketStream stream)
+		/// <param name="packet"></param>
+		public void PacketReceived(GameServer server, PacketStream packet)
 		{
-			// Is it a known packet ID
-			if (!PacketsDb.ContainsKey(stream.GetId()))
+            byte[] data = packet.ToArray();
+
+            ConsoleUtils.HexDump(data, "Received from GameServer");
+
+            // Is it a known packet ID
+            if (!PacketsDb.ContainsKey(packet.GetId()))
 			{
-				ConsoleUtils.ShowWarning("Unknown packet Id: {0}", stream.GetId());
+				ConsoleUtils.ShowWarning("Unknown packet Id: {0}", packet.GetId());
 				return;
 			}
 
-			// Calls this packet parsing function
-			Task.Factory.StartNew(() => { PacketsDb[stream.GetId()].Invoke(server, stream); });
+            // Calls this packet parsing function
+            Task.Factory.StartNew(() => { PacketsDb[packet.GetId()].Invoke(server, data); });
 		}
 
 		/// <summary>
@@ -55,10 +61,12 @@ namespace Auth.Network
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="stream"></param>
-		private void GA_JoinResult(GameServer server, PacketStream stream)
+		private void GA_JoinResult(GameServer server, byte[] data)
 		{
-			string userId = stream.ReadString(61);
-			ushort result = stream.ReadUInt16();
+            GA.JoinResult joinResult = (GA.JoinResult)PacketManager.ToStructure(data, data.Length, typeof(GA.JoinResult));
+
+            string userId = joinResult.UserId;
+            ushort result = joinResult.Result;
 
 			server.JoinResult(userId, result);
 		}
@@ -68,16 +76,18 @@ namespace Auth.Network
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="stream"></param>
-		private void GA_Register(GameServer server, PacketStream stream)
+		private void GA_Register(GameServer server, byte[] data)
 		{
-			ushort index = stream.ReadUInt16();
-			server.Name = stream.ReadString(21);
-			server.AdultServer = stream.ReadBool();
-			server.NoticeUrl = stream.ReadString(256);
-			server.IP = stream.ReadString(16);
-			server.Port = (short)stream.ReadInt32();
-			string key = stream.ReadString(10);
-			server.Permission = stream.ReadByte();
+            GA.Register register = (GA.Register)PacketManager.ToStructure(data, data.Length, typeof(GA.Register));
+
+            ushort index = register.Index;
+            server.Name = register.Name;
+            server.AdultServer = register.IsAdultServer;
+            server.NoticeUrl = register.ScreenshotUrl;
+            server.IP = register.Ip;
+            server.Port = (short)register.Port;
+            string key = register.Key;
+            server.Permission = register.Permission;
 
 			Server.Instance.OnRegisterGameServer(index, server, key);
 		}
@@ -89,11 +99,11 @@ namespace Auth.Network
 		/// <param name="result">0 = success; 1 = duplicated index</param>
 		public void RegisterResult(GameServer server, ushort result)
 		{
-			PacketStream stream = new PacketStream(0x1001);
+            AG.RegisterResult registerResult = new AG.RegisterResult();
+            registerResult.Result = result;
 
-			stream.WriteUInt16(result);
-
-			GameManager.Instance.Send(server, stream);
+            registerResult.CreateChecksum();
+			GameManager.Instance.Send(server, PacketManager.ToArray(registerResult));
 		}
 
 		/// <summary>
@@ -104,14 +114,14 @@ namespace Auth.Network
 		/// <param name="key"></param>
 		internal void UserJoin(GameServer gameServer, GameClient client)
 		{
-			PacketStream stream = new PacketStream(0x1010);
+            AG.UserJoin userJoin = new AG.UserJoin();
+            userJoin.UserId = client.UserId;
+            userJoin.Key = client.Key;
+            userJoin.Permission = client.Permission;
+            userJoin.AccountId = client.AccountId;
 
-			stream.WriteString(client.UserId, 61);
-			stream.WriteUInt64(client.Key);
-			stream.WriteByte(client.Permission);
-			stream.WriteInt32(client.AccountId);
-
-			GameManager.Instance.Send(gameServer, stream);
+            userJoin.CreateChecksum();
+			GameManager.Instance.Send(gameServer, PacketManager.ToArray(userJoin));
 		}
 	}
 }

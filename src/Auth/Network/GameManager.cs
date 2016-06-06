@@ -58,7 +58,6 @@ namespace Auth.Network
 		/// <param name="packetStream"></param>
 		private void PacketReceived(GameServer gameServer, PacketStream packetStream)
 		{
-			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from GameServer");
 			GamePackets.Instance.PacketReceived(gameServer, packetStream);
 		}
 
@@ -67,10 +66,8 @@ namespace Auth.Network
 		/// </summary>
 		/// <param name="server"></param>
 		/// <param name="packet"></param>
-		public void Send(GameServer server, PacketStream packet)
+		public void Send(GameServer server, byte[] data)
 		{
-			byte[] data = packet.GetPacket().ToArray();
-
 			ConsoleUtils.HexDump(data, "Sent to GameServer");
 
 			server.NetData.ClSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), server);

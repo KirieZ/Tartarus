@@ -25,7 +25,7 @@ namespace Auth
 		public ushort Index { get; set; }
 		public string Name { get; set; }
 		public string IP { get; set; }
-		public short Port { get; set; }
+		public int Port { get; set; }
 		public string NoticeUrl { get; set; }
 		public bool AdultServer { get; set; }
 		public ushort UserRatio { get; set; }
