@@ -82,6 +82,12 @@
     <Compile Include="..\src\Common\NetworkData.cs">
       <Link>Common\NetworkData.cs</Link>
     </Compile>
+    <Compile Include="..\src\Common\PacketHeader.cs">
+      <Link>Common\PacketHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Common\PacketManager.cs">
+      <Link>Common\PacketManager.cs</Link>
+    </Compile>
     <Compile Include="..\src\Common\PacketStream.cs">
       <Link>Common\PacketStream.cs</Link>
     </Compile>
@@ -241,8 +247,20 @@
     <Compile Include="..\src\Game\Network\ClientPackets.cs">
       <Link>Network\ClientPackets.cs</Link>
     </Compile>
+    <Compile Include="..\src\Game\Network\Packets\AG\RegisterResult.cs">
+      <Link>Network\Packets\AG\RegisterResult.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\Packets\AG\UserJoin.cs">
+      <Link>Network\Packets\AG\UserJoin.cs</Link>
+    </Compile>
     <Compile Include="..\src\Game\Network\Packets\CS\MoveRequest.cs">
       <Link>Network\Packets\CS\MoveRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\Packets\GA\JoinResult.cs">
+      <Link>Network\Packets\GA\JoinResult.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Game\Network\Packets\GA\Register.cs">
+      <Link>Network\Packets\GA\Register.cs</Link>
     </Compile>
     <Compile Include="..\src\Game\Players\Inventory.cs">
       <Link>Players\Inventory.cs</Link>

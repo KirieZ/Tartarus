@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using AG = Game.Network.Packets.AG;
+using GA = Game.Network.Packets.GA;
 
 namespace Game.Network
 {
@@ -16,7 +18,7 @@ namespace Game.Network
 	{
 		public static readonly AuthPackets Instance = new AuthPackets();
 		
-		private delegate void PacketAction(AuthServer server, PacketStream stream);
+		private delegate void PacketAction(AuthServer server, byte[] data);
 
 		private Dictionary<ushort, PacketAction> PacketsDb;
 
@@ -37,78 +39,67 @@ namespace Game.Network
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="stream"></param>
-		public void PacketReceived(AuthServer server, PacketStream stream)
+		public void PacketReceived(AuthServer server, PacketStream packet)
 		{
-			// Is it a known packet ID
-			if (!PacketsDb.ContainsKey(stream.GetId()))
+            byte[] data = packet.ToArray();
+            ConsoleUtils.HexDump(data, "Received from AuthServer");
+
+            // Is it a known packet ID
+            if (!PacketsDb.ContainsKey(packet.GetId()))
 			{
-				ConsoleUtils.ShowWarning("Unknown packet Id: {0}", stream.GetId());
+				ConsoleUtils.ShowWarning("Unknown packet Id: {0}", packet.GetId());
 				return;
 			}
 
 			// Calls this packet parsing function
-			Task.Factory.StartNew(() => { PacketsDb[stream.GetId()].Invoke(server, stream); });
+			Task.Factory.StartNew(() => { PacketsDb[packet.GetId()].Invoke(server, data); });
 		}
 
-		/// <summary>
+		private void AG_Result(AuthServer server, byte[] data)
+		{
+            AG.RegisterResult registerResult = (AG.RegisterResult)PacketManager.ToStructure(data, data.Length, typeof(AG.RegisterResult));
+            
+			Server.Instance.RegisterResult(registerResult.Result);
+		}
+		private void AG_UserJoin(AuthServer server, byte[] data)
+		{
+            AG.UserJoin userJoin = (AG.UserJoin)PacketManager.ToStructure(data, data.Length, typeof(AG.UserJoin));
+
+			Server.Instance.PendingUser(userJoin.UserId, userJoin.Key, userJoin.Permission, userJoin.AccountId);
+		}
+
+        /// <summary>
 		/// Registers a server on Auth
 		/// </summary>
 		public void Register()
+        {
+            GA.Register register = new GA.Register();
+            register.Index = Settings.Index;
+            register.Name = Settings.Name;
+            register.IsAdultServer = false;
+            register.ScreenshotUrl = Settings.Notice;
+            register.Ip = Settings.ServerIP;
+            register.Port = Settings.Port;
+            register.Key = Settings.AcceptorKey;
+            register.Permission = Settings.Permission;
+
+            register.CreateChecksum();
+            AuthManager.Instance.Send(PacketManager.ToArray(register));
+        }
+
+        /// <summary>
+        /// Result of join request
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="result"></param>
+        internal void JoinResult(string userId, ushort result)
 		{
-			PacketStream stream = new PacketStream(0x1000);
-			
-			stream.WriteUInt16(Settings.Index);
-			stream.WriteString(Settings.Name, 21);
-			stream.WriteBool(false); // Adult Server
-			stream.WriteString(Settings.Notice, 256);
-			stream.WriteString(Settings.ServerIP, 16);
-			stream.WriteInt32(Settings.Port);
-			stream.WriteString(Settings.AcceptorKey, 10);
-			stream.WriteByte(Settings.Permission);
+            GA.JoinResult joinResult = new GA.JoinResult();
+            joinResult.UserId = userId;
+            joinResult.Result = result;
 
-			AuthManager.Instance.Send(stream);
-		}
-
-		/// <summary>
-		/// Register result
-		/// </summary>
-		/// <param name="server"></param>
-		/// <param name="stream"></param>
-		private void AG_Result(AuthServer server, PacketStream stream)
-		{
-			ushort result = stream.ReadUInt16();
-
-			Server.Instance.RegisterResult(result);
-		}
-
-		/// <summary>
-		/// Informs data to validate an user connection
-		/// </summary>
-		/// <param name="server"></param>
-		/// <param name="stream"></param>
-		private void AG_UserJoin(AuthServer server, PacketStream stream)
-		{
-			string userId = stream.ReadString(61);
-			ulong key = stream.ReadUInt64();
-			byte permission = stream.ReadByte();
-			int accId = stream.ReadInt32();
-
-			Server.Instance.PendingUser(userId, key, permission, accId);
-		}
-
-		/// <summary>
-		/// Result of join request
-		/// </summary>
-		/// <param name="userId"></param>
-		/// <param name="result"></param>
-		internal void JoinResult(string userId, ushort result)
-		{
-			PacketStream stream = new PacketStream(0x1011);
-
-			stream.WriteString(userId, 61);
-			stream.WriteUInt16(result);
-
-			AuthManager.Instance.Send(stream);
+            joinResult.CreateChecksum();
+			AuthManager.Instance.Send(PacketManager.ToArray(joinResult));
 		}
 	}
 }

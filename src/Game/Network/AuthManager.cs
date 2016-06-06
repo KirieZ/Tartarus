@@ -80,8 +80,6 @@ namespace Game.Network
 		/// <param name="packetStream"></param>
 		private void PacketReceived(AuthServer server, PacketStream packetStream)
 		{
-			// Dumps packet data and process
-			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from AuthServer");
 			AuthPackets.Instance.PacketReceived(server, packetStream);
 		}
 
@@ -89,12 +87,9 @@ namespace Game.Network
 		/// Sends a packet to an Auth Server
 		/// </summary>
 		/// <param name="server"></param>
-		/// <param name="packet"></param>
-		public void Send(PacketStream packet)
+		/// <param name="data"></param>
+		public void Send(byte[] data)
 		{
-			// Completes the packet and retrieve it
-			byte[] data = packet.GetPacket().ToArray();
-
 			// Dump and send
 			ConsoleUtils.HexDump(data, "Sent to AuthServer");
 			Auth.NetData.ClSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
