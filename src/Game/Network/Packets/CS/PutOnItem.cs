@@ -7,12 +7,10 @@ using System.Runtime.InteropServices;
 namespace Game.Network.Packets.CS
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class Packet1 : PacketHeader
+    public class PutonItem : PacketHeader
     {
-        public Packet1()
-        {
-            ID = 0;
-            Size = (UInt32)Marshal.SizeOf(typeof(Packet1));
-        }
+        public Byte Position;
+        public UInt32 ItemHandle;
+        public UInt32 TargetHandle; // 0 = self
     }
 }

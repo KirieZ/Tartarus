@@ -72,7 +72,6 @@ namespace Game.Network
 		/// <param name="packetStream"></param>
 		private void PacketReceived(Player gameClient, PacketStream packetStream)
 		{
-			ConsoleUtils.HexDump(packetStream.ToArray(), "Received from Client");
 			ClientPackets.Instance.PacketReceived(gameClient, packetStream);
 		}
 

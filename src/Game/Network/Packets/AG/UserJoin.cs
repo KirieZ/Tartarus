@@ -14,7 +14,7 @@ namespace Game.Network.Packets.AG
     {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 61)]
         public String UserId;
-        public UInt64 Key;
+        public Int64 Key;
         public Byte Permission;
         public Int32 AccountId;
     }

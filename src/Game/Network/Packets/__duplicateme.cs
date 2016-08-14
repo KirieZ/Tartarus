@@ -4,7 +4,7 @@ using Common;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Game.Network.Packets.CS
+namespace Game.Network.Packets
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class Packet1 : PacketHeader

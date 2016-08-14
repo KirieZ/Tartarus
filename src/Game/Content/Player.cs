@@ -189,7 +189,7 @@ namespace Game.Content
 		/// Tries to create a new character
 		/// </summary>
 		/// <param name="charInfo"></param>
-		internal void CreateCharacter(LobbyCharacterInfo charInfo)
+		internal void CreateCharacter(Network.Packets.LobbyCharacterInfo charInfo)
 		{
 			if (Lobby.Create(this, charInfo))
 			{
@@ -267,7 +267,7 @@ namespace Game.Content
         #endregion
 
         #region Movement
-        internal void MoveRequest(MoveRequest moveRequest)
+        internal void MoveRequest(MoveRequest moveRequest, Point[] points)
         {
             if (moveRequest.Handle != this.Handle)
             { // If player is trying to move an entity owned by him and not himself
@@ -280,7 +280,7 @@ namespace Game.Content
 
                 for (int i = 0; i < moveRequest.Count; ++i)
                 {
-                    Position newPosition = new Position(moveRequest.Points[i].ToX, moveRequest.Points[i].ToY, this.Position.Z, this.Position.Layer);
+                    Position newPosition = new Position(points[i].X, points[i].Y, this.Position.Z, this.Position.Layer);
                     this.PositionsToMove.Add(newPosition);
                 }
 

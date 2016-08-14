@@ -28,7 +28,7 @@ namespace Game.Players
 		/// <returns></returns>
 		internal static void GetCharacterList(Player player)
 		{
-			List<LobbyCharacterInfo> charList = new List<LobbyCharacterInfo>();
+			List<Network.Packets.LobbyCharacterInfo> charList = new List<Network.Packets.LobbyCharacterInfo>();
 
             ushort lastLoginIndex = 0;
 
@@ -50,7 +50,7 @@ namespace Game.Players
                             while (reader.Read())
                             {
                                 // Reads the character data
-                                LobbyCharacterInfo chara = new LobbyCharacterInfo();
+                                Network.Packets.LobbyCharacterInfo chara = new Network.Packets.LobbyCharacterInfo();
                                 int charId = (int)reader[0];
                                 chara.Name = (string)reader[2];
                                 chara.ModelInfo.Race = (byte)reader[10];
@@ -168,7 +168,7 @@ namespace Game.Players
 		/// <param name="player"></param>
 		/// <param name="charInfo"></param>
 		/// <returns></returns>
-		internal static bool Create(Player player, LobbyCharacterInfo charInfo)
+		internal static bool Create(Player player, Network.Packets.LobbyCharacterInfo charInfo)
 		{
             // Ensures the name is available
             if (!CheckCharacterName(charInfo.Name))

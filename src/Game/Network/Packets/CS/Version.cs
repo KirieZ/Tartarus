@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace Game.Network.Packets.CS
 {
+    /// <summary>
+    /// Client Version (currently unused)
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class Packet1 : PacketHeader
+    public class Version : PacketHeader
     {
-        public Packet1()
-        {
-            ID = 0;
-            Size = (UInt32)Marshal.SizeOf(typeof(Packet1));
-        }
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
+        public String _Version;
     }
 }

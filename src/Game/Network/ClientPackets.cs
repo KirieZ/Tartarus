@@ -9,6 +9,9 @@ using Common;
 using Game.Content;
 using Game.Players.Structures;
 using Game.Network.Packets;
+using CS = Game.Network.Packets.CS;
+using System.Runtime.InteropServices;
+//using SC = Game.Network.Packets.SC;
 
 namespace Game.Network
 {
@@ -19,7 +22,7 @@ namespace Game.Network
     {
         public static readonly ClientPackets Instance = new ClientPackets();
 
-        private delegate void PacketAction(Player client, PacketStream stream);
+        private delegate void PacketAction(Player client, byte[] data);
 
         private Dictionary<ushort, PacketAction> PacketsDb;
 
@@ -53,18 +56,21 @@ namespace Game.Network
         /// Called whenever a packet is received from a game client
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="stream"></param>
-        public void PacketReceived(Player client, PacketStream stream)
+        /// <param name="packet"></param>
+        public void PacketReceived(Player client, PacketStream packet)
         {
+            byte[] data = packet.ToArray();
+            ConsoleUtils.HexDump(data, "Received from Client");
+
             // Is it a known packet ID
-            if (!PacketsDb.ContainsKey(stream.GetId()))
+            if (!PacketsDb.ContainsKey(packet.GetId()))
             {
-                ConsoleUtils.ShowWarning("Unknown packet Id: {0}", stream.GetId());
+                ConsoleUtils.ShowWarning("Unknown packet Id: {0}", packet.GetId());
                 return;
             }
 
             // Calls this packet parsing function
-            Task.Factory.StartNew(() => { PacketsDb[stream.GetId()].Invoke(client, stream); });
+            Task.Factory.StartNew(() => { PacketsDb[packet.GetId()].Invoke(client, data); });
         }
 
         #region Client Packets
@@ -73,10 +79,10 @@ namespace Game.Network
         /// SFrame version (not used officially)
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="stream"></param>
-        private void CS_Version(Player client, PacketStream stream)
+        /// <param name="data"></param>
+        private void CS_Version(Player client, byte[] data)
         {
-            //string version = stream.ReadString(20);
+            //CS.Version version = (CS.Version)PacketManager.ToStructure(data, data.Length, typeof(CS.Version));
         }
 
         /// <summary>
@@ -85,95 +91,38 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_SystemSpecs(Player client, PacketStream stream) { }
+        private void CS_SystemSpecs(Player client, byte[] data) { }
 
         /// <summary>
         /// Unknown packet, maybe user to keep connection
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CA_Unknown(Player client, PacketStream stream) { }
-        
+        private void CA_Unknown(Player client, byte[] data) { }
         #endregion
 
         #region Lobby
-        /// <summary>
-        /// Connection from auth
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="stream"></param>
-        private void CS_AccountWithAuth(Player client, PacketStream stream)
+        private void CS_AccountWithAuth(Player client, byte[] data)
         {
-            string userId = stream.ReadString(61);
-            ulong key = stream.ReadUInt64();
-
-            Server.Instance.OnUserJoin(client, userId, key);
+            CS.AccountWithAuth accWithAuth = (CS.AccountWithAuth)PacketManager.ToStructure(data, data.Length, typeof(CS.AccountWithAuth));
+            Server.Instance.OnUserJoin(client, accWithAuth.Account, accWithAuth.OneTimeKey);
         }
-
-        /// <summary>
-        /// Request the character list
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="stream"></param>
-        private void CS_CharacterList(Player client, PacketStream stream)
+        private void CS_CharacterList(Player client, byte[] data)
         {
-            //string userId = stream.ReadString(61);
-
+            // Packet contains userId, not needed as the connection itself identifies the account
+            // (Kept for future reference)
+            //CS.CharacterList characterList = (CS.CharacterList)PacketManager.ToStructure(data, data.Length, typeof(CS.CharacterList));
             client.GetCharacterList();
         }
-
-        /// <summary>
-        /// Checks if character name is in use
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="stream"></param>
-        private void CS_CheckCharacterName(Player client, PacketStream stream)
+        private void CS_CheckCharacterName(Player client, byte[] data)
         {
-            string name = stream.ReadString(19);
-
-            client.CheckCharacterName(name);
+            CS.CheckCharacterName checkName = (CS.CheckCharacterName)PacketManager.ToStructure(data, data.Length, typeof(CS.CheckCharacterName));
+            client.CheckCharacterName(checkName.Name);
         }
-
-        /// <summary>
-        /// Request to create a character
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="stream"></param>
-        private void CS_CreateCharacter(Player client, PacketStream stream)
+        private void CS_CreateCharacter(Player client, byte[] data)
         {
-            LobbyCharacterInfo charInfo = new LobbyCharacterInfo();
-
-            charInfo.ModelInfo.Sex = stream.ReadInt32();
-            charInfo.ModelInfo.Race = stream.ReadInt32();
-
-            for (int i = 0; i < 5; i++)
-                charInfo.ModelInfo.ModelId[i] = stream.ReadInt32();
-
-            charInfo.ModelInfo.TextureId = stream.ReadInt32();
-
-            for (int i = 0; i < 24; i++)
-                charInfo.ModelInfo.WearInfo[i] = stream.ReadInt32();
-
-            charInfo.Level = stream.ReadInt32();
-            charInfo.Job = stream.ReadInt32();
-            charInfo.JobLevel = stream.ReadInt32();
-            charInfo.ExpPercentage = stream.ReadInt32();
-            charInfo.Hp = stream.ReadInt32();
-            charInfo.Mp = stream.ReadInt32();
-            charInfo.Permission = stream.ReadInt32();
-            charInfo.IsBanned = stream.ReadBool();
-            charInfo.Name = stream.ReadString(19);
-            charInfo.SkinColor = stream.ReadUInt32();
-            charInfo.CreateTime = stream.ReadString(30);
-            charInfo.DeleteTime = stream.ReadString(30);
-            for (int i = 0; i < 24; i++)
-                charInfo.WearItemEnhanceInfo[i] = stream.ReadInt32();
-            for (int i = 0; i < 24; i++)
-                charInfo.WearItemLevelInfo[i] = stream.ReadInt32();
-            for (int i = 0; i < 24; i++)
-                charInfo.WearItemElementalType[i] = stream.ReadByte();
-
-            client.CreateCharacter(charInfo);
+            CS.CreateCharacter createCharacter = (CS.CreateCharacter)PacketManager.ToStructure(data, data.Length, typeof(CS.CreateCharacter));
+            client.CreateCharacter(createCharacter.Info);
         }
 
         /// <summary>
@@ -181,12 +130,10 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_DeleteCharacter(Player client, PacketStream stream)
+        private void CS_DeleteCharacter(Player client, byte[] data)
         {
-            string name = stream.ReadString(19);
-            //string securityCode = stream.ReadString(19);
-
-            client.DeleteCharacter(name);
+            CS.DeleteCharacter packet = (CS.DeleteCharacter)PacketManager.ToStructure(data, data.Length, typeof(CS.DeleteCharacter));
+            client.DeleteCharacter(packet.Name);
         }
 
         /// <summary>
@@ -194,12 +141,10 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_Login(Player client, PacketStream stream)
+        private void CS_Login(Player client, byte[] data)
         {
-            string name = stream.ReadString(19);
-            byte race = stream.ReadByte();
-
-            client.Login(name, race);
+            CS.Login packet = (CS.Login)PacketManager.ToStructure(data, data.Length, typeof(CS.Login));
+            client.Login(packet.Name, packet.Race);
         }
         #endregion
 
@@ -209,7 +154,7 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_RequestLogout(Player client, PacketStream stream)
+        private void CS_RequestLogout(Player client, byte[] data)
         {
             // TODO : Proper check
             Result(client, 0x001A, 0);
@@ -220,7 +165,7 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_Logout(Player client, PacketStream stream)
+        private void CS_Logout(Player client, byte[] data)
         {
             // TODO : Function call
         }
@@ -230,7 +175,7 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_RequestReturnLobby(Player client, PacketStream stream)
+        private void CS_RequestReturnLobby(Player client, byte[] data)
         {
             // TODO : Proper check
             Result(client, 0x0019, 0);
@@ -241,7 +186,7 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_ReturnLobby(Player client, PacketStream stream)
+        private void CS_ReturnLobby(Player client, byte[] data)
         {
             // TODO : Proper checks
             Result(client, 0x0017, 0);
@@ -250,27 +195,21 @@ namespace Game.Network
 
         #region Movement
 
-        private void CS_MoveRequest(Player client, PacketStream stream)
+        private void CS_MoveRequest(Player client, byte[] data)
         {
-            Packets.CS.MoveRequest moveRequest = new Packets.CS.MoveRequest();
-            List<Packets.CS.MoveRequest.MoveInfo> movePoints = new List<Packets.CS.MoveRequest.MoveInfo>();
+            int requestSize = Marshal.SizeOf(typeof(CS.MoveRequest));
+            int pointSize = Marshal.SizeOf(typeof(CS.Point));
 
-            moveRequest.Handle = stream.ReadUInt32();
-            moveRequest.X = stream.ReadSingle();
-            moveRequest.Y = stream.ReadSingle();
-            moveRequest.CurrentTime = stream.ReadUInt32();
-            moveRequest.SpeedSync = stream.ReadBool();
-            moveRequest.Count = stream.ReadUInt16();
+            CS.MoveRequest moveRequest = (CS.MoveRequest)PacketManager.ToStructure(data, requestSize, typeof(CS.MoveRequest));
+
+            CS.Point[] points = new CS.Point[moveRequest.Count];
+
             for (int i = 0; i < moveRequest.Count; ++i)
             {
-                Packets.CS.MoveRequest.MoveInfo moveInfo = new Packets.CS.MoveRequest.MoveInfo();
-                moveInfo.ToX = stream.ReadSingle();
-                moveInfo.ToY = stream.ReadSingle();
-                movePoints.Add(moveInfo);
+                points[i] = (CS.Point)PacketManager.ToStructure(data, requestSize + (pointSize * i), pointSize, typeof(CS.Point));
             }
 
-            moveRequest.Points = movePoints.ToArray();
-            client.MoveRequest(moveRequest);
+            client.MoveRequest(moveRequest, points);
         }
 
         #endregion
@@ -282,13 +221,11 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_PutOnItem(Player client, PacketStream stream)
+        private void CS_PutOnItem(Player client, byte[] data)
         {
-            byte position = stream.ReadByte();
-            uint itemHandle = stream.ReadUInt32();
-            uint targetHandle = stream.ReadUInt32();
+            CS.PutonItem packet = (CS.PutonItem)PacketManager.ToStructure(data, data.Length, typeof(CS.PutonItem));
 
-            if (client.Equip(itemHandle, position, targetHandle))
+            if (client.Equip(packet.ItemHandle, packet.Position, packet.TargetHandle))
                 this.Result(client, 0x00C8, 0, 0);
             else
                 this.Result(client, 0x00C8, 3, 0); // TODO : Confirm this error code
@@ -299,13 +236,11 @@ namespace Game.Network
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
-        private void CS_PutOffItem(Player client, PacketStream stream)
+        private void CS_PutOffItem(Player client, byte[] data)
         {
-            byte position = stream.ReadByte();
-            uint targetHandle = stream.ReadUInt32();
-
-            if (client.Unequip(position, targetHandle))
-                client.Unequip(position, targetHandle);
+            CS.PutoffItem packet = (CS.PutoffItem)PacketManager.ToStructure(data, data.Length, typeof(CS.PutoffItem));
+            if (client.Unequip(packet.Position, packet.TargetHandle))
+                client.Unequip(packet.Position, packet.TargetHandle); // TODO : This seems wrong...
             else
                 this.Result(client, 0x00C9, 3, 0); // TODO : Confirm this error code
         }

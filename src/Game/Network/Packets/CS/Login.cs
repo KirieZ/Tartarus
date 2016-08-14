@@ -7,12 +7,10 @@ using System.Runtime.InteropServices;
 namespace Game.Network.Packets.CS
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class Packet1 : PacketHeader
+    public class Login : PacketHeader
     {
-        public Packet1()
-        {
-            ID = 0;
-            Size = (UInt32)Marshal.SizeOf(typeof(Packet1));
-        }
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 19)]
+        public String Name;
+        public Byte Race;
     }
 }
